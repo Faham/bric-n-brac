@@ -33,7 +33,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 1 TEXTINCLUDE 
 BEGIN
-    "simpleformat-sym.h\0"
+    "brac-sym.h\0"
 END
 
 2 TEXTINCLUDE 
@@ -46,7 +46,7 @@ END
 
 3 TEXTINCLUDE 
 BEGIN
-    "#include ""SimpleFormat.pipl""\r\n"
+    "#include ""brac.pipl""\r\n"
     "#include ""About.rc""\r\n"
 END
 

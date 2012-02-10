@@ -4,7 +4,7 @@
 	Version="9.00"
 	Name="brac"
 	ProjectGUID="{73C59F9A-C645-4EE5-8F00-AB4332011062}"
-	RootNamespace="SimpleFormat"
+	RootNamespace="brac"
 	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
@@ -45,7 +45,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\..\..\..\Output\Objs\SimpleFormat\Debug/SimpleFormat.tlb"
+				TypeLibraryName="$(IntDir)\brac.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -139,7 +139,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="3"
-				TypeLibraryName=".\..\..\..\Output\Objs\SimpleFormat\Debug/SimpleFormat.tlb"
+				TypeLibraryName="$(IntDir)\brac.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -215,15 +215,15 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 			>
 			<File
-				RelativePath="..\..\src\brac.cpp"
+				RelativePath="..\..\src\brac\brac.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\bracScripting.cpp"
+				RelativePath="..\..\src\brac\bracScripting.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\bracUI.cpp"
+				RelativePath="..\..\src\brac\bracUI.cpp"
 				>
 			</File>
 		</Filter>
@@ -232,11 +232,11 @@
 			Filter="h;hpp;hxx;hm;inl;fi;fd"
 			>
 			<File
-				RelativePath="..\..\inc\brac.h"
+				RelativePath="..\..\inc\brac\brac.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\inc\bracTerminology.h"
+				RelativePath="..\..\inc\brac\bracTerminology.h"
 				>
 			</File>
 		</Filter>
@@ -245,28 +245,8 @@
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
 			>
 			<File
-				RelativePath="..\..\inc\brac.r"
+				RelativePath="..\..\inc\brac\brac.r"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Compiling PiPL resource..."
-						CommandLine="cl /I..\..\dependencies\photoshopapi\pica_sp /I..\..\dependencies\photoshopapi\photoshop   /I..\..\dependencies\photoshopapi\resources     /I..\..\dependencies\plugin-common\resources    /I..\..\dependencies\plugin-common\includes /EP /DMSWindows=1 /Tc&quot;$(InputPath)&quot; &gt;     &quot;$(IntDir)\$(InputName).rr&quot;&#x0D;&#x0A;..\..\dependencies\adobe-resources\cnvtpipl &quot;$(IntDir)\$(InputName).rr&quot; &quot;$(IntDir)\$(InputName).pipl&quot;&#x0D;&#x0A;del &quot;$(IntDir)\$(InputName).rr&quot;&#x0D;&#x0A;"
-						Outputs="$(IntDir)\$(InputName).pipl"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Compiling PiPL resource..."
-						CommandLine="cl /I..\..\dependencies\photoshopapi\pica_sp /I..\..\dependencies\photoshopapi\photoshop   /I..\..\dependencies\photoshopapi\resources     /I..\..\dependencies\plugin-common\resources    /I..\..\dependencies\plugin-common\includes /EP /DMSWindows=1 /Tc&quot;$(InputPath)&quot; &gt;     &quot;$(IntDir)\$(InputName).rr&quot;&#x0D;&#x0A;..\..\dependencies\adobe-resources\cnvtpipl &quot;$(IntDir)\$(InputName).rr&quot; &quot;$(IntDir)\$(InputName).pipl&quot;&#x0D;&#x0A;del &quot;$(IntDir)\$(InputName).rr&quot;&#x0D;&#x0A;"
-						Outputs="$(IntDir)\$(InputName).pipl"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\brac.rc"

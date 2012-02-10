@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Developer Studio generated include file.
-// Used by SimpleFormat.rc
+// Used by brac.rc
 //
 #define IDD_ABOUT                       16000
 #define FORMATPARAMS                    16000
