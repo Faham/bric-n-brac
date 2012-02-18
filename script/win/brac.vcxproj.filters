@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{80ce79a6-42cc-44ec-8f6b-93ef0c3f6a77}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90</Extensions>
+    </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{43bc3268-bc8b-4c70-82be-c7d9e29f0743}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;fi;fd</Extensions>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{f40e1bc4-af06-4c0e-80c9-0cdcbe42fd48}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="External Source">
+      <UniqueIdentifier>{033a1c81-0509-4900-8e5c-1ea8c2350c63}</UniqueIdentifier>
+      <Extensions>*.c;*.cpp;</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\brac\brac.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\brac\bracScripting.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\brac\bracUI.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dependencies\plugin-common\sources\DialogUtilitiesWin.cpp">
+      <Filter>External Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dependencies\plugin-common\sources\FileUtilities.cpp">
+      <Filter>External Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dependencies\plugin-common\sources\FileUtilitiesWin.cpp">
+      <Filter>External Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dependencies\plugin-common\sources\PIDLLInstance.cpp">
+      <Filter>External Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dependencies\plugin-common\sources\PIUSuites.cpp">
+      <Filter>External Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dependencies\plugin-common\sources\PIUtilities.cpp">
+      <Filter>External Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dependencies\plugin-common\sources\PIUtilitiesWin.cpp">
+      <Filter>External Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dependencies\plugin-common\sources\PIWinUI.cpp">
+      <Filter>External Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\inc\brac\brac.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\brac\bracTerminology.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="brac.rc">
+      <Filter>Resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\inc\brac\brac.r">
+      <Filter>Resource</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

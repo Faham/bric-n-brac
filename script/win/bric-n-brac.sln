@@ -1,10 +1,10 @@
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "brac", "brac.vcproj", "{73C59F9A-C645-4EE5-8F00-AB4332011062}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "brac", "brac.vcxproj", "{73C59F9A-C645-4EE5-8F00-AB4332011062}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bracker", "bracker.vcproj", "{F1FC5F4A-CD36-4EEA-B5A6-C0B72DB1131A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bracker", "bracker.vcxproj", "{F1FC5F4A-CD36-4EEA-B5A6-C0B72DB1131A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bricker", "bricker.vcproj", "{8C725A62-8FE3-45E7-8B4E-35E300BE5E6B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bricker", "bricker.vcxproj", "{8C725A62-8FE3-45E7-8B4E-35E300BE5E6B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
