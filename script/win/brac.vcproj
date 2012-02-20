@@ -247,6 +247,26 @@
 			<File
 				RelativePath="..\..\inc\brac\brac.r"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling PiPL resource..."
+						CommandLine="cl /I..\..\dependencies\photoshopapi\pica_sp /I..\..\dependencies\photoshopapi\photoshop   /I..\..\dependencies\photoshopapi\resources     /I..\..\dependencies\plugin-common\resources    /I..\..\dependencies\plugin-common\includes /EP /DMSWindows=1 /Tc&quot;$(InputPath)&quot; &gt;     &quot;$(IntDir)\$(InputName).rr&quot;&#x0D;&#x0A;..\..\dependencies\adobe-resources\cnvtpipl &quot;$(IntDir)\$(InputName).rr&quot; &quot;$(IntDir)\$(InputName).pipl&quot;&#x0D;&#x0A;del &quot;$(IntDir)\$(InputName).rr&quot;&#x0D;&#x0A;"
+						Outputs="$(IntDir)\$(InputName).pipl"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling PiPL resource..."
+						CommandLine="cl /I..\..\dependencies\photoshopapi\pica_sp /I..\..\dependencies\photoshopapi\photoshop   /I..\..\dependencies\photoshopapi\resources     /I..\..\dependencies\plugin-common\resources    /I..\..\dependencies\plugin-common\includes /EP /DMSWindows=1 /Tc&quot;$(InputPath)&quot; &gt;     &quot;$(IntDir)\$(InputName).rr&quot;&#x0D;&#x0A;..\..\dependencies\adobe-resources\cnvtpipl &quot;$(IntDir)\$(InputName).rr&quot; &quot;$(IntDir)\$(InputName).pipl&quot;&#x0D;&#x0A;del &quot;$(IntDir)\$(InputName).rr&quot;&#x0D;&#x0A;"
+						Outputs="$(IntDir)\$(InputName).pipl"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\brac.rc"

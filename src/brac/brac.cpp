@@ -323,6 +323,8 @@ DLLExport MACPASCAL void PluginMain (const int16 selector,
 	
 	} // about selector special		
 
+	*gResult = noErr;
+
 	// release any suites that we may have acquired
 	if (selector == formatSelectorAbout ||
 		selector == formatSelectorWriteFinish ||
@@ -434,7 +436,14 @@ static unsigned32 RowBytes (void)
 
 static void DoReadPrepare (void)
 {
+	//*/
 	gFormatRecord->maxData = 0;
+	/*///fhm
+	gFormatRecord->maxData /= 2;
+	if(gFormatRecord->maxData > MAX_MEM)
+		gFormatRecord->maxData = MAX_MEM;
+	G(maxData) = gFormatRecord->maxData - (512L<<10); // 512K for zlib/libpng overhead
+	//*/
 }
 
 /*****************************************************************************/

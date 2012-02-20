@@ -1,8 +1,0 @@
-<?xml version="1.0" ?>
-<brac artist="tim" title="" timeinterval="yy-mm-dd hh:mm:ss" comment="" tags="">
-    <brics>
-		<bric id="1" title="yahoo" speed="1.5" birthdate="yyyy-mm-dd hh:mm:ss" position="x y z" url="http://ca.yahoo.com/?p=us">
-			comment: author can provide descriptions for each one of brics, we can use this descriptions in many ways latter
-		</bric>
-    </brics>
-</brac>
