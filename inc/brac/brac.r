@@ -32,9 +32,9 @@
 // You can easily override them, if you like.
 
 #define plugInName			"Bric-n-Brac"
-#define plugInCopyrightYear	"1993"
+#define plugInCopyrightYear	"2011"
 #define plugInDescription \
-	"An example plug-in file format module for Adobe Photoshop¨."
+	"Bric-n-Brac plug-in file format module let you use Adobe Photoshop to edit brac files."
 
 //-------------------------------------------------------------------------------
 //	Definitions -- Required by other resources in this rez file.
@@ -42,7 +42,7 @@
 
 // Dictionary (aete) resources:
 
-#define vendorName			"AdobeSDK"
+#define vendorName			"University of Saskatchewan"
 #define plugInAETEComment 	"brac example file format module"
 
 #define plugInSuiteID		'sdK4'
@@ -112,6 +112,9 @@ resource 'PiPL' (ResourceID, plugInName " PiPL", purgeable)
 			doesSupportDuotone, doesSupportLABColor
 		},
 		
+		// enable multi-layer support
+		FormatLayerSupport { doesSupportFormatLayers },
+
 		// If you want your format module always enabled.	
 		EnableInfo { "true" },
 
@@ -155,7 +158,7 @@ resource 'aete' (ResourceID, plugInName " dictionary", purgeable)
 	1, 0, english, roman,									/* aete version and language specifiers */
 	{
 		vendorName,											/* vendor suite name */
-		"Adobe example plug-ins",							/* optional description */
+		"Adobe Photoshop brac plug-in",							/* optional description */
 		plugInSuiteID,										/* suite ID */
 		1,													/* suite code, must be 1 */
 		1,													/* suite level, must be 1 */

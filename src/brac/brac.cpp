@@ -34,6 +34,8 @@
 #include "brac/brac.h"
 #include "PIUI.h"
 
+#include <process.h> //used for calling bricker silently
+
 DLLExport MACPASCAL void PluginMain (const int16 selector,
 						             FormatRecordPtr formatParamBlock,
 						             intptr_t * data,
@@ -61,6 +63,12 @@ static void DoWriteStart (void);
 static void DoWriteContinue (void);
 static void DoWriteFinish (void);
 static void DoFilterFile (void);
+
+static void DoReadLayerStart (void);
+static void DoReadLayerContinue (void);
+static void DoReadLayerFinish (void);
+static void DoWriteLayerStart (void);
+static void DoWriteLayerFinish (void);
 
 static void AddComment (void);
 
@@ -268,6 +276,23 @@ DLLExport MACPASCAL void PluginMain (const int16 selector,
 				DoReadFinish();
 				break;
 
+			case formatSelectorReadLayerStart:
+				DoReadLayerStart();
+				break;
+			case formatSelectorReadLayerContinue:
+				DoReadLayerContinue();
+				break;
+			case formatSelectorReadLayerFinish:
+				DoReadLayerFinish();
+				break;
+			case formatSelectorWriteLayerStart:
+				DoWriteLayerStart();
+				break;
+			case formatSelectorWriteLayerContinue:
+			case formatSelectorWriteLayerFinish:
+				DoWriteLayerFinish();
+				break;
+
 			case formatSelectorOptionsPrepare:
 				DoOptionsPrepare();
 				break;
@@ -436,14 +461,7 @@ static unsigned32 RowBytes (void)
 
 static void DoReadPrepare (void)
 {
-	//*/
 	gFormatRecord->maxData = 0;
-	/*///fhm
-	gFormatRecord->maxData /= 2;
-	if(gFormatRecord->maxData > MAX_MEM)
-		gFormatRecord->maxData = MAX_MEM;
-	G(maxData) = gFormatRecord->maxData - (512L<<10); // 512K for zlib/libpng overhead
-	//*/
 }
 
 /*****************************************************************************/
@@ -525,12 +543,19 @@ static void DisposeImageResources (void)
 
 static void DoReadStart (void)
 {
-	
 	// If you add fmtCanCreateThumbnail to the FormatFlags PiPL property
 	// you will get called to create a thumbnail. The only way to tell
 	// that you are processing a thumbnail is to check openForPreview in the
 	// FormatRecord. You do not need to parse the entire file. You need to
 	// process enough for a thumbnail view and you need to do it quickly.
+
+	if (!gFormatRecord->openForPreview) {
+		//int result = system("C:\faham\tim\bric-n-brac\temp\extract.bat");
+		//_spawnlp(_P_NOWAIT, "C:\faham\tim\bric-n-brac\out\bricker\Win32\Debug\bricker.exe", "C:\faham\tim\bric-n-brac\out\bricker\Win32\Debug\mybrac.zip", "-d", "C:\faham\tim\bric-n-brac\temp", NULL);
+		//ShellExecute(NULL, "open", "C:\faham\tim\bric-n-brac\temp", NULL, NULL, SW_SHOWNORMAL);
+		// FHM: saying how many layers are loading.
+		//gFormatRecord->layerData = 2;
+	}
 
 	FileHeader header;
 	
@@ -703,7 +728,6 @@ static void DoReadStart (void)
 	CleanUp:
 	
 	DisposeImageResources ();
-        
 }
 
 /*****************************************************************************/
@@ -778,7 +802,6 @@ static void DoReadContinue (void)
 	sPSBuffer->Dispose(&pixelData);
 
 	DoReadICCProfile ();
-	
 }
 
 /*****************************************************************************/
@@ -1034,7 +1057,6 @@ static void DoWriteStart (void)
 	sPSBuffer->Dispose(&pixelData);
 
 	DoWriteICCProfile ();
-
 }
 
 /*****************************************************************************/
@@ -1078,6 +1100,221 @@ static void DoFilterFile (void)
 		return;
 	}
 	
+}
+
+/*****************************************************************************/
+
+static void DoReadLayerStart (void)
+{
+#if defined (LAYERED)
+	// If you add fmtCanCreateThumbnail to the FormatFlags PiPL property
+	// you will get called to create a thumbnail. The only way to tell
+	// that you are processing a thumbnail is to check openForPreview in the
+	// FormatRecord. You do not need to parse the entire file. You need to
+	// process enough for a thumbnail view and you need to do it quickly.
+
+	FileHeader header;
+	
+	Boolean showDialog = ReadScriptParamsOnRead (); // override params here
+	
+	/* Exit if we have already encountered an error. */
+
+    if (*gResult != noErr) return;
+		
+	/* If we have not encountered an error, then we want to read
+	   the file header. */
+
+	*gResult = PSSDKSetFPos (gFormatRecord->dataFork, fsFromStart, 0);
+	if (*gResult != noErr) return;
+	
+	ReadSome (sizeof (header.identifier), &header.identifier);
+	if (*gResult != noErr) return;
+
+	gData->needsSwap = false;
+	
+	int headerID = CheckIdentifier (header.identifier);
+	
+	if (headerID == HEADER_CANT_READ)
+	{
+		*gResult = formatCannotRead;
+	}
+	else if (headerID == HEADER_VER1)
+	{
+		HeaderVer1 headerVer1;
+		
+		ReadSome(sizeof(HeaderVer1), &headerVer1);
+		
+		header.mode = headerVer1.mode;
+		header.depth = headerVer1.depth;
+		header.rows = headerVer1.rows;
+		header.cols = headerVer1.cols;
+		header.planes = headerVer1.planes;
+		header.transparencyPlane = 0;
+		header.resourceLength = headerVer1.resourceLength;
+	}
+	else if (headerID == HEADER_VER2)
+	{
+		ReadSome(sizeof(HeaderVer2) - sizeof(header.identifier), &header.endian);
+		// determine machine endian-ness
+		uint32 tempLong = 0x11223344;
+		uint8 tempChar = *(reinterpret_cast<uint8 *>(&tempLong) + 3);
+		bool isLittleEndian = (tempChar == 0x11);
+		if ((header.endian == LITTLEENDIAN) != isLittleEndian)
+		{
+			gData->needsSwap = true;
+			Swap(header.testendian);
+			Swap(header.mode);
+			Swap(header.depth);
+			Swap(header.rows);
+			Swap(header.cols);
+			Swap(header.planes);
+			Swap(header.transparencyPlane);
+			Swap(header.resourceLength);
+		}
+		
+		if (header.testendian != TESTENDIAN)
+		{
+			*gResult = formatCannotRead;
+			return;
+		}
+	}
+	else
+	{
+		*gResult = formatCannotRead;
+	}
+
+	if (*gResult != noErr) return;
+
+	gFormatRecord->imageMode = header.mode;
+	VPoint imageSize;
+	imageSize.v = header.rows;
+	imageSize.h = header.cols;
+	SetFormatImageSize(imageSize);
+	gFormatRecord->depth = header.depth;
+	gFormatRecord->planes = header.planes;
+	gFormatRecord->transparencyPlane = header.transparencyPlane;
+	gFormatRecord->transparencyMatting = DESIREDMATTING;
+	
+	/* Next, we will try to read the image resources. */
+	/* If there is none then create an empty resource. */
+	
+	if (header.resourceLength > 0)
+	{
+		gFormatRecord->imageRsrcData = sPSHandle->New(header.resourceLength);
+		
+		if (gFormatRecord->imageRsrcData == NULL)
+		{
+			*gResult = memFullErr;
+			return;
+		}
+			
+		Ptr resourcePtr = NULL;
+		sPSHandle->SetLock(gFormatRecord->imageRsrcData, true, &resourcePtr, NULL);
+		
+		if (resourcePtr != NULL)
+		{
+			ReadSome (header.resourceLength, resourcePtr);
+
+			if (!gFormatRecord->openForPreview)
+			{
+				vector<ResourceInfo *> resources;
+				CreateResourceInfoVector(header.resourceLength, 
+					                     reinterpret_cast<uint8 *>(resourcePtr), 
+										 resources);
+
+				// see if the user wants to remove some resources
+				if (showDialog && DoUI(resources))
+				{
+					header.resourceLength = RemoveResources(header.resourceLength, 
+							                                resources, 
+															reinterpret_cast<uint8 *>(resourcePtr));
+					Handle h = sPSHandle->New(header.resourceLength);
+					if (h == NULL)
+					{
+						*gResult = memFullErr;
+						sPSHandle->Dispose(gFormatRecord->imageRsrcData);
+						return;
+					}
+					Ptr newResourcePtr = NULL;
+					sPSHandle->SetLock(h, true, &newResourcePtr, NULL);
+					if (newResourcePtr != NULL)
+					{
+						copy(resourcePtr, resourcePtr + header.resourceLength, newResourcePtr);
+						sPSHandle->Dispose(gFormatRecord->imageRsrcData);
+						gFormatRecord->imageRsrcData = h;
+					}
+				}
+				DeleteResourceInfoVector(resources);
+			}
+
+			sPSHandle->SetLock(gFormatRecord->imageRsrcData, false, &resourcePtr, NULL);
+		
+			if (*gResult != noErr)
+				goto CleanUp;
+			
+			gFormatRecord->imageRsrcSize = header.resourceLength;
+			}
+		
+	}
+	else
+	{
+
+		if (sPSHandle->New != NULL)
+			gFormatRecord->imageRsrcData = sPSHandle->New(0);
+		gFormatRecord->imageRsrcSize = 0;
+
+	}
+		
+	/* Next, we will will read the lookup tables if in indexed color mode. */
+	
+	if (header.mode == plugInModeIndexedColor)
+	{
+		
+		ReadSome (3 * sizeof (LookUpTable), &gFormatRecord->redLUT);
+		
+		if (*gResult != noErr)
+			goto CleanUp;
+		
+	}
+		
+	return;
+		
+	/* The following code does any clean-up work in the event of an error. */
+	
+	CleanUp:
+	
+	DisposeImageResources ();
+#endif
+}
+
+/*****************************************************************************/
+
+static void DoReadLayerContinue (void)
+{
+#if defined (LAYERED)
+	DoReadContinue();
+#endif
+}
+
+/*****************************************************************************/
+
+static void DoReadLayerFinish (void)
+{
+#if defined (LAYERED)
+	DoReadFinish();
+#endif
+}
+
+/*****************************************************************************/
+
+static void DoWriteLayerStart (void)
+{
+}
+
+/*****************************************************************************/
+
+static void DoWriteLayerFinish (void)
+{
 }
 
 /*****************************************************************************/
