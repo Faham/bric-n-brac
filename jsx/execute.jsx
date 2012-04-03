@@ -1,8 +1,12 @@
 ﻿//==============================================================================
 //
-// Exec
+// execute.jsx
 //
-//------------------------------------------------------------------------------
+//==============================================================================
+
+#target photoshop 
+
+//==============================================================================
 
 Exec = function(app){
 	this.app = app;         // A File object to the application
@@ -117,108 +121,6 @@ Exec.prototype.executeBlock = function(argList, timeout) {
 		semaphore.remove();
 	}
 };
-
-//==============================================================================
-
-//
-// SevenZip
-//
-SevenZip = new Exec(new File("/c/Program Files/7-Zip/7z.exe"));
-SevenZip.archive = function(zipFile, filelist) {
-	var args = ["a", "-tzip", '\"' + zipFile.fsName + '\"'];
-	for (var i = 0; i < filelist.length; i++) {
-		args.push('\"' + filelist[i].fsName + '\"');
-	}
-	this.executeBlock(args, 10000);
-};
-
-//------------------------------------------------------------------------------
-
-SevenZip.extract = function(zipFile, outDir) {
-	if (outDir.exists)
-		Exec.system("RD /S /Q " + outDir.fsName, 10000);
-
-	var args = ["x", "-o\"" + outDir.fsName + '\"', '\"' + zipFile.fsName + '\"'];
-	this.executeBlock(args, 10000);
-};
-
-//------------------------------------------------------------------------------
-
-SevenZip.extract_v = function(zipFile, outDir) {
-	if (outDir.exists)
-		Exec.system("RD /S /Q " + outDir.fsName, 10000);
-
-	var args = ["x", "-o\"" + outDir.fsName + '\"', '\"' + zipFile.fsName + '\"'];
-
-	var ifile = new File(this.tmp + "/info.txt");
-
-	args.push('>');
-	args.push('\"' + ifile.fsName + '\"');
-	this.executeBlock(args, 10000);
-
-	ifile.open("r");
-	var str = ifile.read();
-	ifile.close();
-	ifile.remove();
-
-	return str;
-};
-
-//==============================================================================
-//
-//XML
-//
-XML = function() {};
-
-//------------------------------------------------------------------------------
-
-XML.prototype.serialize = function() {
-	var obj = app.activeDocument;
-	var layers = obj.artLayers;
-	var brics = [];
-	for( var i = 0; i<layers.length; i++) {
-		var layer = layers[i];
-		brics.push(this.serializeLayer(layer));
-	}
-	//*
-	alert(brics.join("\r"));
-	/*/
-	var out_file = new File();
-	out_file.open("w");
-	out_file.writeln(brics.join("\r"));
-	bat.close();
-	//*/
-};
-
-//------------------------------------------------------------------------------
-
-XML.prototype.serializeLayer = function(layer) {
-//	<bric id="1" position="1.0 1.9" rot="-27.3" scale="2.1 2.8" order="1" alpha="0.3"> comment </bric>
-	var x = layer.bounds[0];
-	var y = layer.bounds[1];
-	var n = layer.name;
-	var str = "\t<bric id='" + n + "' position='" + x + ' ' + y + "' />";
-	return str;
-};
-
-//==============================================================================
-
-function main() {
-	// Bricing the brac file.
-	var brac = File(openDialog());
-	var ts = new Date().getTime();
-	var out_dir = new Folder(Folder.temp + "/" + ts);
-	var info = SevenZip.extract_v(brac, out_dir);
-
-	// Create the multi-layered image
-	//app.documents.add();
-};
-
-//==============================================================================
-
-main();
-
-"Exec.jsx";
 
 //==============================================================================
 
