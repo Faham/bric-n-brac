@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
-<brac artist="tim" name="" timeinterval="yy-mm-dd hh-mm-ss" resolution="1024 728" comment="" tags="">
-	<bric id="1" position="-0.2 0.2" rotate="-27.3" scale="0.5 0.2" order="1" alpha="0.3" revision="3"> comment </bric>
-	<bric id="2" position="0.2 -0.3" rotate="27.3" scale="0.2 0.5" order="1" alpha="0.3" revision="2"> comment </bric>
-	<bric id="3" position="0.1 0.4" rotate="77.3" scale="0.2 0.2" order="1" alpha="0.3" revision="1"> comment </bric>
+<brac artist="tim" name="" timeinterval="yy-mm-dd hh-mm-ss" resolution="1024 768" dpi="72" comment="" tags="">
+	<bric id="1" resolution="1024 768" position="-0.2 0.2" rotate="-27.3" scale="0.5 0.2" order="1" alpha="0.3" revision="3"> comment </bric>
+	<bric id="2" resolution="1024 768" position="0.2 -0.3" rotate="27.3" scale="0.2 0.5" order="1" alpha="0.3" revision="2"> comment </bric>
+	<bric id="3" resolution="1024 768" position="0.1 0.4" rotate="77.3" scale="0.2 0.2" order="1" alpha="0.3" revision="1"> comment </bric>
 </brac>

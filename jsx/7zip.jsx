@@ -10,6 +10,9 @@
 //==============================================================================
 
 SevenZip = new Exec(new File("/c/Program Files/7-Zip/7z.exe"));
+
+//------------------------------------------------------------------------------
+
 SevenZip.archive = function(zipFile, filelist) {
 	var args = ["a", "-tzip", '\"' + zipFile.fsName + '\"'];
 	for (var i = 0; i < filelist.length; i++) {

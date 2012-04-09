@@ -10,6 +10,7 @@
 
 function main() {
 	// Bracing the PSD file.
+	// to retrive the stored value
 };
 
 //==============================================================================
