@@ -49,6 +49,28 @@ function takeScreenshot() {
 // Listen for a click on the camera icon.  On that click, take a screenshot.
 chrome.browserAction.onClicked.addListener(function(tab) {
 	//takeScreenshot();
-	chrome.tabs.executeScript(null, {file:"overlay.js"});
+		//var fileObj = fso.GetFile("C:\\Temp\\textfile.txt");
+		//fileObj.Copy("C:\\Temp\\copy_of_textfile.txt", true); 
+	//chrome.tabs.captureVisibleTab(null, {format: "png"}, function(img) {
+	//	//alert(img);
+	//	//$comma = strpos($img, ',');
+	//	//$data = base64_decode(substr($img, $comma+1));
+	//	//file_put_contents("fahamnewimage.png", $data);
+	//});
+
+	//fs.root.getFile('C:\log.txt', { create: true, exclusive: true }, function (fileEntry) {
+	//	fileEntry.isFile = true;
+	//	fileEntry.name = 'log.txt';
+	//	fileEntry.fullPath = 'C:\log.txt';
+	//	fileEntry.createWriter(function (fileWriter) {
+	//		fileWriter.seek(fileWriter.length);
+	//		var bb = new BlobBuilder();
+	//		bb.append("Test\n");
+	//		fileWriter.write(bb.getBlob('text/plain'));
+	//	});
+	//});
+	
+	
+	//chrome.tabs.executeScript(null, {file:"overlay.js"});
 });
 
