@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="External Sources">
+      <UniqueIdentifier>{63f47fc6-1002-4469-8899-a913fab13af6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External Sources\minizip">
+      <UniqueIdentifier>{b9445d3f-a19b-4214-8545-29e3b5778db1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\dependencies\src\minizip\ioapi.c">
+      <Filter>External Sources\minizip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dependencies\src\minizip\iowin32.c">
+      <Filter>External Sources\minizip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dependencies\src\minizip\unzip.c">
+      <Filter>External Sources\minizip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dependencies\src\minizip\zip.c">
+      <Filter>External Sources\minizip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bricker\main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

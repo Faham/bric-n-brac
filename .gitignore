@@ -1,12 +1,7 @@
-# Build folder #
-out
-
-# User configuration files #
-*.suo
-*.user
-*.sdf
-
 # OS generated files #
 .DS_Store*
 ehthumbs.db
 Thumbs.db
+
+# Temporary Files #
+*~

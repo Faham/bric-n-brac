@@ -1,0 +1,31 @@
+{
+	"name": "Bric Screenshot"
+	, "version": "1.0"
+	, "description": "Capture screenshots for bric files"
+	, "background": { 
+		"scripts": ["js/jquery-1.7.2.js", "js/background.js"]
+	}
+	, "web_accessible_resources": [
+		"js/save-dialog.html"
+	]
+	, "content_scripts": [
+		{
+			"matches": ["http://*/*", "https://*/*"]
+			, "css": ["css/overlay.css"]
+			, "js": ["js/jquery-1.7.2.js"]
+		}
+	]
+	, "plugins": [
+		{"path": "bin/npBracExtenssionProvider.dll", "public": true}
+	]
+	, "browser_action": {
+		"default_icon": "img/camera.png"
+		, "default_title": "Take a screenshot!"
+	}
+	, "permissions": [
+		"tabs"
+		, "http://*/*"
+		, "https://*/*"
+	]
+	, "manifest_version": 2
+}
