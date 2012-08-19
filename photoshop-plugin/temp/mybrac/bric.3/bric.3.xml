@@ -1,7 +1,0 @@
-<?xml version="1.0" ?>
-<bric version="1.0" title="yahoo" region="100 250 700 600"  timeinterval="yy-mm-dd hh-mm-ss" startdate="yyyy-mm-dd hh-mm-ss" url="" tags="">
-	our last house
-	<snapshot revision="1" date="2012-03-22 20-55-22"/>
-	<snapshot revision="2" date="2012-03-22 20-55-22"/>
-	<snapshot revision="3" date="2012-03-22 20-55-22"/>
-</bric>

@@ -1,5 +1,6 @@
 # Build folder #
 out
+temp
 
 # User configuration files #
 *.suo
