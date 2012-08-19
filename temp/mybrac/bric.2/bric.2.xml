@@ -1,6 +1,0 @@
-<?xml version="1.0" ?>
-<bric  title="yahoo" speed="1.5" snapshot_ext="jpg" current_revision="3" birthdate="yyyy-mm-dd hh-mm-ss" url="http://ca.yahoo.com/?p=us">
-	<snapshot revision="1" date="2012-03-22 20-55-22"/>
-	<snapshot revision="2" date="2012-03-22 20-55-22"/>
-	<snapshot revision="3" date="2012-03-22 20-55-22"/>
-</bric>
