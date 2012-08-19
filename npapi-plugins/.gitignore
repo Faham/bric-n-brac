@@ -12,7 +12,7 @@ Release/
 *.orig
 *.aps
 *.pyc
-# build/
+build/
 buildex/
 # projects/*
 .fbgen.cfg
