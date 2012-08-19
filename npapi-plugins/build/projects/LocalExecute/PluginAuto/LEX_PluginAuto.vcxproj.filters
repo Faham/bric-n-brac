@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\PluginInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\null\NullLogger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Win\axmain.cpp">
+      <Filter>WindowsATL</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Win\axPluginObjects.cpp">
+      <Filter>WindowsATL</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Win\dllmain.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Win\FireBreathWin.cpp">
+      <Filter>WindowsATL</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Win\NpapiPluginWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Win\np_winmain.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Win\PluginWindowlessWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Win\PluginWindowWin.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\projects\LocalExecute\gen\FireBreathWin_i.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\precompiled_headers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Win\axmain.h">
+      <Filter>WindowsATL</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Win\NpapiPluginWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Win\PluginWindowlessWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Win\PluginWindowWin.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\projects\LocalExecute\gen\FireBreathWin.tlb" />
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\projects\LocalExecute\gen\FireBreathWin_i.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Mac\NpapiPluginMac.h">
+      <Filter>Mac</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Mac\PluginEventMac.h">
+      <Filter>Mac</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Mac\PluginWindowMac.h">
+      <Filter>Mac</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Mac\FactoryDummiesMac.cpp">
+      <Filter>Mac</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Mac\PluginEventMac.cpp">
+      <Filter>Mac</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Mac\NpapiPluginMac.mm">
+      <Filter>Mac</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Mac\PluginWindowMac.mm">
+      <Filter>Mac</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Mac\np_macmain.cpp">
+      <Filter>Mac</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Mac\PluginWindowMacCG.h">
+      <Filter>Mac</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Mac\PluginWindowMacCG.cpp">
+      <Filter>Mac</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Mac\KeyCodesCocoa.h">
+      <Filter>Mac</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Mac\PluginEventMacCocoa.h">
+      <Filter>Mac</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Mac\PluginEventMacCocoa.mm">
+      <Filter>Mac</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\Mac\KeyCodesCocoa.cpp">
+      <Filter>Mac</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\X11\KeyCodesX11.h">
+      <Filter>X11</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\X11\NpapiPluginX11.h">
+      <Filter>X11</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\X11\PluginWindowX11.h">
+      <Filter>X11</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\X11\WindowContextX11.h">
+      <Filter>X11</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\X11\KeyCodesX11.cpp">
+      <Filter>X11</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\X11\NpapiPluginX11.cpp">
+      <Filter>X11</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\X11\np_x11main.cpp">
+      <Filter>X11</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\X11\PluginWindowX11.cpp">
+      <Filter>X11</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\precompiled_headers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\..\..\src\PluginAuto\CMakeLists.txt" />
+    <CustomBuild Include="..\gen\FireBreathWin.tlb.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4EDA3C48-1AAA-4313-823D-9FD5FD944944}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{ED6A2B5B-2C46-4561-A778-FEF4C105094E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{D331F3DA-EC0F-4C3C-B64E-DB3107EE9D35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="X11">
+      <UniqueIdentifier>{6473931E-E6B0-4E82-B590-ED7180B6302C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{F4D29D69-BC0A-4701-848B-F57FE6557033}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WindowsATL">
+      <UniqueIdentifier>{2A676E61-B40D-4BE8-8978-D12507A0B200}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mac">
+      <UniqueIdentifier>{A2AE31F8-812E-40C5-A986-C09A5B66204A}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\DONTTOUCHTHISPROJECT.txt" />
+    <None Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\README.txt" />
+  </ItemGroup>
+</Project>

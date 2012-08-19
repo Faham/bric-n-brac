@@ -1,0 +1,496 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|Win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{376AA1E8-BD4D-4757-97A0-97A1DF380E4D}</ProjectGUID>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>NpapiCore</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+    <PropertyGroup>
+      <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\NpapiCore\Debug\</OutDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NpapiCore.dir\Debug\</IntDir>
+      <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NpapiCore</TargetName>
+      <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.lib</TargetExt>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\NpapiCore\Release\</OutDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NpapiCore.dir\Release\</IntDir>
+      <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NpapiCore</TargetName>
+      <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.lib</TargetExt>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\NpapiCore\MinSizeRel\</OutDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">NpapiCore.dir\MinSizeRel\</IntDir>
+      <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">NpapiCore</TargetName>
+      <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">.lib</TargetExt>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\NpapiCore\RelWithDebInfo\</OutDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">NpapiCore.dir\RelWithDebInfo\</IntDir>
+      <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">NpapiCore</TargetName>
+      <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">.lib</TargetExt>
+    </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/gecko-sdk/includes;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/config;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/ScriptingCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/PluginCore;C:/Program Files (x86)/Microsoft Visual Studio 10.0/VC/atlmfc/include;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4996;4290</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <StringPooling>true</StringPooling>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <PreprocessorDefinitions>WIN32;FB_WIN=1;XP_WIN=1;UNICODE;_UNICODE;_WINDOWS;BOOST_ALL_NO_LIB=1;DEBUG;_DEBUG;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>Debug</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/Debug/NpapiCore.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;FB_WIN=1;XP_WIN=1;UNICODE;_UNICODE;_WINDOWS;BOOST_ALL_NO_LIB=1;DEBUG;_DEBUG;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/gecko-sdk/includes;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/config;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/ScriptingCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/PluginCore;C:/Program Files (x86)/Microsoft Visual Studio 10.0/VC/atlmfc/include;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/gecko-sdk/includes;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/config;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/ScriptingCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/PluginCore;C:/Program Files (x86)/Microsoft Visual Studio 10.0/VC/atlmfc/include;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/gecko-sdk/includes;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/config;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/ScriptingCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/PluginCore;C:/Program Files (x86)/Microsoft Visual Studio 10.0/VC/atlmfc/include;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DisableSpecificWarnings>4996;4290</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <Optimization>Full</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StringPooling>true</StringPooling>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <DebugInformationFormat></DebugInformationFormat>
+      <PreprocessorDefinitions>WIN32;FB_WIN=1;XP_WIN=1;UNICODE;_UNICODE;_WINDOWS;BOOST_ALL_NO_LIB=1;NDEBUG;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>Release</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/Release/NpapiCore.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;FB_WIN=1;XP_WIN=1;UNICODE;_UNICODE;_WINDOWS;BOOST_ALL_NO_LIB=1;NDEBUG;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/gecko-sdk/includes;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/config;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/ScriptingCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/PluginCore;C:/Program Files (x86)/Microsoft Visual Studio 10.0/VC/atlmfc/include;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/gecko-sdk/includes;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/config;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/ScriptingCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/PluginCore;C:/Program Files (x86)/Microsoft Visual Studio 10.0/VC/atlmfc/include;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/gecko-sdk/includes;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/config;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/ScriptingCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/PluginCore;C:/Program Files (x86)/Microsoft Visual Studio 10.0/VC/atlmfc/include;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DisableSpecificWarnings>4996;4290</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <Optimization>MinSpace</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StringPooling>true</StringPooling>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <DebugInformationFormat></DebugInformationFormat>
+      <PreprocessorDefinitions>WIN32;FB_WIN=1;XP_WIN=1;UNICODE;_UNICODE;_WINDOWS;BOOST_ALL_NO_LIB=1;NDEBUG;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>MinSizeRel</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/MinSizeRel/NpapiCore.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;FB_WIN=1;XP_WIN=1;UNICODE;_UNICODE;_WINDOWS;BOOST_ALL_NO_LIB=1;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/gecko-sdk/includes;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/config;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/ScriptingCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/PluginCore;C:/Program Files (x86)/Microsoft Visual Studio 10.0/VC/atlmfc/include;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/gecko-sdk/includes;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/config;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/ScriptingCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/PluginCore;C:/Program Files (x86)/Microsoft Visual Studio 10.0/VC/atlmfc/include;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/gecko-sdk/includes;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/config;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/ScriptingCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/PluginCore;C:/Program Files (x86)/Microsoft Visual Studio 10.0/VC/atlmfc/include;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4996;4290</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <Optimization>Full</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StringPooling>true</StringPooling>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <PreprocessorDefinitions>WIN32;FB_WIN=1;XP_WIN=1;UNICODE;_UNICODE;_WINDOWS;BOOST_ALL_NO_LIB=1;NDEBUG;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>RelWithDebInfo</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/RelWithDebInfo/NpapiCore.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;FB_WIN=1;XP_WIN=1;UNICODE;_UNICODE;_WINDOWS;BOOST_ALL_NO_LIB=1;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/gecko-sdk/includes;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/config;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/ScriptingCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/PluginCore;C:/Program Files (x86)/Microsoft Visual Studio 10.0/VC/atlmfc/include;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/gecko-sdk/includes;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/config;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/ScriptingCore;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/PluginCore;C:/Program Files (x86)/Microsoft Visual Studio 10.0/VC/atlmfc/include;D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/3rdParty/boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\src\NpapiCore\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Custom Rule D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
+"C:\Program Files (x86)\CMake 2.8\bin\cmake.exe" -HD:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath -BD:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build --check-stamp-file D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\NpapiCore\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore/CMakeLists.txt;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\CMakeLists.txt;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\NpapiCore\CMakeFiles\generate.stamp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Custom Rule D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+"C:\Program Files (x86)\CMake 2.8\bin\cmake.exe" -HD:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath -BD:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build --check-stamp-file D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\NpapiCore\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore/CMakeLists.txt;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\CMakeLists.txt;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\NpapiCore\CMakeFiles\generate.stamp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Custom Rule D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
+"C:\Program Files (x86)\CMake 2.8\bin\cmake.exe" -HD:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath -BD:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build --check-stamp-file D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\NpapiCore\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore/CMakeLists.txt;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\CMakeLists.txt;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\NpapiCore\CMakeFiles\generate.stamp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Custom Rule D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
+"C:\Program Files (x86)\CMake 2.8\bin\cmake.exe" -HD:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath -BD:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build --check-stamp-file D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\NpapiCore\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/src/NpapiCore/CMakeLists.txt;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\CMakeLists.txt;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\NpapiCore\CMakeFiles\generate.stamp</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\NPJavascriptObject.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\NPJavascriptObject.h" />
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\NPObjectAPI.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\NPObjectAPI.h" />
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\NpapiBrowserHost.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\NpapiBrowserHost.h" />
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\NPVariantUtil.h" />
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\NpapiPlugin.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\NpapiPluginModule.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\NpapiPluginModule_NPP.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\NpapiPlugin.h" />
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\NpapiPluginFactory.h" />
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\NpapiPluginModule.h" />
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\NpapiStream.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\NpapiStream.h" />
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\NpapiTypes.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\NpapiTypes.h" />
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\NpapiFactoryDefinitions.h" />
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\Win\NpapiBrowserHostAsyncWin.h" />
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\Win\NpapiBrowserHostAsyncWin.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\precompiled_headers.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">precompiled_headers.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">precompiled_headers.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">precompiled_headers.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'"> -Zm160 %(AdditionalOptions)</AdditionalOptions>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">precompiled_headers.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/$(Configuration)/precompiled_headers.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\NpapiCore\precompiled_headers.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/ZERO_CHECK.vcxproj">
+      <Project>46FD5501-708D-4F0E-BF56-7B6B75FD8C36</Project>
+    </ProjectReference>
+    <ProjectReference Include="D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/boost/libs/system/boost_system.vcxproj">
+      <Project>E2D59629-8D7C-4E9B-BFB7-473E1F73BF70</Project>
+    </ProjectReference>
+    <ProjectReference Include="D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/boost/libs/thread/boost_thread.vcxproj">
+      <Project>C132219D-997D-4309-B0F1-EE9DBB7445B2</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

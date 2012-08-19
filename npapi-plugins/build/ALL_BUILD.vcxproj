@@ -1,0 +1,250 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|Win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{66807CBC-30F8-4874-BEAE-46B177805843}</ProjectGUID>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>ALL_BUILD</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+    <PropertyGroup>
+      <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="CMakeFiles\ALL_BUILD.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Build all projects</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/CMakeFiles/ALL_BUILD.rule;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\ALL_BUILD</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Build all projects</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/CMakeFiles/ALL_BUILD.rule;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\ALL_BUILD</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Build all projects</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/CMakeFiles/ALL_BUILD.rule;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\ALL_BUILD</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Build all projects</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/CMakeFiles/ALL_BUILD.rule;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\ALL_BUILD</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Custom Rule D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
+"C:\Program Files (x86)\CMake 2.8\bin\cmake.exe" -HD:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath -BD:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build --check-stamp-file D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/CMakeLists.txt;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\CMakeLists.txt;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeSystem.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCCompiler.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCXXCompiler.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeGenericSystem.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\WindowsPaths.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-cl.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCPlatform.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCXXPlatform.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\cl.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeRCCompiler.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeRCInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCXXInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-cl.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCPlatform.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCXXPlatform.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\cl.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\common.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\Win.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\wix.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\configure_template.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\options.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\paths.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\buildconfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\PluginConfigDefaults.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\projects\BracExtenssionProvider\PluginConfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\CommonPluginConfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\pluginProjects.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\PluginConfigDefaults.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\projects\LocalExecute\PluginConfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\CommonPluginConfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\pluginProjects.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\generate.stamp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Custom Rule D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+"C:\Program Files (x86)\CMake 2.8\bin\cmake.exe" -HD:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath -BD:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build --check-stamp-file D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/CMakeLists.txt;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\CMakeLists.txt;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeSystem.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCCompiler.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCXXCompiler.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeGenericSystem.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\WindowsPaths.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-cl.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCPlatform.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCXXPlatform.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\cl.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeRCCompiler.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeRCInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCXXInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-cl.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCPlatform.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCXXPlatform.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\cl.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\common.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\Win.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\wix.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\configure_template.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\options.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\paths.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\buildconfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\PluginConfigDefaults.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\projects\BracExtenssionProvider\PluginConfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\CommonPluginConfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\pluginProjects.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\PluginConfigDefaults.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\projects\LocalExecute\PluginConfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\CommonPluginConfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\pluginProjects.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\generate.stamp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Custom Rule D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
+"C:\Program Files (x86)\CMake 2.8\bin\cmake.exe" -HD:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath -BD:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build --check-stamp-file D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/CMakeLists.txt;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\CMakeLists.txt;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeSystem.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCCompiler.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCXXCompiler.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeGenericSystem.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\WindowsPaths.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-cl.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCPlatform.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCXXPlatform.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\cl.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeRCCompiler.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeRCInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCXXInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-cl.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCPlatform.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCXXPlatform.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\cl.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\common.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\Win.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\wix.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\configure_template.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\options.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\paths.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\buildconfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\PluginConfigDefaults.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\projects\BracExtenssionProvider\PluginConfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\CommonPluginConfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\pluginProjects.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\PluginConfigDefaults.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\projects\LocalExecute\PluginConfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\CommonPluginConfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\pluginProjects.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\generate.stamp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Custom Rule D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
+"C:\Program Files (x86)\CMake 2.8\bin\cmake.exe" -HD:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath -BD:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build --check-stamp-file D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/CMakeLists.txt;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\CMakeLists.txt;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeSystem.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCCompiler.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCXXCompiler.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeGenericSystem.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\WindowsPaths.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-cl.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCPlatform.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCXXPlatform.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\cl.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeRCCompiler.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeRCInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCXXInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-cl.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCPlatform.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\CMakeCXXPlatform.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\cl.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\common.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\Win.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\wix.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\configure_template.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\options.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\paths.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\buildconfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\PluginConfigDefaults.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\projects\BracExtenssionProvider\PluginConfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\CommonPluginConfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\pluginProjects.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\PluginConfigDefaults.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\projects\LocalExecute\PluginConfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\CommonPluginConfig.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\cmake\pluginProjects.cmake;D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\generate.stamp</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\build\CMakeFiles\ALL_BUILD" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/ActiveXCore/ActiveXCore.vcxproj">
+      <Project>9EE2E2CB-ABA2-4D44-AB68-8103C01F7BD3</Project>
+    </ProjectReference>
+    <ProjectReference Include="D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/projects/BracExtenssionProvider/PluginAuto/BEP_PluginAuto.vcxproj">
+      <Project>F63448AA-B2F2-4807-9805-46E02F7FB6CC</Project>
+    </ProjectReference>
+    <ProjectReference Include="D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/projects/BracExtenssionProvider/BracExtenssionProvider.vcxproj">
+      <Project>4B61DB38-CE77-45EB-9387-56BAAF244FA9</Project>
+    </ProjectReference>
+    <ProjectReference Include="D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/cmake_common/FireBreath_Cmake.vcxproj">
+      <Project>A197D56C-482A-4D87-81D8-07A919A76F2F</Project>
+    </ProjectReference>
+    <ProjectReference Include="D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/projects/LocalExecute/PluginAuto/LEX_PluginAuto.vcxproj">
+      <Project>5FE685AB-F3AF-4C6F-AB9F-A17D66B5F8D5</Project>
+    </ProjectReference>
+    <ProjectReference Include="D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/projects/LocalExecute/LocalExecute.vcxproj">
+      <Project>11F57594-0369-459E-80E5-6E86A524F05D</Project>
+    </ProjectReference>
+    <ProjectReference Include="D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/NpapiCore/NpapiCore.vcxproj">
+      <Project>376AA1E8-BD4D-4757-97A0-97A1DF380E4D</Project>
+    </ProjectReference>
+    <ProjectReference Include="D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/PluginCore/PluginCore.vcxproj">
+      <Project>9B600E2F-438E-4FFB-84DE-BA97D59FEC6D</Project>
+    </ProjectReference>
+    <ProjectReference Include="D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/ScriptingCore/ScriptingCore.vcxproj">
+      <Project>647C5128-BA17-4904-AFDA-1D301D112DAA</Project>
+    </ProjectReference>
+    <ProjectReference Include="D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/unittest-cpp/UnitTest++/UnitTest++.vcxproj">
+      <Project>9AB1C75B-0426-466B-A53F-E6396528B383</Project>
+    </ProjectReference>
+    <ProjectReference Include="D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/ActiveXCoreTest/UnitTest_ActiveXCore.vcxproj">
+      <Project>8845F368-C8E4-42C6-B183-E79285DD1477</Project>
+    </ProjectReference>
+    <ProjectReference Include="D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/ScriptingCoreTest/UnitTest_ScriptingCore.vcxproj">
+      <Project>1066402A-E080-4909-80C3-AC364B0B0973</Project>
+    </ProjectReference>
+    <ProjectReference Include="D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/ZERO_CHECK.vcxproj">
+      <Project>46FD5501-708D-4F0E-BF56-7B6B75FD8C36</Project>
+    </ProjectReference>
+    <ProjectReference Include="D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/boost/libs/system/boost_system.vcxproj">
+      <Project>E2D59629-8D7C-4E9B-BFB7-473E1F73BF70</Project>
+    </ProjectReference>
+    <ProjectReference Include="D:/faham/tim/bric-n-brac/browser-ext/google-chrome/screenshot/firebreath/build/boost/libs/thread/boost_thread.vcxproj">
+      <Project>C132219D-997D-4309-B0F1-EE9DBB7445B2</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

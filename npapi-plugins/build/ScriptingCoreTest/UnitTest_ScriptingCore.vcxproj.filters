@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\tests\ScriptingCoreTest\ScriptingCoreTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\src\PluginAuto\null\NullLogger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\tests\ScriptingCoreTest\fake_jsarray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\tests\ScriptingCoreTest\fake_jsmap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\tests\ScriptingCoreTest\jsapiauto_test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\tests\ScriptingCoreTest\jsapi_test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\tests\ScriptingCoreTest\jsarray_test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\tests\ScriptingCoreTest\jscallback_test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\tests\ScriptingCoreTest\meta_test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\tests\ScriptingCoreTest\TestJSAPIAuto.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\tests\ScriptingCoreTest\TypeIDMap_test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\tests\ScriptingCoreTest\variant_list_test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\tests\ScriptingCoreTest\variant_map_test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\faham\tim\bric-n-brac\browser-ext\google-chrome\screenshot\firebreath\tests\ScriptingCoreTest\variant_test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\tests\ScriptingCoreTest\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4EDA3C48-1AAA-4313-823D-9FD5FD944944}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{ED6A2B5B-2C46-4561-A778-FEF4C105094E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+</Project>

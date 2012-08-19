@@ -1,0 +1,66 @@
+HKCR {
+    UofS.LocalExecute.1 = s 'Executes local system commands' {
+        CLSID = s '{0d3e8f9c-c52d-5091-8852-3cc89ba7cfe5}'
+    }
+    UofS.LocalExecute = s 'Executes local system commands' {
+        CLSID = s '{0d3e8f9c-c52d-5091-8852-3cc89ba7cfe5}'
+        CurVer = s 'UofS.LocalExecute.1'
+    }
+    NoRemove CLSID {
+        ForceRemove {0d3e8f9c-c52d-5091-8852-3cc89ba7cfe5} = s 'Executes local system commands' {
+            ProgID = s 'UofS.LocalExecute.1'
+            VersionIndependentProgID = s 'UofS.LocalExecute'
+            ForceRemove 'Programmable'
+            InprocServer32 = s '%MODULE%' {
+                val ThreadingModel = s '%THREADING%'
+            }
+            val AppID = s '%APPID%'
+            ForceRemove 'Control'
+            'MiscStatus' = s '0' {
+                '1' = s '131473'
+            }
+            'TypeLib' = s '%LIBID%'
+            'Version' = s '1'
+        }
+    }
+    NoRemove MIME {
+        NoRemove Database {
+            NoRemove 'Content Type' {
+                'application/x-localexecute' = s 'Executes local system commands' {
+                    val Extension = s ''
+                    val CLSID = s '{0d3e8f9c-c52d-5091-8852-3cc89ba7cfe5}'
+                }
+            }
+        }
+    }            
+}
+HKCU {
+    NoRemove Software {
+        NoRemove Microsoft {
+            NoRemove Windows {
+                NoRemove CurrentVersion {
+                    NoRemove Ext {
+                        NoRemove PreApproved {
+                            ForceRemove '{0d3e8f9c-c52d-5091-8852-3cc89ba7cfe5}'
+                        }
+                        NoRemove Stats {
+                            ForceRemove '{0d3e8f9c-c52d-5091-8852-3cc89ba7cfe5}' {
+                                iexplore {
+                                    AllowedDomains {
+                                        '*'
+                                    }
+                                    val Count = d ''
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        NoRemove MozillaPlugins {
+            ForceRemove 'www.uofs.ca/LocalExecute' {
+                val Path = s '%MODULE%'
+            }
+        }
+    }
+}

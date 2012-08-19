@@ -1,0 +1,66 @@
+HKCR {
+    UofS.BracExtenssionProvider.1 = s 'Provides basic functionalities to Brac extenssion' {
+        CLSID = s '{f4949555-610e-5bb5-9925-6e8f16ea1508}'
+    }
+    UofS.BracExtenssionProvider = s 'Provides basic functionalities to Brac extenssion' {
+        CLSID = s '{f4949555-610e-5bb5-9925-6e8f16ea1508}'
+        CurVer = s 'UofS.BracExtenssionProvider.1'
+    }
+    NoRemove CLSID {
+        ForceRemove {f4949555-610e-5bb5-9925-6e8f16ea1508} = s 'Provides basic functionalities to Brac extenssion' {
+            ProgID = s 'UofS.BracExtenssionProvider.1'
+            VersionIndependentProgID = s 'UofS.BracExtenssionProvider'
+            ForceRemove 'Programmable'
+            InprocServer32 = s '%MODULE%' {
+                val ThreadingModel = s '%THREADING%'
+            }
+            val AppID = s '%APPID%'
+            ForceRemove 'Control'
+            'MiscStatus' = s '0' {
+                '1' = s '131473'
+            }
+            'TypeLib' = s '%LIBID%'
+            'Version' = s '1'
+        }
+    }
+    NoRemove MIME {
+        NoRemove Database {
+            NoRemove 'Content Type' {
+                'application/x-bep' = s 'Provides basic functionalities to Brac extenssion' {
+                    val Extension = s ''
+                    val CLSID = s '{f4949555-610e-5bb5-9925-6e8f16ea1508}'
+                }
+            }
+        }
+    }            
+}
+HKCU {
+    NoRemove Software {
+        NoRemove Microsoft {
+            NoRemove Windows {
+                NoRemove CurrentVersion {
+                    NoRemove Ext {
+                        NoRemove PreApproved {
+                            ForceRemove '{f4949555-610e-5bb5-9925-6e8f16ea1508}'
+                        }
+                        NoRemove Stats {
+                            ForceRemove '{f4949555-610e-5bb5-9925-6e8f16ea1508}' {
+                                iexplore {
+                                    AllowedDomains {
+                                        '*'
+                                    }
+                                    val Count = d ''
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        NoRemove MozillaPlugins {
+            ForceRemove 'www.uofs.ca/BracExtenssionProvider' {
+                val Path = s '%MODULE%'
+            }
+        }
+    }
+}
