@@ -145,41 +145,72 @@ function onFileClick() {
 
 //------------------------------------------------------------------------------
 
+function findPos(obj) {
+	var curleft = curtop = 0;
+	if (obj.offsetParent) {
+		do {
+			curleft += obj.offsetLeft;
+			curtop += obj.offsetTop;
+		} while (obj = obj.offsetParent);
+	}
+	return [curleft,curtop];
+}
+
+//------------------------------------------------------------------------------
+
 function setupIndicators() {
-	prv_box = $('#preview-box')[0];
+	dlg = document.getElementById("save-dialog");
+	prv_box = dlg.querySelector('#preview-box');
 	prv_box_wdh = prv_box.getBoundingClientRect().width;
 	prv_box_hgh = prv_box.getBoundingClientRect().height;
-	brac_indc = $('#brac-indicator')[0];
-	bric_indc = $('#bric-indicator')[0];
+	prv_box_pos = findPos(prv_box);
+	brac_indc = dlg.querySelector('#brac-indicator');
+	bric_indc = dlg.querySelector('#bric-indicator');
 	
-	res = $("#brac_resolution")[0].value.split(' ')
+	res = dlg.querySelector("#brac_resolution").value.split(' ')
 
 	brac_wdh = parseInt(res[0]);
 	brac_hgh = parseInt(res[1]);
 
-	debugger;
 	brac_indc.innerText = res[0] + ' x ' + res[1];
 	mx = Math.max(brac_wdh, brac_hgh);
 	mn = Math.min(brac_wdh, brac_hgh);
-	brac_indc.style.width = (brac_wdh == mx? prv_box_wdh: mn * prv_box_hgh / mx) + 'px';
-	brac_indc.style.height = (brac_hgh == mx? prv_box_hgh: mn * prv_box_wdh / mx) + 'px';
-	brac_indc.style.left = (prv_box_wdh / 2.0 - brac_indc.style.width / 2.0) + 'px';
-	brac_indc.style.top = (prv_box_hgh / 2.0 - brac_indc.style.height / 2.0) + 'px';
 
-	res = $("#bric_region")[0].value.split(' ')
+	brac_wdh = (brac_wdh == mx? prv_box_wdh: mn * prv_box_hgh / mx);
+	brac_hgh = (brac_hgh == mx? prv_box_hgh: mn * prv_box_wdh / mx);
+
+	brac_indc.style.width = brac_wdh + 'px';
+	brac_indc.style.height = brac_hgh + 'px';
+	brac_indc.style.left = prv_box_pos[0] + (prv_box_wdh / 2.0 - brac_wdh / 2.0) + 'px';
+	brac_indc.style.top = prv_box_pos[1] + (prv_box_hgh / 2.0 - brac_hgh / 2.0) + 'px';
+	
+	res = dlg.querySelector("#bric_region").value.split(' ')
 
 	bric_lft = parseInt(res[0]);
 	bric_rgt = parseInt(res[1]);
 	bric_wdh = parseInt(res[2]);
 	bric_hgh = parseInt(res[3]);
 
-	//bric_indc.innerText = res[2] + ' x ' + res[3];
-	//mx = Math.max(bric_wdh, bric_hgh);
-	//mn = Math.min(bric_wdh, bric_hgh);
-	//bric_indc.style.width = bric_wdh == mx? brac_wdh: mn * prv_box.style.height / mx;
-	//bric_indc.style.height = bric_hgh == mx? brac_hgh: mn * prv_box.style.width / mx;
-	//bric_indc.style.left = brac_wdh / 2 - bric_indc.style.width / 2
-	//bric_indc.style.top = brac_hgh / 2 - bric_indc.style.height / 2
+	bric_indc.innerText = res[2] + ' x ' + res[3];
+	mx = Math.max(bric_wdh, bric_hgh);
+	mn = Math.min(bric_wdh, bric_hgh);
+	
+	if (bric_wdh == mx) {
+		t = bric_wdh;
+		bric_wdh = brac_wdh / 3.0;
+		bric_hgh = bric_hgh * bric_wdh / t
+		bric_indc.style.width = bric_wdh + 'px';
+		bric_indc.style.height = bric_hgh + 'px';
+	} else if (bric_hgh == mx) {
+		t = bric_hgh;
+		bric_hgh = brac_hgh / 3.0;
+		bric_wdh = bric_wdh * bric_hgh / t
+		bric_indc.style.height = bric_hgh + 'px';
+		bric_indc.style.width = bric_wdh + 'px';
+	}
+
+	bric_indc.style.left = prv_box_pos[0] + (brac_wdh / 2.0 - bric_wdh / 2.0) + 'px';
+	bric_indc.style.top = prv_box_pos[1] + (brac_hgh / 2.0 - bric_hgh / 2.0) + 'px';
 }
 
 //------------------------------------------------------------------------------
@@ -189,15 +220,16 @@ function onBracFileSelect(file_path, file_content) {
 	xml_content = parser.parseFromString(file_content, "text/xml")
 
 	brac = xml_content.documentElement
-	$("#brac_filepath")[0].innerHTML = file_path
-	$("#brac_name")[0].value = brac.attributes.getNamedItem('name').nodeValue
-	$("#brac_artist")[0].value = brac.attributes.getNamedItem('artist').nodeValue
-	$("#brac_version")[0].value = brac.attributes.getNamedItem('version').nodeValue
-	//$("#brac_timeinterval")[0].value = brac.attributes.getNamedItem('timeinterval').nodeValue
-	$("#brac_resolution")[0].value = brac.attributes.getNamedItem('resolution').nodeValue
-	//$("#brac_dpi")[0].value = brac.attributes.getNamedItem('dpi').nodeValue
-	$("#brac_tags")[0].value = brac.attributes.getNamedItem('tags').nodeValue
-	$("#brac_comment")[0].value = brac.childNodes[0].textContent
+	dlg = document.getElementById("save-dialog");
+	dlg.querySelector("#brac_filepath").innerHTML = file_path
+	dlg.querySelector("#brac_name").value = brac.attributes.getNamedItem('name').nodeValue
+	dlg.querySelector("#brac_artist").value = brac.attributes.getNamedItem('artist').nodeValue
+	dlg.querySelector("#brac_version").value = brac.attributes.getNamedItem('version').nodeValue
+	//dlg.querySelector("#brac_timeinterval").value = brac.attributes.getNamedItem('timeinterval').nodeValue
+	dlg.querySelector("#brac_resolution").value = brac.attributes.getNamedItem('resolution').nodeValue
+	//dlg.querySelector("#brac_dpi").value = brac.attributes.getNamedItem('dpi').nodeValue
+	dlg.querySelector("#brac_tags").value = brac.attributes.getNamedItem('tags').nodeValue
+	dlg.querySelector("#brac_comment").value = brac.childNodes[0].textContent
 	
 	setupIndicators();
 
@@ -229,11 +261,11 @@ function setupDialog(region) {
 	document.body.appendChild(dv);
 
 	var xhr = new XMLHttpRequest();
-	xhr.open('GET', chrome.extension.getURL('js/save-dialog.html'), true);
+	xhr.open('GET', chrome.extension.getURL('html/save-dialog.html'), true);
 	xhr.onreadystatechange= function() {
 		if (this.readyState!==4) return;
 		if (this.status!==200) return; // or whatever error handling you want
-		dlg = document.querySelector('#save-dialog');
+		dlg = document.getElementById('save-dialog');
 		dlg.innerHTML = this.responseText;
 		
 		file = dlg.querySelector('#brac_file');

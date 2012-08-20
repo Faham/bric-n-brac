@@ -6,12 +6,12 @@
 		"scripts": ["js/jquery-1.7.2.js", "js/background.js"]
 	}
 	, "web_accessible_resources": [
-		"js/save-dialog.html"
+		"html/save-dialog.html"
 	]
 	, "content_scripts": [
 		{
 			"matches": ["http://*/*", "https://*/*"]
-			, "css": ["css/overlay.css"]
+			, "css": ["css/overlay.css", "css/save-dialog.css"]
 			, "js": ["js/jquery-1.7.2.js"]
 		}
 	]

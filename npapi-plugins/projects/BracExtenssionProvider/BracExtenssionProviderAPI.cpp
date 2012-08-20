@@ -19,11 +19,9 @@
 #include <DOM.h>
 //#define _X86_	1
 
-//#include "npfunctions.h"
-//#include "npruntime.h"
-//#include "extract.h"
 #include <Windows.h>
 #include <fstream>
+#include <atlstr.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 /// @fn FB::variant BracExtenssionProviderAPI::echo(const FB::variant& msg)
@@ -79,14 +77,30 @@ void onReturn(const std::string& path) {
 	//FB::DOM::ElementPtr ele = document->getElementById("brac_filepath");
 	//ele->setInnerHTML(path);
 
-	std::string root_dir = "D:\\faham\\tim\\bric-n-brac\\browser-ext\\google-chrome\\screenshot\\";
+	std::string root_dir = "D:\\faham\\tim\\bric-n-brac\\chrome-extension\\";
+	//TCHAR temp_path_buffer[MAX_PATH];
+	//DWORD ret_val = GetTempPath(MAX_PATH, temp_path_buffer);
+	//std::string temp_path_buffer_std = std::string((CT2CA)CString(temp_path_buffer));
+	//
+	//if (ret_val > MAX_PATH)
+	//{
+	//	brac_extenssion_provider_api->echo("GetTempPath failed, path length is too large.");
+	//	return;
+	//}
+	//
+	//if (ret_val == 0)
+	//{
+	//	brac_extenssion_provider_api->echo("GetTempPath failed");
+	//	return;
+	//}
+	//
+	//brac_extenssion_provider_api->echo(temp_path_buffer_std);
 	
 	//std::string command = "erase /F /Q /S " + root_dir + "temp";
-	//system(command.c_str());
-	//WinExec(command.c_str(), SW_HIDE);
 
 	//std::string app = root_dir + "bin\\7za.exe";
 	//std::string command = " e -o" + root_dir + "temp \"" + path + "\" brac.xml";
+	#define MAX_BUFFER	1024
 	std::string command = root_dir + "bin\\7za.exe e -y -o" + root_dir + "temp \"" + path + "\" brac.xml";
 	std::string content;
 
@@ -123,6 +137,8 @@ void onReturn(const std::string& path) {
 		}
 	//}
 
+	command = std::string("rmdir /S /Q ") + root_dir + "temp";
+	system(command.c_str());
 	brac_extenssion_provider_api->fire_bracfileselect(path, content);
 
 	return;
