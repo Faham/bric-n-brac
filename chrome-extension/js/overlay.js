@@ -56,6 +56,13 @@ function cleanupRegionSelector() {
 
 //------------------------------------------------------------------------------
 
+function cleanupDialog() {
+	dlg = document.getElementById('save-dialog');
+	dlg.parentNode.removeChild(dlg)
+}
+
+//------------------------------------------------------------------------------
+
 function overlayBackgroundMouseDown(e) {
 	e.preventDefault();
 
@@ -166,23 +173,27 @@ function setupIndicators() {
 	prv_box_pos = findPos(prv_box);
 	brac_indc = dlg.querySelector('#brac-indicator');
 	bric_indc = dlg.querySelector('#bric-indicator');
+	bric_sizr = dlg.querySelector('#bric-sizer');
 	
 	res = dlg.querySelector("#brac_resolution").value.split(' ')
 
 	brac_wdh = parseInt(res[0]);
 	brac_hgh = parseInt(res[1]);
 
-	brac_indc.innerText = res[0] + ' x ' + res[1];
+	brac_indc.querySelector('#inner-text').innerText = res[0] + ' x ' + res[1];
 	mx = Math.max(brac_wdh, brac_hgh);
 	mn = Math.min(brac_wdh, brac_hgh);
 
 	brac_wdh = (brac_wdh == mx? prv_box_wdh: mn * prv_box_hgh / mx);
 	brac_hgh = (brac_hgh == mx? prv_box_hgh: mn * prv_box_wdh / mx);
 
+	bracIndicatorScale = brac_wdh / res[0];
+	bricIndicatorScale = bracIndicatorScale
+	
 	brac_indc.style.width = brac_wdh + 'px';
 	brac_indc.style.height = brac_hgh + 'px';
-	brac_indc.style.left = prv_box_pos[0] + (prv_box_wdh / 2.0 - brac_wdh / 2.0) + 'px';
-	brac_indc.style.top = prv_box_pos[1] + (prv_box_hgh / 2.0 - brac_hgh / 2.0) + 'px';
+	brac_indc.style.left = (prv_box_wdh / 2.0 - brac_wdh / 2.0) + 'px';
+	brac_indc.style.top = (prv_box_hgh / 2.0 - brac_hgh / 2.0) + 'px';
 	
 	res = dlg.querySelector("#bric_region").value.split(' ')
 
@@ -190,27 +201,141 @@ function setupIndicators() {
 	bric_rgt = parseInt(res[1]);
 	bric_wdh = parseInt(res[2]);
 	bric_hgh = parseInt(res[3]);
+	bricInitialWidthActual = bric_wdh;
 
-	bric_indc.innerText = res[2] + ' x ' + res[3];
+	bric_indc.querySelector('#inner-text').innerText = res[2] + ' x ' + res[3];
+	bricRatio = res[2] / res[3];
 	mx = Math.max(bric_wdh, bric_hgh);
 	mn = Math.min(bric_wdh, bric_hgh);
 	
 	if (bric_wdh == mx) {
 		t = bric_wdh;
-		bric_wdh = brac_wdh / 3.0;
+		bric_wdh = bricIndicatorScale * bric_wdh;
 		bric_hgh = bric_hgh * bric_wdh / t
 		bric_indc.style.width = bric_wdh + 'px';
 		bric_indc.style.height = bric_hgh + 'px';
 	} else if (bric_hgh == mx) {
 		t = bric_hgh;
-		bric_hgh = brac_hgh / 3.0;
+		bric_hgh = bricIndicatorScale * bric_hgh;
 		bric_wdh = bric_wdh * bric_hgh / t
 		bric_indc.style.height = bric_hgh + 'px';
 		bric_indc.style.width = bric_wdh + 'px';
 	}
+	bricInitialWidth = bric_wdh;
 
-	bric_indc.style.left = prv_box_pos[0] + (brac_wdh / 2.0 - bric_wdh / 2.0) + 'px';
-	bric_indc.style.top = prv_box_pos[1] + (brac_hgh / 2.0 - bric_hgh / 2.0) + 'px';
+	bric_indc.style.left = (brac_wdh / 2.0 - bric_wdh / 2.0) + 'px';
+	bric_indc.style.top = (brac_hgh / 2.0 - bric_hgh / 2.0) + 'px';
+	bric_indc.onmousedown = onBricMouseDown
+	bric_indc.onmouseover = onBricMouseOver
+	bric_indc.onmouseout = onBricMouseOut
+	
+	bric_sizr.style.width = '10px';
+	bric_sizr.style.height = '10px';
+	bric_sizr.onmousedown = onBricSizerMouseDown
+
+	document.onmousemove = onDocumentMouseMove
+	document.onmouseup = onDocumentMouseUp
+	
+	bracIndicator = dlg.querySelector('#brac-indicator');
+	bricIndicator = dlg.querySelector('#bric-indicator');
+	bricSizer = dlg.querySelector('#bric-sizer');
+	bricScale.value = precisionRes(3, bricIndicatorScale);
+}
+
+//------------------------------------------------------------------------------
+
+bricIndicatorMoving = false;
+bracIndicatorScale = 1.0;
+bricIndicatorScale = 1.0
+bricSizerMoving = false;
+bricInitialWidth = 0.0;
+bricInitialWidthActual = 0.0;
+bricRatio = 0.0;
+bricIndicator = null;
+bracIndicator = null;
+bricPosition = null;
+bricSizer = null;
+bricScale = null;
+
+//------------------------------------------------------------------------------
+
+function onBricSizerMouseDown(event) {
+	bricSizerMoving = true;
+	event.stopPropagation();
+}
+
+//------------------------------------------------------------------------------
+
+function onBricMouseDown(event) {
+	bricIndicatorMoving = true;
+	event.stopPropagation();
+}
+
+//------------------------------------------------------------------------------
+
+function precisionRes(res, num) {
+	res = Math.pow(10, res)
+	return Math.round(num * res) / res
+}
+
+//------------------------------------------------------------------------------
+
+function onDocumentMouseMove(event) {
+	if (bricIndicatorMoving) {
+		new_x = parseInt(bricIndicator.style.left) + event.webkitMovementX;
+		new_y = parseInt(bricIndicator.style.top) + event.webkitMovementY;
+		
+		if (new_x >= 0 
+			&& new_x + parseInt(bricIndicator.style.width) <= parseInt(bracIndicator.style.width)
+		)
+			bricIndicator.style.left = new_x + 'px'
+		if (new_y >= 0 
+			&& new_y + parseInt(bricIndicator.style.height) <= parseInt(bracIndicator.style.height)
+		)
+			bricIndicator.style.top = new_y + 'px'
+
+		bricPosition.value = precisionRes(3, parseInt(bricIndicator.style.left) / bracIndicatorScale) 
+			+ ' ' + precisionRes(3, parseInt(bricIndicator.style.top) / bracIndicatorScale);
+		
+	} else if (bricSizerMoving) {
+		new_w = parseInt(bricIndicator.style.width) + event.webkitMovementX;
+		new_h = new_w / bricRatio
+		if (new_w <= parseInt(bracIndicator.style.width) 
+			&& new_w + parseInt(bricIndicator.style.left) <= parseInt(bracIndicator.style.width)
+			&& new_h <= parseInt(bracIndicator.style.height) 
+			&& new_h + parseInt(bricIndicator.style.top) <= parseInt(bracIndicator.style.height)
+		) {
+			bricIndicator.style.width = new_w + 'px';
+			bricIndicator.style.height = new_h + 'px';
+			scl = precisionRes(3, new_w / bricInitialWidth);
+			bricScale.value = scl;
+			bricIndicator.querySelector('#inner-text').innerText = 
+				precisionRes(3, scl * bricInitialWidthActual) 
+				+ ' x ' 
+				+ precisionRes(3, scl * (bricInitialWidthActual / bricRatio));
+		}
+	}
+}
+
+//------------------------------------------------------------------------------
+
+function onDocumentMouseUp() {
+	bricIndicatorMoving = false;
+	bricSizerMoving = false;
+}
+
+//------------------------------------------------------------------------------
+
+function onBricMouseOver(event) {
+	if (bricIndicator)
+		bricIndicator.style.boxShadow = "0px 0px 10px 1px lightpink";
+}
+
+//------------------------------------------------------------------------------
+
+function onBricMouseOut(event) {
+	if (bricIndicator)
+		bricIndicator.style.boxShadow = "";
 }
 
 //------------------------------------------------------------------------------
@@ -241,7 +366,8 @@ function onBracFileSelect(file_path, file_content) {
 
 		bric = brac.childNodes[n]
 
-		bric.childNodes[0].textContent // bric comment
+		if (bric.childNodes.length > 0)
+			bric.childNodes[0].textContent // bric comment
 		bric.attributes.getNamedItem('id').nodeValue
 		bric.attributes.getNamedItem('resolution').nodeValue
 		bric.attributes.getNamedItem('position').nodeValue
@@ -270,6 +396,12 @@ function setupDialog(region) {
 		
 		file = dlg.querySelector('#brac_file');
 		file.onclick = onFileClick;
+
+		btn = dlg.querySelector('#brac_btn_apply');
+		btn.onclick = SaveDialogBtnApplyOnClick;
+
+		btn = dlg.querySelector('#brac_btn_cancel');
+		btn.onclick = SaveDialogBtnCancelOnClick;
 		
 		dlg.querySelector('#bric_title').value = document.location.hostname
 		dlg.querySelector('#bric_time_interval').value = "0000-00-07 00:00:00"
@@ -281,11 +413,14 @@ function setupDialog(region) {
 		dlg.querySelector('#bric_region').value = region.left + " " + region.top + " " + region.width + " " + region.height;
 		dlg.querySelector('#bric_position').value = '0.0 0.0';
 		dlg.querySelector('#bric_rotation').value = '0.0';
-		dlg.querySelector('#bric_scale').value = '1.0 1.0';
+		dlg.querySelector('#bric_scale').value = '1.0';
 		dlg.querySelector('#bric_order').value = '1';
 		dlg.querySelector('#bric_alpha').value = '1.0';
 		dlg.querySelector('#bric_tags').value = '';
 		dlg.querySelector('#bric_comment').value = '';
+		
+		bricPosition = dlg.querySelector('#bric_position');
+		bricScale = dlg.querySelector('#bric_scale');
 	};
 	xhr.send();
 };
@@ -350,6 +485,59 @@ function BtnCancelOnClick() {
 	cleanupRegionSelector();
 	removeElement(document.getElementById('overlay-bg'));
 };
+
+//------------------------------------------------------------------------------
+
+function SaveDialogBtnApplyOnClick() {
+	brac = {
+		filepath     : dlg.querySelector("#brac_filepath").innerHTML
+		, name       : dlg.querySelector("#brac_name").value
+		, artist     : dlg.querySelector("#brac_artist").value
+		, version    : dlg.querySelector("#brac_version").value
+		, resolution : dlg.querySelector("#brac_resolution").value
+		, tags       : dlg.querySelector("#brac_tags").value
+		, comment    : dlg.querySelector("#brac_comment").value
+	};
+	
+	res_arr = dlg.querySelector("#bric_region").value.split(' ')
+	res = res_arr[2] + ' ' + res_arr[3];
+
+	new_bric = {
+		title          : dlg.querySelector('#bric_title').value
+		, timeInterval : dlg.querySelector('#bric_time_interval').value
+		, startDate    : dlg.querySelector('#bric_start_data').value
+		, url          : dlg.querySelector('#bric_url').value
+		, region       : dlg.querySelector('#bric_region').value
+		, resolution   : res
+		, position     : dlg.querySelector('#bric_position').value
+		, rotation     : dlg.querySelector('#bric_rotation').value
+		, scale        : dlg.querySelector('#bric_scale').value
+		, order        : dlg.querySelector('#bric_order').value
+		, alpha        : dlg.querySelector('#bric_alpha').value
+		, tags         : dlg.querySelector('#bric_tags').value
+		, comment      : dlg.querySelector('#bric_comment').value
+	};
+
+	message = {
+		brac: brac
+		, bric: new_bric
+	};
+	
+	bep = document.getElementById('plugin-bep');
+	bep.addEventListener('cleanup', function() {
+		cleanupRegionSelector();
+		removeElement(document.getElementById('overlay-bg'));
+	}, false);
+
+	bep.saveToBracFile(JSON.stringify(message));
+}
+
+//------------------------------------------------------------------------------
+
+function SaveDialogBtnCancelOnClick() {
+	cleanupDialog();
+	removeElement(document.getElementById('overlay-bg'));
+}
 
 //------------------------------------------------------------------------------
 

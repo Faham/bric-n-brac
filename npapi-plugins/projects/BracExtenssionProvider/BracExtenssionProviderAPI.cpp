@@ -23,6 +23,17 @@
 #include <fstream>
 #include <atlstr.h>
 
+#include <sstream>
+#include "jsonxx.h"
+
+#include "pugixml.hpp"
+
+namespace jsonxx {
+	extern bool parse_string(std::istream& input, std::string* value);
+	extern bool parse_number(std::istream& input, number* value);
+	extern bool match(const char* pattern, std::istream& input);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 /// @fn FB::variant BracExtenssionProviderAPI::echo(const FB::variant& msg)
 ///
@@ -157,6 +168,84 @@ FB::variant BracExtenssionProviderAPI::selectBracFile(const FB::variant& msg) {
 	FB::PluginWindow* wh = m_plugin.lock()->GetWindow();
 	dlg_mgr->OpenFileDialog(m_host, wh, "", "Brac files (*.brac)|*.brac|All files (*.*)|*.*|", &onReturn);
 	
+	return "done!";
+}
+
+FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
+	std::string root_dir = "D:\\faham\\tim\\bric-n-brac\\chrome-extension\\";
+	#define MAX_BUFFER	1024
+	std::string command = "";
+
+	std::string msg_str = msg.cast<std::string>();
+	std::istringstream input(msg_str);
+	jsonxx::Object o;
+	if(!jsonxx::Object::parse(input, o))
+		return "Couldn't parse the JSON message.";
+	
+	if(!o.has<jsonxx::Object>("brac"))
+		return "Couldn't find the brac JSON object.";
+
+	jsonxx::Object & brac_info = o.get<jsonxx::Object>("brac");
+	jsonxx::Object & bric_info = o.get<jsonxx::Object>("bric");
+	std::string path = brac_info.get<std::string>("filepath");
+
+	command = root_dir + "bin\\7za.exe e -y -o" + root_dir + "temp \"" + path + "\" brac.xml";
+	system(command.c_str());
+
+	std::string in_file = root_dir + "temp\\brac.xml";
+
+	pugi::xml_document brac;
+	pugi::xml_parse_result result = brac.load_file(in_file.c_str());
+	if (!result)
+		return result.description();
+	int new_brac_num = 1 + brac.child("brac").last_child().attribute("id").as_int();
+	pugi::xml_node new_bric = brac.child("brac").append_child("bric");
+	new_bric.append_attribute("id").set_value(new_brac_num);
+	new_bric.append_attribute("resolution").set_value(bric_info.get<std::string>("resolution").c_str());
+	new_bric.append_attribute("position").set_value(bric_info.get<std::string>("position").c_str());
+	new_bric.append_attribute("rotate").set_value(bric_info.get<std::string>("rotation").c_str());
+	new_bric.append_attribute("scale").set_value(bric_info.get<std::string>("scale").c_str());
+	new_bric.append_attribute("order").set_value(bric_info.get<std::string>("order").c_str());
+	new_bric.append_attribute("alpha").set_value(bric_info.get<std::string>("alpha").c_str());
+	new_bric.append_attribute("revision").set_value(0);
+	new_bric.set_value(bric_info.get<std::string>("comment").c_str());
+
+	std::string out_file = root_dir + "temp\\brac.xml";
+	
+	if (!brac.save_file(out_file.c_str()))
+		return "Error occurred while creating the new brac file: " + out_file;
+
+	command = root_dir + "bin\\7za.exe u \"" + path + "\" " + root_dir + "temp\\brac.xml";
+	system(command.c_str());
+
+	char buf[33];
+	itoa(new_brac_num, buf, 10);
+	std::string new_bric_path = root_dir + "temp\\bric." + buf;
+	command = "mkdir \"" + new_bric_path + "\"";
+	system(command.c_str());
+
+	pugi::xml_document bric_xml;
+	pugi::xml_node bric_node = bric_xml.append_child("bric");
+	bric_node.append_attribute("version").set_value("1.0");
+	bric_node.append_attribute("title").set_value(bric_info.get<std::string>("title").c_str());
+	bric_node.append_attribute("timeinterval").set_value(bric_info.get<std::string>("timeInterval").c_str());
+	bric_node.append_attribute("startdate").set_value(bric_info.get<std::string>("startDate").c_str());
+	bric_node.append_attribute("url").set_value(bric_info.get<std::string>("url").c_str());
+	bric_node.append_attribute("region").set_value(bric_info.get<std::string>("region").c_str());
+	bric_node.append_attribute("tags").set_value(bric_info.get<std::string>("tags").c_str());
+
+	std::string new_bric_filepath = new_bric_path + "\\bric.xml";
+
+	if (!bric_xml.save_file(new_bric_filepath.c_str()))
+		return "Error occurred while creating the new bric file: " + new_bric_filepath;
+
+	command = root_dir + "bin\\7za.exe a \"" + path + "\" \"" + new_bric_path + "\"";
+	system(command.c_str());
+
+	command = std::string("rmdir /S /Q ") + root_dir + "temp";
+	system(command.c_str());
+	fire_cleanup();
+
 	return "done!";
 }
 

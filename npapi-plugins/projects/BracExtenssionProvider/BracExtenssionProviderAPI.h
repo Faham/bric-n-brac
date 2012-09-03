@@ -31,21 +31,19 @@ public:
     BracExtenssionProviderAPI(const BracExtenssionProviderPtr& plugin, const FB::BrowserHostPtr& host) :
         m_plugin(plugin), m_host(host)
     {
-        registerMethod("echo",      make_method(this, &BracExtenssionProviderAPI::echo));
+        registerMethod("echo", make_method(this, &BracExtenssionProviderAPI::echo));
         registerMethod("testEvent", make_method(this, &BracExtenssionProviderAPI::testEvent));
         
         // Read-write property
-        registerProperty("testString",
-                         make_property(this,
+        registerProperty("testString", make_property(this,
                                        &BracExtenssionProviderAPI::get_testString,
                                        &BracExtenssionProviderAPI::set_testString));
         
         // Read-only property
-        registerProperty("version",
-                         make_property(this,
-                                       &BracExtenssionProviderAPI::get_version));
-		registerMethod("systemCall",      make_method(this, &BracExtenssionProviderAPI::systemCall));
-		registerMethod("selectBracFile",      make_method(this, &BracExtenssionProviderAPI::selectBracFile));
+        registerProperty("version", make_property(this, &BracExtenssionProviderAPI::get_version));
+		registerMethod("systemCall", make_method(this, &BracExtenssionProviderAPI::systemCall));
+		registerMethod("selectBracFile", make_method(this, &BracExtenssionProviderAPI::selectBracFile));
+		registerMethod("saveToBracFile", make_method(this, &BracExtenssionProviderAPI::saveToBracFile));
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -71,13 +69,15 @@ public:
     
 	FB::variant systemCall(const FB::variant& msg);
 	FB::variant selectBracFile(const FB::variant& msg);
+	FB::variant saveToBracFile(const FB::variant& msg);
 
 	// Event helpers
     FB_JSAPI_EVENT(test, 0, ());
     FB_JSAPI_EVENT(echo, 2, (const FB::variant&, const int));
 	FB_JSAPI_EVENT(bracfileselect, 2, (const FB::variant&, const FB::variant&));
+	FB_JSAPI_EVENT(cleanup, 0, ());
 
-    // Method test-event
+	// Method test-event
     void testEvent();
 
 	FB::BrowserHostPtr getBrowserHost() { return m_host; }
