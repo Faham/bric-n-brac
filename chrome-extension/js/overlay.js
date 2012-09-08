@@ -9,18 +9,22 @@ var start_pos_y = 0;
 function setupRegionSelector() {
 	var _div = document.createElement('div');
 	_div.setAttribute("id", "overlay-bg");
+	_div.style.zIndex = ++maxZIndex;
 	document.body.appendChild(_div);
+
 	var overlay_bg = _div
 	overlay_bg.onmousedown = overlayBackgroundMouseDown;
 	document.onmouseup = documentMouseUp;
 
 	_div = document.createElement('div');
 	_div.setAttribute("id", "overlay-hl");
+	_div.style.zIndex = ++maxZIndex;
 	document.body.appendChild(_div);
 	var ov_hl = _div
 
 	_div = document.createElement('div');
 	_div.setAttribute("id", "cursor-info");
+	_div.style.zIndex = ++maxZIndex;
 	ov_hl.appendChild(_div);
 
 	start_pos_x = 0;
@@ -58,7 +62,8 @@ function cleanupRegionSelector() {
 
 function cleanupDialog() {
 	dlg = document.getElementById('save-dialog');
-	dlg.parentNode.removeChild(dlg)
+	if (dlg)
+		dlg.parentNode.removeChild(dlg)
 }
 
 //------------------------------------------------------------------------------
@@ -140,14 +145,22 @@ function removeButtons() {
 
 //------------------------------------------------------------------------------
 
-function onFileClick() {
+function setupBep() {
 	bep = document.createElement('embed')
 	bep.type = "application/x-bep"
 	bep.id = 'plugin-bep'
 	bep.className = 'plugin'
 	document.body.appendChild(bep);
+	
+	//extpath = chrome.extension.getURL('').split('/')[2];
+	//if (mac)
+	//	extpath = "/Users/username/Library/Application Support/Google/Chrome/Default/Extensions/" + extpath
+	//else if (windows)
+	//	extpath = "%LOCALAPPDATA%\\Google\\Chrome\\User Data\\Default\\Extensions\\" + extpath
+	extpath = "D:\\faham\\tim\\bric-n-brac\\chrome-extension";
+	bep.setExtensionPath(extpath);
 	bep.addEventListener("bracfileselect", onBracFileSelect, false);
-	console.log(bep.selectBracFile());
+	bep.addEventListener('cleanup', onDismissDialogCleanup, false);
 }
 
 //------------------------------------------------------------------------------
@@ -240,6 +253,11 @@ function setupIndicators() {
 	bricIndicator = dlg.querySelector('#bric-indicator');
 	bricSizer = dlg.querySelector('#bric-sizer');
 	bricScale.value = precisionRes(3, bricIndicatorScale);
+	
+	bricPosition.value = precisionRes(3, parseInt(bricIndicator.style.left) / bracIndicatorScale) 
+		+ ' ' + precisionRes(3, parseInt(bricIndicator.style.top) / bracIndicatorScale);
+		
+	bricScale.value = precisionRes(3, parseInt(bricIndicator.style.width) / bricInitialWidth);
 }
 
 //------------------------------------------------------------------------------
@@ -340,12 +358,26 @@ function onBricMouseOut(event) {
 
 //------------------------------------------------------------------------------
 
+function removeWhitespace(node) {
+    for (var i= node.childNodes.length; i-->0;) {
+        var child= node.childNodes[i];
+        if (child.nodeType===3 && child.data.match(/^\s*$/))
+            node.removeChild(child);
+        if (child.nodeType===1)
+            removeWhitespace(child);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 function onBracFileSelect(file_path, file_content) {
 	parser = new window.DOMParser
 	xml_content = parser.parseFromString(file_content, "text/xml")
 
+	removeWhitespace(xml_content)
 	brac = xml_content.documentElement
-	dlg = document.getElementById("save-dialog");
+
+	dlg = document.getElementById("save-dialog")
 	dlg.querySelector("#brac_filepath").innerHTML = file_path
 	dlg.querySelector("#brac_name").value = brac.attributes.getNamedItem('name').nodeValue
 	dlg.querySelector("#brac_artist").value = brac.attributes.getNamedItem('artist').nodeValue
@@ -354,28 +386,32 @@ function onBracFileSelect(file_path, file_content) {
 	dlg.querySelector("#brac_resolution").value = brac.attributes.getNamedItem('resolution').nodeValue
 	//dlg.querySelector("#brac_dpi").value = brac.attributes.getNamedItem('dpi').nodeValue
 	dlg.querySelector("#brac_tags").value = brac.attributes.getNamedItem('tags').nodeValue
-	dlg.querySelector("#brac_comment").value = brac.childNodes[0].textContent
+    for (var i = brac.childNodes.length; i-- > 0;)
+		if (brac.childNodes[i].nodeType === 3) {
+			dlg.querySelector("#brac_comment").value = brac.childNodes[i].textContent.trim()
+			break;
+	}
 	
 	setupIndicators();
 
 	for (n in brac.childNodes) {
 		b = brac.childNodes[n];
-		if (typeof(b) != "object" || !b.hasAttributes('tagName') 
+		if (b.nodeType != 1 || !b.hasAttributes('tagName') 
 			|| b.tagName != 'bric')
 			continue; // not bric
 
-		bric = brac.childNodes[n]
+		removeWhitespace(b)
 
-		if (bric.childNodes.length > 0)
-			bric.childNodes[0].textContent // bric comment
-		bric.attributes.getNamedItem('id').nodeValue
-		bric.attributes.getNamedItem('resolution').nodeValue
-		bric.attributes.getNamedItem('position').nodeValue
-		bric.attributes.getNamedItem('rotate').nodeValue
-		bric.attributes.getNamedItem('scale').nodeValue
-		bric.attributes.getNamedItem('order').nodeValue
-		bric.attributes.getNamedItem('alpha').nodeValue
-		bric.attributes.getNamedItem('revision').nodeValue
+		if (b.childNodes.length > 0 && b.childNodes[0].nodeType === 3)
+			b.childNodes[0].textContent // bric comment
+		b.attributes.getNamedItem('id').nodeValue
+		b.attributes.getNamedItem('resolution').nodeValue
+		b.attributes.getNamedItem('position').nodeValue
+		b.attributes.getNamedItem('rotate').nodeValue
+		b.attributes.getNamedItem('scale').nodeValue
+		b.attributes.getNamedItem('order').nodeValue
+		b.attributes.getNamedItem('alpha').nodeValue
+		b.attributes.getNamedItem('revision').nodeValue
 	}
 }
 
@@ -393,15 +429,19 @@ function setupDialog(region) {
 		if (this.status!==200) return; // or whatever error handling you want
 		dlg = document.getElementById('save-dialog');
 		dlg.innerHTML = this.responseText;
+		dlg.style.zIndex = ++maxZIndex;
 		
 		file = dlg.querySelector('#brac_file');
-		file.onclick = onFileClick;
+		file.onclick = function() {
+			bep = document.getElementById('plugin-bep');
+			bep.selectBracFile();
+		};
 
 		btn = dlg.querySelector('#brac_btn_apply');
 		btn.onclick = SaveDialogBtnApplyOnClick;
 
 		btn = dlg.querySelector('#brac_btn_cancel');
-		btn.onclick = SaveDialogBtnCancelOnClick;
+		btn.onclick = onDismissDialogCleanup;
 		
 		dlg.querySelector('#bric_title').value = document.location.hostname
 		dlg.querySelector('#bric_time_interval').value = "0000-00-07 00:00:00"
@@ -423,6 +463,7 @@ function setupDialog(region) {
 		bricScale = dlg.querySelector('#bric_scale');
 	};
 	xhr.send();
+	setupBep();
 };
 
 //------------------------------------------------------------------------------
@@ -443,8 +484,8 @@ function BtnSaveOnClick() {
 	//		cleanUp();
 	//});
 	ov_hl = document.getElementById('overlay-hl');
-	reg = ov_hl.getBoundingClientRect()
-	reg = {'left':reg.left, 'top':reg.top, 'width':reg.right - reg.left, 'height':reg.bottom - reg.top}
+	//reg = ov_hl.getBoundingClientRect()
+	reg = {'left':ov_hl.offsetLeft, 'top':ov_hl.offsetTop, 'width':ov_hl.offsetWidth, 'height':ov_hl.offsetHeight}
 	
 	cleanupRegionSelector();
 
@@ -488,6 +529,50 @@ function BtnCancelOnClick() {
 
 //------------------------------------------------------------------------------
 
+function getHighIndex(selector) {
+    if (!selector) { selector = "*" };
+
+    var elements = document.querySelectorAll(selector) ||
+                   oXmlDom.documentElement.selectNodes(selector);
+	var ret = 0;
+
+    for (var i = 0; i < elements.length; ++i) {
+		if (deepCss(elements[i],"position") === "static")
+			continue;
+
+		var temp = deepCss(elements[i], "z-index");
+		if (temp != "auto")
+			temp = parseInt(temp, 10) || 0;
+		else
+			continue;
+
+		if (temp > ret)
+			ret = temp;
+    }
+    return ret;
+}
+
+//------------------------------------------------------------------------------
+
+function deepCss(who, css) {
+    var sty, val, dv= document.defaultView || window;
+    if (who.nodeType == 1) {
+        sty = css.replace(/\-([a-z])/g, function(a, b){
+            return b.toUpperCase();
+        });
+        val = who.style[sty];
+        if (!val) {
+            if(who.currentStyle) val= who.currentStyle[sty];
+            else if (dv.getComputedStyle) {
+                val= dv.getComputedStyle(who,"").getPropertyValue(css);
+            }
+        }
+    }
+    return val || "";
+}
+
+//------------------------------------------------------------------------------
+
 function SaveDialogBtnApplyOnClick() {
 	brac = {
 		filepath     : dlg.querySelector("#brac_filepath").innerHTML
@@ -506,7 +591,7 @@ function SaveDialogBtnApplyOnClick() {
 		title          : dlg.querySelector('#bric_title').value
 		, timeInterval : dlg.querySelector('#bric_time_interval').value
 		, startDate    : dlg.querySelector('#bric_start_data').value
-		, url          : dlg.querySelector('#bric_url').value
+		, url          : dlg.querySelector('#bric_url').value.replace('https://', 'http://')
 		, region       : dlg.querySelector('#bric_region').value
 		, resolution   : res
 		, position     : dlg.querySelector('#bric_position').value
@@ -522,19 +607,14 @@ function SaveDialogBtnApplyOnClick() {
 		brac: brac
 		, bric: new_bric
 	};
-	
-	bep = document.getElementById('plugin-bep');
-	bep.addEventListener('cleanup', function() {
-		cleanupRegionSelector();
-		removeElement(document.getElementById('overlay-bg'));
-	}, false);
 
+	bep = document.getElementById('plugin-bep');
 	bep.saveToBracFile(JSON.stringify(message));
 }
 
 //------------------------------------------------------------------------------
 
-function SaveDialogBtnCancelOnClick() {
+function onDismissDialogCleanup() {
 	cleanupDialog();
 	removeElement(document.getElementById('overlay-bg'));
 }
@@ -545,9 +625,12 @@ function showButtons() {
 	ov_hl = document.getElementById('overlay-hl');
 	ht_region = ov_hl.getBoundingClientRect();
 
+	buttons_zindex = ++maxZIndex;
+	
 	btn = createButton('btn-save', 'Save')
 	btn.style.top = ov_hl.offsetTop + ov_hl.offsetHeight + 5 + "px";
 	btn.style.left = ht_region.left + "px";
+	btn.style.zIndex = buttons_zindex;
 	btn.onclick = BtnSaveOnClick
 	document.body.appendChild(btn);
 
@@ -556,6 +639,7 @@ function showButtons() {
 	btn = createButton('btn-change-region', 'Change Region')
 	btn.style.top = ov_hl.offsetTop + ov_hl.offsetHeight + 5 + "px";
 	btn.style.left = btn_save.offsetLeft + btn_save.offsetWidth + 5 + "px";
+	btn.style.zIndex = buttons_zindex;
 	btn.onclick = BtnChangeRegionOnClick;
 	document.body.appendChild(btn);
 
@@ -564,6 +648,7 @@ function showButtons() {
 	btn = createButton('btn-cancel', 'Cancel')
 	btn.style.top = ov_hl.offsetTop + ov_hl.offsetHeight + 5 + "px";
 	btn.style.left = btn_change.offsetLeft + btn_change.offsetWidth + 5 + "px";
+	btn.style.zIndex = buttons_zindex;
 	btn.onclick = BtnCancelOnClick;
 	document.body.appendChild(btn);
 };
@@ -588,6 +673,7 @@ function documentMouseUp(e) {
 
 //------------------------------------------------------------------------------
 
+maxZIndex = getHighIndex();
 setupRegionSelector();
 
 //------------------------------------------------------------------------------

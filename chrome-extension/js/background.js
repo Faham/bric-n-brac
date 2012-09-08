@@ -61,19 +61,19 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 	// select image region
 	chrome.tabs.executeScript(null, {file:"js\\overlay.js"});
 	
-	file_io = document.createElement('embed')
-	file_io.type = "application/x-npapi-file-io"
-	file_io.id = 'npapi-file-io'
-	document.body.appendChild(file_io);
+	//file_io = document.createElement('embed')
+	//file_io.type = "application/x-npapi-file-io"
+	//file_io.id = 'npapi-file-io'
+	//document.body.appendChild(file_io);
 	//file_io.saveTextFile(
 	//	"D:\\faham\\tim\\bric-n-brac\\browser-ext\\google-chrome\\screenshot\\test.txt"
 	//	, "This is a test text!"
 	//);
 	
-	lex = document.createElement('embed')
-	lex.type = "application/x-localexecute"
-	lex.id = 'local-execute'
-	document.body.appendChild(lex);
+	//lex = document.createElement('embed')
+	//lex.type = "application/x-localexecute"
+	//lex.id = 'local-execute'
+	//document.body.appendChild(lex);
 	
 	//Mac: /Users/username/Library/Application Support/Google/Chrome/Default/Extensions
 	//Windows 7: C:\Users\username\AppData\Local\Google\Chrome\User Data\Default\Extensions

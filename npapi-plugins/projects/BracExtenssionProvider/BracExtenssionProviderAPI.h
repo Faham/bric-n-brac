@@ -44,6 +44,7 @@ public:
 		registerMethod("systemCall", make_method(this, &BracExtenssionProviderAPI::systemCall));
 		registerMethod("selectBracFile", make_method(this, &BracExtenssionProviderAPI::selectBracFile));
 		registerMethod("saveToBracFile", make_method(this, &BracExtenssionProviderAPI::saveToBracFile));
+		registerMethod("setExtensionPath", make_method(this, &BracExtenssionProviderAPI::setExtensionPath));
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -70,6 +71,7 @@ public:
 	FB::variant systemCall(const FB::variant& msg);
 	FB::variant selectBracFile(const FB::variant& msg);
 	FB::variant saveToBracFile(const FB::variant& msg);
+	FB::variant setExtensionPath(const FB::variant& msg);
 
 	// Event helpers
     FB_JSAPI_EVENT(test, 0, ());
@@ -82,11 +84,14 @@ public:
 
 	FB::BrowserHostPtr getBrowserHost() { return m_host; }
 
+	const std::string & getExtensionPath() const { return m_extension_path; }
+
 private:
     BracExtenssionProviderWeakPtr m_plugin;
     FB::BrowserHostPtr m_host;
 
     std::string m_testString;
+	std::string m_extension_path;
 };
 
 #endif // H_BracExtenssionProviderAPI
