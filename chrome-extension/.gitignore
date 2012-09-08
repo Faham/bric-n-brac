@@ -1,7 +1,6 @@
 # temporary directories #
 out
 temp
-bin
 
 # OS generated files #
 .DS_Store*
