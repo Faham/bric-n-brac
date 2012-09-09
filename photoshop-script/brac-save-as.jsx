@@ -36,18 +36,17 @@ function main() {
 				var init_height = pixel2centimeter(resolution[1], brac_xml.@dpi);
 				var new_width = layer.bounds[2] - layer.bounds[0];
 				var new_height = layer.bounds[3] - layer.bounds[1];
-				
-				var scale = parseFloat(new_width / cur_doc.width);
-				scale += ' ';
-				scale += parseFloat(new_height / cur_doc.height);
+				var resolution = brac_xml.bric[j].@resolution.split(' ');
+				resolution[0] = parseInt(resolution[0]); resolution[1] = parseInt(resolution[1]); 
+				var scale = parseFloat(new_width / resolution[0]) + ' ' + parseFloat(new_height / resolution[1]);
 				brac_xml.bric[j].@scale = scale;
 
-				var new_x = parseFloat((layer.bounds[0] + layer.bounds[2]) * 0.5 / cur_doc.width);
-				new_x = new_x - 0.5;
-				var new_y = parseFloat((layer.bounds[1] + layer.bounds[3]) * 0.5 / cur_doc.height);
-				new_y = new_y - 0.5;
-				var position = new_x + ' ' + new_y;			
-				brac_xml.bric[j].@position = position;
+				//var new_x = parseFloat((layer.bounds[0] + layer.bounds[2]) * 0.5 / cur_doc.width);
+				//new_x = new_x - 0.5;
+				//var new_y = parseFloat((layer.bounds[1] + layer.bounds[3]) * 0.5 / cur_doc.height);
+				//new_y = new_y - 0.5;
+				//var position = new_x + ' ' + new_y;
+				brac_xml.bric[j].@position = parseInt(layer.bounds[0]) + ' ' + parseInt(layer.bounds[1]);
 			}
 		}
 		//alert(brac_xml.bric[0].@position);

@@ -31,20 +31,21 @@ function main() {
 	// Create the multi-layered image
 	//TODO: fix the add method parameters.
 	var doc_name = ts + '-' + brac.name.split('.')[0];
-	var new_brac_doc = app.documents.add(200, 200, parseInt(brac_xml.@dpi), doc_name, NewDocumentMode.RGB, DocumentFill.TRANSPARENT, 1);
+	var resolution = brac_xml.@resolution.split(' ');
+	var new_brac_doc = app.documents.add(parseInt(resolution[0]), parseInt(resolution[1]), parseInt(brac_xml.@dpi), doc_name, NewDocumentMode.RGB, DocumentFill.TRANSPARENT, 1);
 	var nbric = brac_xml.bric.length();
 	for (var i = 0; i < nbric; ++i) {
 		var bric = brac_xml.bric[i];
 		var bric_dir = brac_dir + "/bric." + bric.@id;
-		var bric_xml_file = new File(bric_dir + "/bric." + bric.@id + ".xml");
+		var bric_xml_file = new File(bric_dir + "/bric.xml");
 		if (!bric_xml_file.exists) {
-			alert("Bric XML file " + bric_xml_file.fsName + " could not be found!");
+			alert("Bric XML file " + bric_xml_file.fsName + " not found!");
 			continue;
 		}
 		bric_xml_file.open("r");
 		var bric_xml = new XML(bric_xml_file.read());
 		bric_xml_file.close();
-		var bric_cur_snpsht_filename = bric_dir + "/" + bric.@revision + "." + bric_xml.@snapshot_ext;
+		var bric_cur_snpsht_filename = bric_dir + "/" + bric.@revision + ".png";
 		var bric_cur_snpsht = new File(bric_cur_snpsht_filename);
 		if (!bric_cur_snpsht.exists) {
 			alert("Snapshot " + bric_cur_snpsht.fsName + " could not be found!");
@@ -66,16 +67,17 @@ function main() {
 		// I'm getting the layer again, cause making it SmartObject changes its prior identification
 		layer = new_brac_doc.artLayers[0];
 		//*/
-		var scale = bric.@scale.split(' ');
+		var scale = parseFloat(bric.@scale);
 		var resolution = bric.@resolution.split(' ');
+		resolution[0] = parseInt(resolution[0]); resolution[1] = parseInt(resolution[1]); 
 		var inch2centimeter = 2.54;
-		var l_width = resolution[0] * inch2centimeter / brac_xml.@dpi;
-		var l_height = resolution[1] * inch2centimeter / brac_xml.@dpi;
-		layer.resize(new_brac_doc.width * scale[0] * 100.0 / l_width, new_brac_doc.height * scale[1] * 100.0 / l_height); //relative to document (brac)
+		var l_width = scale * 100;
+		var l_height = scale * 100;
+		layer.resize(l_width, l_height); //relative to layer's initial size (bric)
 		//layer.rotate(parseFloat(bric.@rotate));
 		var position = bric.@position.split(' ');
-		layer.translate(new_brac_doc.width * position[0], new_brac_doc.height * position[1]); //relative to document (brac)
-		//alert(layer.bounds);
+		position[0] = parseInt(position[0]); position[1] = parseInt(position[1]); 
+		layer.translate(position[0] - parseInt(layer.bounds[0]), position[1] - parseInt(layer.bounds[1])); //relative to layer's last position (bric)
 		//*/
 	}
 
