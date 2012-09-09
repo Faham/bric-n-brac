@@ -24,6 +24,7 @@
 #include <atlstr.h>
 
 #include <sstream>
+#include <ctime>
 #include "jsonxx.h"
 
 #include "pugixml.hpp"
@@ -225,6 +226,22 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 	root_node.append_attribute("region").set_value(bric_info.get<std::string>("region").c_str());
 	root_node.append_attribute("tags").set_value(bric_info.get<std::string>("tags").c_str());
 
+	pugi::xml_node snapshot_node = root_node.append_child("snapshot");
+	snapshot_node.append_attribute("revision").set_value("1");
+	
+	time_t t = time(0);   // get current time
+	struct tm * now = localtime( &t );
+	char buf2[50];
+	sprintf(buf2, "%d-%02d-%02d %02d:%02d:%02d"
+		, now->tm_year + 1900
+		, now->tm_mon + 1
+		, now->tm_mday
+		, now->tm_hour
+		, now->tm_min
+		, now->tm_sec);
+	
+	snapshot_node.append_attribute("date").set_value(buf2);
+
 	std::string new_bric_filepath = new_bric_path + "\\bric.xml";
 	std::string bric_screenshot = new_bric_path + "\\1.png";
 
@@ -240,8 +257,18 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 		return "Bric region should be four integer numbers, separated by space character.";
 	
 	/*
-		D:\faham\tim\bric-n-brac\chrome-extension\bin\cutycapt.exe --print-backgrounds=on --javascript=on --plugins=on --js-can-access-clipboard=on --min-width=1024 --min-height=768 --url=http://www.google.ca/ --out-format=png --out="D:\faham\tim\bric-n-brac\chrome-extension\temp\bric.1\1.png"
+		cutycapt.exe 
+			--print-backgrounds=on 
+			--javascript=on 
+			--plugins=on 
+			--js-can-access-clipboard=on 
+			--min-width=1024 
+			--min-height=768 
+			--url=http://www.google.ca/ 
+			--out-format=png 
+			--out="D:\faham\tim\bric-n-brac\chrome-extension\temp\bric.1\1.png"
 	*/
+
 	command = m_extension_path + "\\bin\\cutycapt.exe"
 		+ " --print-backgrounds=on --javascript=on --plugins=on --js-can-access-clipboard=on"
 		+ " --min-width=" + brac_resolution[0]
