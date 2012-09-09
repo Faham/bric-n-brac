@@ -9,9 +9,11 @@
 
 //==============================================================================
 
-function main() {
+function BracOpen() {
 	// Bricing the brac file.
 	var brac = File(openDialog());
+	if(!brac.exists)
+		return;
 	var ts = new Date().getTime();
 	var extract_dir = Folder.temp + "/" + ts;
 	var out_dir = new Folder(extract_dir);
@@ -21,7 +23,6 @@ function main() {
 	var brac_xml_file = new File(brac_dir + "/" + "brac.xml");
 	if (!brac_xml_file.exists) {
 		brac_dir = extract_dir + "/" + brac.name.split('.')[0];
-		//alert(brac_dir);
 		brac_xml_file = new File(brac_dir + "/" + "brac.xml");
 	}
 	brac_xml_file.open("r");
@@ -59,14 +60,12 @@ function main() {
 		var layer = new_brac_doc.paste();
 		layer.name = bric.@id;
 		
-		//*/
-		//This changes its kind to SmartObject
+		//This changes its type to SmartObject
 		var idnewPlacedLayer = stringIDToTypeID("newPlacedLayer");
 		executeAction( idnewPlacedLayer, undefined, DialogModes.NO );
 		
 		// I'm getting the layer again, cause making it SmartObject changes its prior identification
 		layer = new_brac_doc.artLayers[0];
-		//*/
 		var scale = parseFloat(bric.@scale);
 		var resolution = bric.@resolution.split(' ');
 		resolution[0] = parseInt(resolution[0]); resolution[1] = parseInt(resolution[1]); 
@@ -78,7 +77,6 @@ function main() {
 		var position = bric.@position.split(' ');
 		position[0] = parseInt(position[0]); position[1] = parseInt(position[1]); 
 		layer.translate(position[0] - parseInt(layer.bounds[0]), position[1] - parseInt(layer.bounds[1])); //relative to layer's last position (bric)
-		//*/
 	}
 
 	// brac initial brac file object
@@ -91,7 +89,7 @@ function main() {
 
 //==============================================================================
 
-main();
+BracOpen();
 
 //==============================================================================
 

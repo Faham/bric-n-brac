@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gpc defaultLocale="en_US" version="3" keySequence="42" currentLocale="en_US">
+  <product appid="PHSP" version="12" name="Photoshop CS5/CS5.1"/>
+  <target id="PHSP-12"/>
+  <ConfiguratorPanel name="bric-a-brac" width="190" height="56" init="doInit" close="doClose" persistent="True" extensionId="com.configurator.extension" extensionVersion="1.0.0" menuName="bric-a-brac">
+    <onInit><![CDATA[]]></onInit>
+    <extensionDescription><![CDATA[]]></extensionDescription>
+    <extensionAuthor><![CDATA[]]></extensionAuthor>
+    <onClose><![CDATA[]]></onClose>
+    <eventListeners>
+      <function id="doInit" actionType="jsfunction" jsFunctionName="invoke_script">
+        <param id="onInit"/>
+      </function>
+      <function id="doClose" actionType="jsfunction" jsFunctionName="invoke_script">
+        <param id="onClose"/>
+      </function>
+    </eventListeners>
+    <ps_script_file _itemId="ps_actionscript_scriptfile" label="$$$/Configurator/ActionScript/ScriptFile/name###27" toolTip="$$$/Configurator/ActionScript/ScriptFile/desc###28" cfgVisible="$$$/Configurator/Attribute/visible/value###29" fileUrl="$$$/Configurator/key_###30" icon="ps_script_file" overIcon="ps_script_file_r" showIcon="false" x="10" y="10"/>
+    <ps_script_file _itemId="ps_actionscript_scriptfile" label="$$$/Configurator/ActionScript/ScriptFile/name###31" toolTip="$$$/Configurator/ActionScript/ScriptFile/desc###32" cfgVisible="$$$/Configurator/Attribute/visible/value###33" fileUrl="$$$/Configurator/key_###34" icon="ps_script_file" overIcon="ps_script_file_r" showIcon="false" x="53" y="10"/>
+    <ps_script_file _itemId="ps_actionscript_scriptfile" label="$$$/Configurator/ActionScript/ScriptFile/name###35" toolTip="$$$/Configurator/ActionScript/ScriptFile/desc###36" cfgVisible="$$$/Configurator/Attribute/visible/value###37" fileUrl="$$$/Configurator/key_###38" icon="ps_script_file" overIcon="ps_script_file_r" showIcon="false" x="90" y="10"/>
+    <ps_script_file _itemId="ps_actionscript_scriptfile" label="$$$/Configurator/ActionScript/ScriptFile/name###39" toolTip="$$$/Configurator/ActionScript/ScriptFile/desc###40" cfgVisible="$$$/Configurator/Attribute/visible/value###41" fileUrl="$$$/Configurator/key_###42" icon="ps_script_file" overIcon="ps_script_file_r" showIcon="false" x="144" y="10"/>
+  </ConfiguratorPanel>
+</gpc>
