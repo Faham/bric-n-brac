@@ -57,8 +57,41 @@ var Base64Binary = {
 //	alert("test");
 //}, seconds);
 
+//==============================================================================
+
+function onInstall() {
+	console.log("Extension Installed");
+}
+
+//------------------------------------------------------------------------------
+
+function onUpdate() {
+	console.log("Extension Updated");
+}
+
+//------------------------------------------------------------------------------
+
+function getVersion() {
+	var details = chrome.app.getDetails();
+	return details.version;
+}
+
+//------------------------------------------------------------------------------
+
+var currVersion = getVersion();
+var prevVersion = localStorage['version']
+if (currVersion != prevVersion) {
+	if (typeof prevVersion == 'undefined')
+		onInstall();
+	else
+		onUpdate();
+
+	localStorage['version'] = currVersion;
+}
+
+//==============================================================================
+
 chrome.browserAction.onClicked.addListener(function(tab) {
-	// select image region
 	chrome.tabs.executeScript(null, {file:"js\\overlay.js"});
 	
 	//file_io = document.createElement('embed')
@@ -69,11 +102,6 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 	//	"D:\\faham\\tim\\bric-n-brac\\browser-ext\\google-chrome\\screenshot\\test.txt"
 	//	, "This is a test text!"
 	//);
-	
-	//lex = document.createElement('embed')
-	//lex.type = "application/x-localexecute"
-	//lex.id = 'local-execute'
-	//document.body.appendChild(lex);
 	
 	//Mac: /Users/username/Library/Application Support/Google/Chrome/Default/Extensions
 	//Windows 7: C:\Users\username\AppData\Local\Google\Chrome\User Data\Default\Extensions
@@ -93,11 +121,9 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 	//});
 });
 
-//chrome.extension.onMessage.addListener(
-//  function(request, sender, sendResponse) {
-//	if ('request-brac-file' == request) {
-//		//lex = document.getElementById('local-execute');
-//		//console.log(lex.selectBracFile());
-//	}
-//    //  sendResponse({farewell: "goodbye"});
-//});
+chrome.extension.onMessage.addListener(
+  function(request, sender, sendResponse) {
+	if ('request-version' == request) {
+		sendResponse({version: currVersion});
+	}
+});
