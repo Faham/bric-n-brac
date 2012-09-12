@@ -5,6 +5,7 @@
 //==============================================================================
 
 #target photoshop 
+#include "common.jsx"
 
 //==============================================================================
 
@@ -47,14 +48,10 @@ Exec.prototype.getScriptName = function() {
 	var nm = '';
 	var ts = new Date().getTime();
 
-	var ext = 'bat';
-	if ($.os.toLowerCase().search("macintosh") != -1)
-		ext = 'sh';
-
 	if (this.app) {
-		nm = this.tmp + '/' + this.app.name + '-' + ts + "." + ext;
+		nm = this.tmp + '/' + this.app.name + '-' + ts + "." + getScriptExt();
 	} else {
-		nm = this.tmp + "/exec-" + ts + "." + ext;
+		nm = this.tmp + "/exec-" + ts + "." + getScriptExt();
 	}
 	return nm;
 };
@@ -82,11 +79,7 @@ Exec.prototype.execute = function(argList) {
 	temp_script.open("w");
 	temp_script.writeln(str);
 
-	var del_cmd = 'del';
-	if ($.os.toLowerCase().search("macintosh") != -1)
-		del_cmd = 'rm';
-
-	temp_script.writeln(del_cmd + " \"" + temp_script.fsName + "\" >NUL");
+	temp_script.writeln(getRemoveCommand() + " \"" + temp_script.fsName + "\" >NUL");
 	temp_script.close();
 	temp_script.execute();
 };
@@ -120,17 +113,13 @@ Exec.prototype.executeBlock = function(argList, timeout) {
 	temp_script.open("w");
 	temp_script.writeln(str);
 	temp_script.writeln("echo Done > \"" + semaphore.fsName + '\"');
-
-
-	var del_cmd = 'del';
-	if ($.os.toLowerCase().search("macintosh") != -1)
-		del_cmd = 'rm';
-
-	temp_script.writeln(del_cmd + " \"" + temp_script.fsName + "\" >NUL");
+	
+	temp_script.writeln(getRemoveCommand() + " \"" + temp_script.fsName + "\" >NUL");
 	temp_script.close();
-	if ($.os.toLowerCase().search("windows") != -1)
+
+	if ('windows' == getOS())
 		temp_script.execute();
-	else  if ($.os.toLowerCase().search("macintosh") != -1) {
+	else if ('macos' == getOS()) {
 		var bash = new File('/bin/bash');
 		bash.execute(); //TODO: I need to execute te inexecutable file, but how should I change its permission.
 	}

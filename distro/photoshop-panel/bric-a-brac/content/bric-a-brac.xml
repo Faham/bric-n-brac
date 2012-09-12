@@ -86,7 +86,7 @@
     </element>
   </elements>
   <properties>
-    <property id="LocaleSearchPath1">${HostProductRoot}/Locales/${LocaleID}/Support Files/Panels/fsPanels.xml</property>
     <property id="LocaleSearchPath2">${HostProductRoot}/Locales/${LocaleID}/Support Files/Panels/${PanelName}/dictionary.xml</property>
+    <property id="LocaleSearchPath1">${HostProductRoot}/Locales/${LocaleID}/Support Files/Panels/fsPanels.xml</property>
   </properties>
 </gpc>

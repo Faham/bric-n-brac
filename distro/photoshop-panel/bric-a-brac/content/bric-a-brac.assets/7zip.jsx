@@ -6,6 +6,7 @@
 
 #target photoshop 
 #include "execute.jsx"
+#include "common.jsx"
 
 //==============================================================================
 
@@ -13,11 +14,9 @@ function get7zip() {
 
 	SevenZip = null;
 
-	//alert($.os);
-
-	if ($.os.toLowerCase().search("windows") != -1)
-		SevenZip = new Exec(new File("7za.exe"));
-	else if ($.os.toLowerCase().search("macintosh") != -1)
+	if ('windows' == getOS())
+		SevenZip = new Exec(new File("D:/faham/tim/bric-n-brac/photoshop-script/bric-a-brac.assets/7za.exe"));
+	else if ('macos' == getOS())
 		SevenZip = new Exec(new File("/Users/faham/development/bric-n-brac/photoshop-script/bric-a-brac.assets/7za"));
 
 	if (null == SevenZip) {
