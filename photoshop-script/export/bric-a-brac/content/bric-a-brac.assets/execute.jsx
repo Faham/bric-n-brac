@@ -43,18 +43,14 @@ Exec.prototype.toCommandStr = function(args) {
 
 //------------------------------------------------------------------------------
 
-Exec.prototype.getScriptName = function() {
+Exec.prototype.getBatName = function() {
 	var nm = '';
 	var ts = new Date().getTime();
 
-	var ext = 'bat';
-	if ($.os.toLowerCase().search("macintosh") != -1)
-		ext = 'sh';
-
 	if (this.app) {
-		nm = this.tmp + '/' + this.app.name + '-' + ts + "." + ext;
+		nm = this.tmp + '/' + this.app.name + '-' + ts + ".bat";
 	} else {
-		nm = this.tmp + "/exec-" + ts + "." + ext;
+		nm = this.tmp + "/exec-" + ts + ".bat";
 	}
 	return nm;
 };
@@ -78,17 +74,12 @@ Exec.system = function(cmd, timeout) {
 
 Exec.prototype.execute = function(argList) {
 	var str = this.toCommandStr(argList);
-	var temp_script = new File(this.getScriptName());
-	temp_script.open("w");
-	temp_script.writeln(str);
-
-	var del_cmd = 'del';
-	if ($.os.toLowerCase().search("macintosh") != -1)
-		del_cmd = 'rm';
-
-	temp_script.writeln(del_cmd + " \"" + temp_script.fsName + "\" >NUL");
-	temp_script.close();
-	temp_script.execute();
+	var bat = new File(this.getBatName());
+	bat.open("w");
+	bat.writeln(str);
+	bat.writeln("del \"" + bat.fsName + "\" >NUL");
+	bat.close();
+	bat.execute();
 };
 
 //------------------------------------------------------------------------------
@@ -114,26 +105,15 @@ Exec.prototype.block = function(semaphore, timeout) {
 Exec.prototype.executeBlock = function(argList, timeout) {
 	var str = this.toCommandStr(argList);
 
-	var temp_script = new File(this.getScriptName());
-	var semaphore = new File(temp_script.toString() + ".sem")
+	var bat = new File(this.getBatName());
+	var semaphore = new File(bat.toString() + ".sem")
 
-	temp_script.open("w");
-	temp_script.writeln(str);
-	temp_script.writeln("echo Done > \"" + semaphore.fsName + '\"');
-
-
-	var del_cmd = 'del';
-	if ($.os.toLowerCase().search("macintosh") != -1)
-		del_cmd = 'rm';
-
-	temp_script.writeln(del_cmd + " \"" + temp_script.fsName + "\" >NUL");
-	temp_script.close();
-	if ($.os.toLowerCase().search("windows") != -1)
-		temp_script.execute();
-	else  if ($.os.toLowerCase().search("macintosh") != -1) {
-		var bash = new File('/bin/bash');
-		bash.execute(); //TODO: I need to execute te inexecutable file, but how should I change its permission.
-	}
+	bat.open("w");
+	bat.writeln(str);
+	bat.writeln("echo Done > \"" + semaphore.fsName + '\"');
+	bat.writeln("del \"" + bat.fsName + "\" >NUL");
+	bat.close();
+	bat.execute();
 
 	try { 
 		this.block(semaphore, timeout);

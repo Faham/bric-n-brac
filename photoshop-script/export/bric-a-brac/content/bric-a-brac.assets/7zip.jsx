@@ -18,7 +18,7 @@ function get7zip() {
 	if ($.os.toLowerCase().search("windows") != -1)
 		SevenZip = new Exec(new File("7za.exe"));
 	else if ($.os.toLowerCase().search("macintosh") != -1)
-		SevenZip = new Exec(new File("/Users/faham/development/bric-n-brac/photoshop-script/bric-a-brac.assets/7za"));
+		SevenZip = new Exec(new File("7za"));
 
 	if (null == SevenZip) {
 		alert('OS \'' + $.os + '\' is not supported');

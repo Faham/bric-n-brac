@@ -16,22 +16,9 @@ function BracOpen() {
 	if (!SevenZip)
 		return;
 
-	var f = null;
-	if ($.os.toLowerCase().search("windows") != -1)
-		f = File(openDialog("Open File", "Zip File:*.zip;All files:*.*"));
-	else if ($.os.toLowerCase().search("macintosh") != -1)
-		f = File(openDialog("Open File", function (filename) {
-			if (filename.substr(-3).toLowerCase() == 'zip')
-				return true;
-			else
-				return false;
-		}));
-
-	if(!f.exists)
+	var brac = File(openDialog());
+	if(!brac.exists)
 		return;
-
-	var brac = f;
-
 	var ts = new Date().getTime();
 	var extract_dir = Folder.temp + "/" + ts;
 	var out_dir = new Folder(extract_dir);
