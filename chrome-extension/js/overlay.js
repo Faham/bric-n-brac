@@ -145,6 +145,12 @@ function removeButtons() {
 
 //------------------------------------------------------------------------------
 
+function getVersion(callback) {
+	chrome.extension.sendMessage('request-version', callback);
+}
+
+//------------------------------------------------------------------------------
+
 function setupBep() {
 	bep = document.createElement('embed')
 	bep.type = "application/x-bep"
@@ -152,15 +158,19 @@ function setupBep() {
 	bep.className = 'plugin'
 	document.body.appendChild(bep);
 	
-	//extpath = chrome.extension.getURL('').split('/')[2];
-	//if (mac)
-	//	extpath = "/Users/username/Library/Application Support/Google/Chrome/Default/Extensions/" + extpath
-	//else if (windows)
-	//	extpath = "%LOCALAPPDATA%\\Google\\Chrome\\User Data\\Default\\Extensions\\" + extpath
-	extpath = "D:\\faham\\tim\\bric-n-brac\\chrome-extension";
-	bep.setExtensionPath(extpath);
-	bep.addEventListener("bracfileselect", onBracFileSelect, false);
-	bep.addEventListener('cleanup', onDismissDialogCleanup, false);
+	var version;
+	getVersion(function (responce) { 
+		version = responce.version; 
+		extpath = chrome.extension.getURL('').split('/')[2] + '\\' + version + '_0';
+		//if (mac)
+		//	extpath = "/Users/username/Library/Application Support/Google/Chrome/Default/Extensions/" + extpath
+		//else if (windows)
+			extpath = "%LOCALAPPDATA%\\Google\\Chrome\\User Data\\Default\\Extensions\\" + extpath
+		//extpath = "D:\\faham\\tim\\bric-n-brac\\chrome-extension";
+		bep.setExtensionPath(extpath);
+		bep.addEventListener("bracfileselect", onBracFileSelect, false);
+		bep.addEventListener('cleanup', onDismissDialogCleanup, false);
+	});
 }
 
 //------------------------------------------------------------------------------
