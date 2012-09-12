@@ -2,7 +2,7 @@
 <gpc defaultLocale="en_US" version="3" keySequence="42" currentLocale="en_US">
   <product appid="PHSP" version="12" name="Photoshop CS5/CS5.1"/>
   <target id="PHSP-12"/>
-  <ConfiguratorPanel name="bric-a-brac" width="190" height="56" init="doInit" close="doClose" persistent="True" extensionId="com.configurator.extension" extensionVersion="1.0.0" menuName="bric-a-brac">
+  <ConfiguratorPanel name="bric-a-brac" width="190" height="44" init="doInit" close="doClose" persistent="True" extensionId="com.configurator.extension" extensionVersion="1.0.0" menuName="bric-a-brac">
     <onInit><![CDATA[]]></onInit>
     <extensionDescription><![CDATA[]]></extensionDescription>
     <extensionAuthor><![CDATA[]]></extensionAuthor>

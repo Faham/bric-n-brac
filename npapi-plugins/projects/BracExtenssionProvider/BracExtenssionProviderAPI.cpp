@@ -27,7 +27,7 @@
 #include <ctime>
 #include "jsonxx.h"
 
-#include "pugixml.hpp"
+#include "pugixml.h"
 
 namespace jsonxx {
 	extern bool parse_string(std::istream& input, std::string* value);

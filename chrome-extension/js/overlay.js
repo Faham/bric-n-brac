@@ -151,6 +151,17 @@ function getVersion(callback) {
 
 //------------------------------------------------------------------------------
 
+function getOS() {
+	var os_name = "Unknown OS";
+	if (navigator.appVersion.indexOf("Win")!=-1) os_name = "Windows";
+	if (navigator.appVersion.indexOf("Mac")!=-1) os_name = "MacOS";
+	if (navigator.appVersion.indexOf("X11")!=-1) os_name = "UNIX";
+	if (navigator.appVersion.indexOf("Linux")!=-1) os_name = "Linux";
+	return os_name;
+}
+
+//------------------------------------------------------------------------------
+
 function setupBep() {
 	bep = document.createElement('embed')
 	bep.type = "application/x-bep"
@@ -162,11 +173,12 @@ function setupBep() {
 	getVersion(function (responce) { 
 		version = responce.version; 
 		extpath = chrome.extension.getURL('').split('/')[2] + '\\' + version + '_0';
-		//if (mac)
-		//	extpath = "/Users/username/Library/Application Support/Google/Chrome/Default/Extensions/" + extpath
-		//else if (windows)
+
+		if ('MacOS' == getOS())
+			extpath = "/Users/username/Library/Application Support/Google/Chrome/Default/Extensions/" + extpath
+		else if ('Windows' == getOS())
 			extpath = "%LOCALAPPDATA%\\Google\\Chrome\\User Data\\Default\\Extensions\\" + extpath
-		//extpath = "D:\\faham\\tim\\bric-n-brac\\chrome-extension";
+
 		bep.setExtensionPath(extpath);
 		bep.addEventListener("bracfileselect", onBracFileSelect, false);
 		bep.addEventListener('cleanup', onDismissDialogCleanup, false);
