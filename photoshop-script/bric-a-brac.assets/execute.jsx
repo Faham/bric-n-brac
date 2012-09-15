@@ -121,7 +121,7 @@ Exec.prototype.executeBlock = function(argList, timeout) {
 		temp_script.execute();
 	else if ('macos' == getOS()) {
 		var bash = new File('/bin/bash');
-		bash.execute(); //TODO: I need to execute te inexecutable file, but how should I change its permission.
+		bash.execute(); //TODO: I need to execute the executable file, but how should I change its permission.
 	}
 
 	try { 
