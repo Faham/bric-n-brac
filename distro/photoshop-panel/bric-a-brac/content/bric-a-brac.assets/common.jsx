@@ -43,7 +43,7 @@ function getPWD() {
 	deployed = true;
 
 	if (deployed)
-		return "Plug-ins/Panels/bric-a-brac/content/bric-a-brac.assets"
+		return app.path + "/Plug-ins/Panels/bric-a-brac/content/bric-a-brac.assets";
 	else {
 		if ('windows' == getOS())
 			return "D:/faham/tim/bric-a-brac/photoshop-script/bric-a-brac.assets"
