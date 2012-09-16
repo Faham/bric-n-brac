@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<brac version="1.0" artist="Tim Nowlin" name="My Childhood" timeinterval="0000-00-03 00-00-00" resolution="1366 768" dpi="72" tags="childhood, sad, family">
-	<bric id="1" resolution="428 367" position="100 100" rotate="0.0" scale="1" order="1" alpha="1.0" revision="1" />
-	<bric id="2" resolution="525 339" position="186.687 72.853" rotate="0.0" scale="1.856" order="1" alpha="1.0" revision="1"></bric>
-	
-</brac>

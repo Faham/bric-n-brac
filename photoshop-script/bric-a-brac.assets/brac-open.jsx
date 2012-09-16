@@ -18,7 +18,7 @@ function BracOpen() {
 
 	var f = null;
 	if ($.os.toLowerCase().search("windows") != -1)
-		f = File(openDialog("Open File", "Zip File:*.zip;All files:*.*"));
+		f = File(openDialog("Open File", "Zip File:*.zip;All Files:*.*"));
 	else if ($.os.toLowerCase().search("macintosh") != -1)
 		f = File(openDialog("Open File", function (filename) {
 			if (filename.substr(-3).toLowerCase() == 'zip')
