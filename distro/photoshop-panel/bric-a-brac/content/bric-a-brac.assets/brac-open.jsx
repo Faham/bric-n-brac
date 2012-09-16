@@ -10,22 +10,24 @@
 //==============================================================================
 
 function BracOpen() {
-	// Bricing the brac file.
-	var SevenZip = get7zip();
 
+	var SevenZip = get7zip();
 	if (!SevenZip)
 		return;
 
+	setEnv();
+
 	var f = null;
-	if ($.os.toLowerCase().search("windows") != -1)
+	if ('windows' == getOS()) {
 		f = File(openDialog("Open File", "Zip File:*.zip;All files:*.*"));
-	else if ($.os.toLowerCase().search("macintosh") != -1)
+	} else if ('macos' == getOS()) {
 		f = File(openDialog("Open File", function (filename) {
 			if (filename.substr(-3).toLowerCase() == 'zip')
 				return true;
 			else
 				return false;
 		}));
+	}
 
 	if(!f.exists)
 		return;
@@ -52,11 +54,12 @@ function BracOpen() {
 	//TODO: fix the add method parameters.
 	var doc_name = ts + '-' + brac.name.split('.')[0];
 	var resolution = brac_xml.@resolution.split(' ');
+	var dpi = parseInt(brac_xml.@dpi);
+
+	doc_w_px = parseInt(resolution[0]);
+	doc_h_px = parseInt(resolution[1]);
 	
-	var new_brac_doc = app.documents.add(parseInt(resolution[0])
-		, parseInt(resolution[1])
-		, parseInt(brac_xml.@dpi)
-		, doc_name
+	var new_brac_doc = app.documents.add(doc_w_px, doc_h_px, dpi, doc_name
 		, NewDocumentMode.RGB
 		, DocumentFill.TRANSPARENT, 1);
 		
@@ -96,18 +99,21 @@ function BracOpen() {
 		
 		// I'm getting the layer again, cause making it SmartObject changes its prior identification
 		layer = new_brac_doc.artLayers[0];
+		
+		//var resolution = bric.@resolution.split(' ');
+		//resolution[0] = parseInt(resolution[0]); resolution[1] = parseInt(resolution[1]);
+
 		var scale = parseFloat(bric.@scale);
-		var resolution = bric.@resolution.split(' ');
-		resolution[0] = parseInt(resolution[0]); resolution[1] = parseInt(resolution[1]);
-		var inch2centimeter = 2.54;
 		var l_width = scale * 100;
 		var l_height = scale * 100;
 		layer.resize(l_width, l_height); //relative to layer's initial size (bric)
+		
 		//layer.rotate(parseFloat(bric.@rotate));
+		
 		var position = bric.@position.split(' ');
-		position[0] = parseInt(position[0]); position[1] = parseInt(position[1]); 
-		layer.translate(position[0] - parseInt(layer.bounds[0])
-			, position[1] - parseInt(layer.bounds[1])); //relative to layer's last position (bric)
+		pos_x_px = parseInt(position[0]);
+		pos_y_px = parseInt(position[1]);
+		layer.translate(pos_x_px - parseInt(layer.bounds[0]), pos_y_px - parseInt(layer.bounds[1])); //relative to layer's last position (bric)
 	}
 
 	// brac initial brac file object
@@ -116,6 +122,8 @@ function BracOpen() {
 	desc.putString(0, brac.fullName); // brac file name
 	desc.putString(1, brac_dir); // brac temp directory
 	app.putCustomOptions(doc_name, desc, true);
+
+	resetEnv();
 };
 
 //==============================================================================

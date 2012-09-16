@@ -15,18 +15,14 @@ function get7zip() {
 	SevenZip = null;
 
 	if ('windows' == getOS())
-		SevenZip = new Exec(new File(
-			//"D:/faham/tim/bric-a-brac/photoshop-script/bric-a-brac.assets/7za.exe"
-			"Plug-ins/Panels/bric-a-brac/content/bric-a-brac.assets/7za.exe"
-		));
+		SevenZip = new Exec(new File(getPWD() + '/7za.exe'));
 	else if ('macos' == getOS())
-		SevenZip = new Exec(new File("/Users/faham/development/bric-a-brac/photoshop-script/bric-a-brac.assets/7za"));
+		SevenZip = new Exec(new File(getPWD() + '/7za'));
 
 	if (null == SevenZip) {
 		alert('OS \'' + $.os + '\' is not supported');
 		return null;
 	}
-
 
 //------------------------------------------------------------------------------
 

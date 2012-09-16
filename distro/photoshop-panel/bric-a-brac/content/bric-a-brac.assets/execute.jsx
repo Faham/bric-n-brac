@@ -46,6 +46,7 @@ Exec.prototype.toCommandStr = function(args) {
 
 Exec.prototype.getScriptName = function() {
 	var nm = '';
+
 	var ts = new Date().getTime();
 
 	if (this.app) {
@@ -53,6 +54,7 @@ Exec.prototype.getScriptName = function() {
 	} else {
 		nm = this.tmp + "/exec-" + ts + "." + getScriptExt();
 	}
+
 	return nm;
 };
 
@@ -106,25 +108,37 @@ Exec.prototype.block = function(semaphore, timeout) {
 
 Exec.prototype.executeBlock = function(argList, timeout) {
 	var str = this.toCommandStr(argList);
+	var temp_script = null;
+	var semaphore = null;
 
-	var temp_script = new File(this.getScriptName());
-	var semaphore = new File(temp_script.toString() + ".sem")
-
-	temp_script.open("w");
-	temp_script.writeln(str);
-	temp_script.writeln("echo Done > \"" + semaphore.fsName + '\"');
-	
-	temp_script.writeln(getRemoveCommand() + " \"" + temp_script.fsName + "\" >NUL");
-	temp_script.close();
-
-	if ('windows' == getOS())
-		temp_script.execute();
-	else if ('macos' == getOS()) {
-		var bash = new File('/bin/bash');
-		bash.execute(); //TODO: I need to execute the executable file, but how should I change its permission.
+	if ('macos' == getOS()) {
+		temp_script = new File(getPWD() + '/script.sh');
+		semaphore = new File(this.tmp + '/bric-a-brac-script.sh.sem')
+		if (semaphore.exists)
+			semaphore.remove();
+		temp_script.lineFeed = 'Unix';
+		temp_script.open("w", 'shlb');
+		temp_script.writeln('#!/bin/bash');
+		temp_script.writeln(str);
+		temp_script.writeln("echo Done > \"" + semaphore.fsName + '\"');
+	} else if ('windows' == getOS()) {
+		temp_script = new File(this.getScriptName());
+		semaphore = new File(temp_script.toString() + ".sem")
+		if (semaphore.exists)
+			semaphore.remove();
+		temp_script.open("w");
+		temp_script.writeln(str);
+		temp_script.writeln("echo Done > \"" + semaphore.fsName + '\"');
+		temp_script.writeln(getRemoveCommand() + " \"" + temp_script.fsName + "\" >NUL");
+	} else {
+		alert ('OS is not supported');
+		return;
 	}
+	
+	temp_script.close();
+	temp_script.execute();
 
-	try { 
+	try {
 		this.block(semaphore, timeout);
 	} finally {
 		semaphore.remove();
