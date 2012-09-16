@@ -52,6 +52,28 @@ function getPWD() {
 	}
 }
 
+//------------------------------------------------------------------------------
+
+env_rulerunits = app.preferences.rulerUnits;
+env_typeunits = app.preferences.typeUnits;
+
+function setEnv() {
+	app.preferences.rulerUnits = Units.PIXELS;
+	app.preferences.typeUnits = TypeUnits.PIXELS;
+}
+
+function resetEnv() {
+	app.preferences.rulerUnits = env_rulerunits;
+	app.preferences.typeUnits = env_typeunits;
+}
+
+//------------------------------------------------------------------------------
+
+function prcsRes(res, num) {
+	res = Math.pow(10, res)
+	return Math.round(num * res) / res
+}
+
 //==============================================================================
 
 // EOF
