@@ -2,7 +2,7 @@
 
 #===============================================================================
 
-import wx
+import wx, os
 from lib.tools import file
 
 #===============================================================================
@@ -11,9 +11,10 @@ class Icon(wx.TaskBarIcon):
 
 #-------------------------------------------------------------------------------
 
-	def __init__(self, menu):
+	def __init__(self, menu, parent):
 
 		wx.TaskBarIcon.__init__(self)
+		self.parent = parent
 
 		# menu options
 		self.menu = menu
@@ -25,8 +26,8 @@ class Icon(wx.TaskBarIcon):
 
 		# icon state
 		self.states = {
-			"on": wx.Icon(file("../resources/sync_started.png", "p"), wx.BITMAP_TYPE_PNG),
-			"off": wx.Icon(file("../resources/sync_stopped.png", "p"), wx.BITMAP_TYPE_PNG)
+			"on": wx.Icon(file(os.path.join(self.parent.homedir, "resources/sync_started.png"), "p"), wx.BITMAP_TYPE_PNG),
+			"off": wx.Icon(file(os.path.join(self.parent.homedir, "resources/sync_stopped.png"), "p"), wx.BITMAP_TYPE_PNG)
 		}
 		self.setStatus("off")
 
