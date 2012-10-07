@@ -13,7 +13,7 @@ class FrameSettings(wxFrameSettings):
 	def __init__(self, brac_sync):
 		wxFrameSettings.__init__(self, None)
 		self.bracsync = brac_sync
-		self.bracsync.loadEntries()
+		self.entries = self.bracsync.entries[:]
 		self.loadEntries()
 
 #-------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ class FrameSettings(wxFrameSettings):
 		
 		self.icons = {'dir': 0, 'file': 7, 'false': 2, 'true': 3}
 		
-		for i, e in enumerate(self.bracsync.entries):
+		for i, e in enumerate(self.entries):
 			index = self.m_listCtrl_selected.InsertStringItem(0, e['path'], self.icons[e['type']])
 			if e['type'] == 'dir':
 				self.m_listCtrl_selected.SetStringItem(index, 1, '', self.icons[str(e['recursive']).lower()])
@@ -58,7 +58,7 @@ class FrameSettings(wxFrameSettings):
 	def OnButtonClickAdd( self, event ):
 		path = self.m_genericDirCtrl_select.GetPath()
 		
-		for i, e in enumerate(self.bracsync.entries):
+		for i, e in enumerate(self.entries):
 			if path == e['path']:
 				dlg = wx.MessageDialog(self, 'Path is already added', 'Error', wx.OK | wx.ICON_EXCLAMATION)
 				dlg.ShowModal()
@@ -73,11 +73,11 @@ class FrameSettings(wxFrameSettings):
 		else:
 			return
 
-		self.bracsync.entries.append({'type': icon, 'path': path, 'recursive': recursive})
+		self.entries.append({'type': icon, 'path': path, 'recursive': recursive})
 		index = self.m_listCtrl_selected.InsertStringItem(0, path, self.icons[icon])
 		if icon == 'dir':
 			self.m_listCtrl_selected.SetStringItem(index, 1, '', self.icons[str(recursive).lower()])
-		self.m_listCtrl_selected.SetItemData(index, len(self.bracsync.entries) - 1)
+		self.m_listCtrl_selected.SetItemData(index, len(self.entries) - 1)
 	
 #-------------------------------------------------------------------------------
 
@@ -87,7 +87,7 @@ class FrameSettings(wxFrameSettings):
 		if index != -1 and flags & wx.LIST_HITTEST_ONITEMLABEL:
 			rect = self.m_listCtrl_selected.GetItemRect(index)
 			if event.GetX() > rect.x + rect.width - self.m_listCtrl_selected.GetColumnWidth(1):
-				entry = self.bracsync.entries[self.m_listCtrl_selected.GetItemData(index)]
+				entry = self.entries[self.m_listCtrl_selected.GetItemData(index)]
 				if entry['recursive'] is not None:
 					entry['recursive'] = not entry['recursive']
 					self.m_listCtrl_selected.SetStringItem(index, 1, '', self.icons[str(entry['recursive']).lower()])
@@ -103,16 +103,18 @@ class FrameSettings(wxFrameSettings):
 			
 		i = self.m_listCtrl_selected.GetFirstSelected()
 		while -1 != i:
-			self.bracsync.entries[self.m_listCtrl_selected.GetItemData(i)] = None
+			self.entries[self.m_listCtrl_selected.GetItemData(i)] = None
 			self.m_listCtrl_selected.DeleteItem(i)
 			i = self.m_listCtrl_selected.GetNextSelected(-1)
 		
-		self.bracsync.entries = [x for x in self.bracsync.entries if x != None]
+		self.entries = [x for x in self.entries if x != None]
 		self.loadEntries()
 	
 #-------------------------------------------------------------------------------
 
 	def OnButtonClickApply( self, event ):
+		self.bracsync.entries = self.entries[:]
+		self.bracsync.updateBracList()
 		self.bracsync.saveEntries()
 
 #-------------------------------------------------------------------------------

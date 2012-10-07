@@ -2,7 +2,9 @@
 
 #===============================================================================
 
-import wx, os, sys, json
+import wx, os, sys, json, time, fnmatch, glob
+import datetime as dt
+import xml.etree.ElementTree as et
 from icon import Icon
 from popup import Popup
 from threading import Thread
@@ -27,6 +29,7 @@ class BracSynchronizer(wx.App):
 		# menu handlers
 		menu = [
 			("Start/Stop", self.start),
+			("Synchronize", self.syncBracs),
 			("Settings", self.settings),
 			("Exit", self.exit),
 		]
@@ -45,8 +48,8 @@ class BracSynchronizer(wx.App):
 		self.Bind(wx.EVT_TIMER, self.main, timer)
 		timer.Start(500)
 		
-		self.updateBrac(r'D:\faham\tim\bric-a-brac\distro\brac.zip')
-
+		self.syncBracs()
+		
 		self.MainLoop()
 		
 #-------------------------------------------------------------------------------
@@ -55,6 +58,7 @@ class BracSynchronizer(wx.App):
 		f = open(self.entries_path, 'r')
 		self.entries = json.loads(f.read())
 		f.close()
+		self.updateBracList()
 		
 #-------------------------------------------------------------------------------
 
@@ -92,48 +96,121 @@ class BracSynchronizer(wx.App):
 
 #-------------------------------------------------------------------------------
 
-	def updateBrac(self, path):
+	def indent(self, elem, level=0):
+		i = "\n" + level*"	"
+		if len(elem):
+			if not elem.text or not elem.text.strip():
+				elem.text = i + "	"
+			if not elem.tail or not elem.tail.strip():
+				elem.tail = i
+			for elem in elem:
+				self.indent(elem, level+1)
+			if not elem.tail or not elem.tail.strip():
+				elem.tail = i
+		else:
+			if level and (not elem.tail or not elem.tail.strip()):
+				elem.tail = i
+
+#-------------------------------------------------------------------------------
+
+	def locate(self, pattern, root=os.curdir):
+		'''Locate all files matching supplied filename pattern in and below
+		supplied root directory.'''
+		for path, dirs, files in os.walk(os.path.abspath(root)):
+			for filename in fnmatch.filter(files, pattern):
+				yield os.path.join(path, filename)
+
+#-------------------------------------------------------------------------------
+
+	def updateBracList(self):
+		self.bracList = []
+		for e in self.entries:
+			if e['type'] == 'dir':
+				if e['recursive']:
+					bracs = self.locate('*.brac', e['path'])
+				elif not e['recursive']:
+					bracs = glob.glob(os.path.join(e['path'], '*.brac'))
+				for f in bracs:
+					if f not in self.bracList:
+						self.bracList.append(f)
+			elif e['type'] == 'file':
+				if e['path'] not in self.bracList:
+					self.bracList.append(e['path'])
+
+#-------------------------------------------------------------------------------
+
+	def syncBracs(self):
+		for b in self.bracList:
+			self.syncBrac(b)
+
+#-------------------------------------------------------------------------------
+
+	def syncBrac(self, path):
 		if not os.path.isfile(path): return False
 
-		import pdb; pdb.set_trace()
-		
-		vars1 = {
+		vars = {
 			'tools': os.path.join(self.homedir, 'tools'),
-			'brac_path': path,
-			'out': os.path.join(self.homedir, 'temp'),
+			'bracpath-brac': path,
+			'bracname-brac': os.path.split(path)[1],
+			'bracname-zip': "%s.zip" %  os.path.split(path)[1],
+			'bracpath-zip': "%s.zip" %  path,
+			'tempdir': os.path.join(self.homedir, 'temp'),
 		}
-		os.system('cd /d %(tools)s & 7za.exe e -yo"%(out)s" "%(brac_path)s" brac.xml' % vars1)
+
+		os.system('ren "%(bracpath-brac)s" "%(bracname-zip)s"' % vars)
+		os.system('cd /d %(tools)s & 7za.exe e -yo"%(tempdir)s" "%(bracpath-zip)s" brac.xml' % vars)
+
+		vars['bracdefpath'] = os.path.join(vars['tempdir'], 'brac.xml')
+		bracxml = et.parse(vars['bracdefpath'])
+		bracdef = bracxml.getroot()
+		resolution = dict(zip(['width', 'height'], bracdef.attrib['resolution'].split()))
 		
-		for bric in range(1):
-			bric_id = 1;
-			bric_revision = 1;
+		for bric in bracdef:
+			vars['bricid']      = bric.attrib['id']
+			vars['bricdir']     = os.path.join(vars['tempdir'], r'bric.%s' % vars['bricid'])
+			revision = str(int(bric.attrib['revision']) + 1)
+			vars['bricpath']    = os.path.join(vars['bricdir'], r'%s.png' % revision)
+			vars['bricdefpath'] = os.path.join(vars['bricdir'], 'bric.xml')
 			
-			vars2 = {
-				'tools': vars1['tools'],
-				'width': 1024,
-				'height': 768,
-				'url': 'http://www.google.com',
-				'out': os.path.join(self.homedir, r'temp\bric.%s\%s.png' % (bric_id, bric_revision)),
-			}
-			os.system('cd /d %(tools)s & cutycapt.exe --print-backgrounds=on --javascript=on --plugins=on --js-can-access-clipboard=on --min-width=%(width)s --min-height=%(height)s --url=%(url)s --out-format=png --out="%(out)s"' % vars2)
-
-			vars3 = {
-				'tools': vars1['tools'],
-				'bric': vars2['out'],
-				'w': 10,
-				'h': 20,
-				'x': '+10',
-				'y': '-10',
-			}
-			os.system('cd /d %(tools)s & convert.exe "%(bric)s" -crop %(w)sx%(h)s%(x)s%(y)s "%(bric)s"' % vars3);
+			os.system('cd /d %(tools)s & 7za.exe e -yo"%(bricdir)s" "%(bracpath-zip)s" bric.%(bricid)s/bric.xml' % vars)
 			
-			vars4 = {
-				'7z': vars1['7z'],
-				'brac_path': path,
-				'new_bric_dir': os.path.dirname(vars2['out']),
-			}
-			os.system('%(7z)s a "%(brac_path)s" "%(new_bric_dir)s"' % vars4)
+			bricxml = et.parse(vars['bricdefpath'])
+			bricdef = bricxml.getroot()
+			
+			lasttime = time.strptime(bricdef[len(bricdef) - 1].attrib['date'], '%Y-%m-%d %H:%M:%S')
+			dt_lasttime = dt.datetime.fromtimestamp(time.mktime(lasttime))
+			interval = dict(zip(['week', 'day', 'hour', 'minute', 'second'], [int(x) for x in bricdef.attrib['timeinterval'].replace('-', ' ').replace(':', ' ').split()]))
+			dt_deltatime = dt.timedelta(weeks = interval['week'], days = interval['day'], hours = interval['hour'], minutes = interval['minute'], seconds = interval['second'])
+			dt_nexttime = dt_lasttime + dt_deltatime
+			dt_curtime = dt.datetime.fromtimestamp(time.time())
+			if dt_nexttime > dt_curtime or dt_nexttime == dt_lasttime:
+				continue
+			
+			bricregion = dict(zip(['w', 'h', 'x', 'y'], bricdef.attrib['region'].split()))
+			
+			vars['bracwidth']  = resolution['width']
+			vars['bracheight'] = resolution['height']
+			vars['bricurl']    = bricdef.attrib['url']
+			vars['bricw']      = bricregion['w']
+			vars['brich']      = bricregion['h']
+			vars['bricx']      = '%s%s' % ('+' if int(bricregion['x']) > 0 else '-', bricregion['x'])
+			vars['bricy']      = '%s%s' % ('+' if int(bricregion['y']) > 0 else '-', bricregion['y'])
 
+			snapshot = et.Element('snapshot', {'revision': revision, 'date': time.strftime('%Y-%m-%d %H:%M:%S')})
+			bricdef.append(snapshot)
+			self.indent(bricdef)
+			bricxml.write(vars['bricdefpath'])
+			bric.attrib['revision'] = revision
+			
+			os.system('cd /d %(tools)s & cutycapt.exe --print-backgrounds=on --javascript=on --plugins=on --js-can-access-clipboard=on --min-width=%(bracwidth)s --min-height=%(bracheight)s --url=%(bricurl)s --out-format=png --out="%(bricpath)s"' % vars)
+			os.system('cd /d %(tools)s & convert.exe "%(bricpath)s" -crop %(bricw)sx%(brich)s%(bricx)s%(bricy)s "%(bricpath)s"' % vars)
+
+		self.indent(bracdef)
+		bracxml.write(vars['bracdefpath'])
+		os.system('cd /d %(tools)s & 7za.exe a "%(bracpath-zip)s" "%(tempdir)s/*"' % vars)
+		os.system('rmdir /S/Q "%(tempdir)s"' % vars)
+		os.system('ren "%(bracpath-zip)s" "%(bracname-brac)s"' % vars)
+		
 		return True
 	
 #-------------------------------------------------------------------------------
