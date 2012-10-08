@@ -244,8 +244,8 @@ class BracSynchronizer(wx.App):
 			'tools': os.path.join(self.homedir, 'tools'),
 			'bracpath-brac': path,
 			'bracname-brac': os.path.split(path)[1],
-			'bracname-zip': "%s.%s.zip" % (os.path.split(path)[1], time.time()),
-			'bracpath-zip': "%s.%s.zip" % (path, time.time()),
+			'bracname-zip': "%s.zip" %  os.path.split(path)[1],
+			'bracpath-zip': "%s.zip" %  path,
 			'tempdir': os.path.join(self.homedir, 'temp'),
 		}
 

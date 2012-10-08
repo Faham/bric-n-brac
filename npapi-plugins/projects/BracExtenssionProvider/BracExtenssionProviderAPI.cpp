@@ -152,7 +152,7 @@ FB::variant BracExtenssionProviderAPI::selectBracFile(const FB::variant& msg) {
 
 	DialogManager* dlg_mgr = DialogManager::get();
 	FB::PluginWindow* wh = m_plugin.lock()->GetWindow();
-	dlg_mgr->OpenFileDialog(m_host, wh, "", "Zip files (*.zip)|*.zip|All files (*.*)|*.*|", &onReturn);
+	dlg_mgr->OpenFileDialog(m_host, wh, "", "Brac files (*.brac)|*.brac|All files (*.*)|*.*|", &onReturn);
 	
 	return "done!";
 }
