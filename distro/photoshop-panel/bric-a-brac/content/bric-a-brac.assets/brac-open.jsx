@@ -19,10 +19,10 @@ function BracOpen() {
 
 	var f = null;
 	if ('windows' == getOS()) {
-		f = File(openDialog("Open File", "Zip File:*.zip;All Files:*.*"));
+		f = File(openDialog("Open File", "Brac File:*.brac;All Files:*.*"));
 	} else if ('macos' == getOS()) {
 		f = File(openDialog("Open File", function (filename) {
-			if (filename.substr(-3).toLowerCase() == 'zip')
+			if (filename.substr(-4).toLowerCase() == 'brac')
 				return true;
 			else
 				return false;

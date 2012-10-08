@@ -17,7 +17,7 @@ function BracSaveAs() {
 	var cur_doc = app.activeDocument;
 	var desc = app.getCustomOptions(cur_doc.name);
 	var temp_dir = new Folder(desc.getString(1));
-	var target_filename = File.saveDialog("Save As", "*.zip");
+	var target_filename = File.saveDialog("Save As", "*.brac");
 	if (target_filename)
 		saveAs(temp_dir, target_filename)
 };
