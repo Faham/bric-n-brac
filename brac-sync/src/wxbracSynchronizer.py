@@ -41,7 +41,7 @@ class wxFrameSettings ( wx.Frame ):
 		self.m_staticText_toselect.Wrap( 300 )
 		bSizer3.Add( self.m_staticText_toselect, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 5 )
 		
-		self.m_genericDirCtrl_select = wx.GenericDirCtrl( self.m_panel_main, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.DIRCTRL_SHOW_FILTERS|wx.SUNKEN_BORDER, u"Zip files (*.zip)|*.zip|All files (*.*)|*.*", 0 )
+		self.m_genericDirCtrl_select = wx.GenericDirCtrl( self.m_panel_main, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.DIRCTRL_SHOW_FILTERS|wx.SUNKEN_BORDER, u"Brac files (*.brac)|*.brac|All files (*.*)|*.*", 0 )
 		
 		self.m_genericDirCtrl_select.ShowHidden( False )
 		bSizer3.Add( self.m_genericDirCtrl_select, 1, wx.EXPAND |wx.ALL, 0 )

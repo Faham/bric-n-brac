@@ -67,7 +67,7 @@ class FrameSettings(wxFrameSettings):
 		if os.path.isdir(path):
 			icon = 'dir'
 			recursive = True
-		elif os.path.isfile(path) and path[-3:].lower() == 'zip':
+		elif os.path.isfile(path) and path[-4:].lower() == 'brac':
 			icon = 'file'
 			recursive = None
 		else:
@@ -113,9 +113,7 @@ class FrameSettings(wxFrameSettings):
 #-------------------------------------------------------------------------------
 
 	def OnButtonClickApply( self, event ):
-		self.bracsync.entries = self.entries[:]
-		self.bracsync.updateBracList()
-		self.bracsync.saveEntries()
+		self.bracsync.setEntries(self.entries[:])
 
 #-------------------------------------------------------------------------------
 
