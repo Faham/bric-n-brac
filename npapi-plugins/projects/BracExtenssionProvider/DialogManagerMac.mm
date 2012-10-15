@@ -20,6 +20,10 @@ void DialogManagerMac::OpenFolderDialog(const FB::BrowserHostPtr& host, FB::Plug
     host->ScheduleOnMainThread(boost::shared_ptr<DialogManagerMac>(), boost::bind(&DialogManagerMac::_showFolderDialog, this, win, cb));
 }
 
+void DialogManagerMac::OpenFileDialog(const FB::BrowserHostPtr& host, FB::PluginWindow* win, const std::string& path, const std::string& filter, const PathCallback& cb)
+{
+}
+
 void DialogManagerMac::_showFolderDialog(FB::PluginWindow* win, const PathCallback& cb)
 {
     FBLOG_INFO("DialogManagerMac", "Showing folder dialog");

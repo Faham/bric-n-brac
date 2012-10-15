@@ -10,6 +10,7 @@ class DialogManagerMac : public DialogManager
 {
 public:
     void OpenFolderDialog(const FB::BrowserHostPtr& host, FB::PluginWindow* win, const PathCallback& cb);
+	void OpenFileDialog(const FB::BrowserHostPtr& host, FB::PluginWindow* win, const std::string& path, const std::string& filter, const PathCallback& cb);
     void _showFolderDialog(FB::PluginWindow* win, const PathCallback& cb);
 
 protected:

@@ -1,4 +1,6 @@
 
+#if defined __WIN32__
+
 #include "win_common.h"
 #include <commdlg.h>
 #include <string>
@@ -100,3 +102,5 @@ void DialogManagerWin::_showFileDialog(HWND wnd, const std::string& path, const 
 
     cb(out);
 }
+
+#endif

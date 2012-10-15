@@ -1,3 +1,5 @@
+#if defined __WIN32__
+
 #ifndef DialogManagerWin_h__
 #define DialogManagerWin_h__
 
@@ -20,3 +22,5 @@ protected:
     friend class DialogManager;
 };
 #endif // DialogManagerWin_h__
+
+#endif

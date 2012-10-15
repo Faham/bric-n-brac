@@ -14,19 +14,26 @@
 #include <string>
 #include <iostream>
 #include <stdio.h>
-#include "DialogManager.h"
 #include <stdlib.h>
 #include <DOM.h>
 //#define _X86_	1
 
-#include <Windows.h>
-#include <fstream>
-#include <atlstr.h>
+#include "DialogManager.h"
 
+#ifdef __WIN32__
+	#include <windows.h>
+	#include <atlstr.h>
+#endif
+
+#ifdef __APPLE__
+	#include <unistd.h>
+#endif
+
+#include <fstream>
 #include <sstream>
 #include <ctime>
-#include "jsonxx.h"
 
+#include "jsonxx.h"
 #include "pugixml.h"
 
 namespace jsonxx {
@@ -36,7 +43,7 @@ namespace jsonxx {
 }
 
 std::string system_call (const std::string & cmd) {
-	FILE* pipe = _popen(cmd.c_str(), "r");
+	FILE* pipe = popen(cmd.c_str(), "r");
 	if (!pipe) return "ERROR";
 	char buffer[128];
 	std::string result = "";
@@ -44,7 +51,7 @@ std::string system_call (const std::string & cmd) {
 		if(fgets(buffer, 128, pipe) != NULL)
 			result += buffer;
 	}
-	_pclose(pipe);
+	pclose(pipe);
 	return result;
 }
 
@@ -99,6 +106,7 @@ FB::variant BracExtenssionProviderAPI::getSysCallResult(const FB::variant& msg)
 	return "Invalid index";
 }
 
+#if defined __WIN32__
 std::wstring s2ws(const std::string& s)
 {
 	int len;
@@ -110,6 +118,7 @@ std::wstring s2ws(const std::string& s)
 	delete[] buf;
 	return r;
 }
+#endif
 
 FB::DOM::DocumentPtr document;
 BracExtenssionProviderAPI * brac_extenssion_provider_api = NULL;
@@ -220,7 +229,7 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 	
 	pugi::xml_object_range<pugi::xml_node_iterator> children = brac_node.children();
 	for (pugi::xml_node_iterator itr = children.begin(); itr != children.end(); ++itr)
-		if (itr->type() == pugi::xml_node_type::node_pcdata) {
+		if (itr->type() == pugi::node_pcdata) {
 			brac_node.remove_child(*itr);
 			itr = children.begin();
 		}
@@ -234,9 +243,9 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 	command = "cd /d \"" + m_extension_path + "\" & bin\\7za.exe u \"" + path + "\" brac.xml & del /F /Q brac.xml";
 	systemCall(command);
 
-	char buf[33];
-	itoa(new_brac_num, buf, 10);
-	std::string new_bric_path = m_extension_path + "\\temp\\bric." + buf;
+	std::stringstream stm;
+	stm << new_brac_num;
+	std::string new_bric_path = m_extension_path + "\\temp\\bric." + stm.str();
 	command = "mkdir \"" + new_bric_path + "\"";
 	systemCall(command);
 
