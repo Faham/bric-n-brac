@@ -92,7 +92,7 @@ if (currVersion != prevVersion) {
 //==============================================================================
 
 chrome.browserAction.onClicked.addListener(function(tab) {
-	chrome.tabs.executeScript(null, {file:"js\\overlay.js"});
+	chrome.tabs.executeScript(null, {file:"js/overlay.js"});
 	
 	//file_io = document.createElement('embed')
 	//file_io.type = "application/x-npapi-file-io"

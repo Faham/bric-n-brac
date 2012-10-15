@@ -132,12 +132,16 @@ void onReturn(const std::string& path) {
 	}
 
 	std::string root_dir = api_ptr->getExtensionPath();
-	std::string command = "cd /d \"" + root_dir + "\" & bin\\7za.exe e -y \"" + path + "\" brac.xml";
+	#if defined __WIN32__
+		std::string command = "cd /d \"" + root_dir + "\" & bin\\7za.exe e -y \"" + path + "\" brac.xml";
+	#elif defined __APPLE__
+		std::string command = "cd " + root_dir + "; bin/7za e -y " + path + " brac.xml";
+	#endif
 	api_ptr->systemCall(command);
 
 	std::string content;
 
-	std::string brac_path = root_dir + "\\brac.xml";
+	std::string brac_path = root_dir + "/brac.xml";
 	pugi::xml_document brac_xml;
 	std::stringstream out_stream(std::stringstream::out);
 	pugi::xml_parse_result res = brac_xml.load_file(brac_path.c_str());
@@ -148,7 +152,11 @@ void onReturn(const std::string& path) {
 	brac_xml.save(out_stream);
 	content = out_stream.str();
 
-	command = std::string("del /F /Q \"") + root_dir + "\\brac.xml\"";
+	#if defined __WIN32__
+		command = std::string("del /F /Q \"") + root_dir + "\\brac.xml\"";
+	#elif defined __APPLE__
+		command = std::string("rm -f ") + root_dir + "/brac.xml";
+	#endif
 	api_ptr->systemCall(command);
 
 	brac_extenssion_provider_api->fire_bracfileselect(path, content);
@@ -195,10 +203,14 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 	jsonxx::Object & bric_info = o.get<jsonxx::Object>("bric");
 	std::string path = brac_info.get<std::string>("filepath");
 
-	command = "cd /d \"" + m_extension_path + "\" & bin\\7za.exe e -y \"" + path + "\" brac.xml";
+	#if defined __WIN32__
+		command = "cd /d \"" + m_extension_path + "\" & bin\\7za.exe e -y \"" + path + "\" brac.xml";
+	#elif defined __APPLE__
+		command = "cd " + m_extension_path + "; bin/7za e -y " + path + " brac.xml";
+	#endif
 	systemCall(command);
 
-	std::string in_file = m_extension_path + "\\brac.xml";
+	std::string in_file = m_extension_path + "/brac.xml";
 
 	pugi::xml_document brac_xml;
 	pugi::xml_parse_result result = brac_xml.load_file(in_file.c_str());
@@ -235,18 +247,26 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 		}
 	brac_node.append_child(pugi::node_pcdata).set_value(brac_info.get<std::string>("comment").c_str());
 
-	std::string out_file = m_extension_path + "\\brac.xml";
+	std::string out_file = m_extension_path + "/brac.xml";
 	
 	if (!brac_xml.save_file(out_file.c_str()))
 		log("Error occurred while creating the new brac file: " + out_file);
 
-	command = "cd /d \"" + m_extension_path + "\" & bin\\7za.exe u \"" + path + "\" brac.xml & del /F /Q brac.xml";
+	#if defined __WIN32__
+		command = "cd /d \"" + m_extension_path + "\" & bin\\7za.exe u \"" + path + "\" brac.xml & del /F /Q brac.xml";
+	#elif defined __APPLE__
+		command = "cd " + m_extension_path + "; bin/7za u " + path + " brac.xml; rm -f brac.xml";
+	#endif
 	systemCall(command);
 
 	std::stringstream stm;
 	stm << new_brac_num;
-	std::string new_bric_path = m_extension_path + "\\temp\\bric." + stm.str();
-	command = "mkdir \"" + new_bric_path + "\"";
+	std::string new_bric_path = m_extension_path + "/temp/bric." + stm.str();
+	#if defined __WIN32__
+		command = "mkdir \"" + new_bric_path + "\"";
+	#elif defined __APPLE__
+		command = "mkdir " + new_bric_path;
+	#endif
 	systemCall(command);
 
 	pugi::xml_document bric_xml;
@@ -275,8 +295,8 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 	
 	snapshot_node.append_attribute("date").set_value(buf2);
 
-	std::string new_bric_filepath = new_bric_path + "\\bric.xml";
-	std::string bric_screenshot = new_bric_path + "\\1.png";
+	std::string new_bric_filepath = new_bric_path + "/bric.xml";
+	std::string bric_screenshot = new_bric_path + "/1.png";
 
 	if (!bric_xml.save_file(new_bric_filepath.c_str()))
 		log("Error occurred while creating the new bric file: " + new_bric_filepath);
@@ -302,39 +322,83 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 			--out="D:\faham\tim\bric-n-brac\chrome-extension\temp\bric.1\1.png"
 	*/
 
-	command = "cd /d \"" + m_extension_path + "\" & bin\\cutycapt.exe"
-		+ " --print-backgrounds=on --javascript=on --plugins=on --js-can-access-clipboard=on"
-		+ " --min-width=" + brac_resolution[0]
-		+ " --min-height=" + brac_resolution[1]
-		+ " --url=" + bric_info.get<std::string>("url")
-		+ " --out-format=png"
-		+ " --out=\"" + bric_screenshot + "\"";
-	systemCall(command);
+	#if defined __WIN32__
+		command = "cd /d \"" + m_extension_path + "\" & bin\\cutycapt.exe"
+			+ " --print-backgrounds=on --javascript=on --plugins=on --js-can-access-clipboard=on"
+			+ " --min-width=" + brac_resolution[0]
+			+ " --min-height=" + brac_resolution[1]
+			+ " --url=" + bric_info.get<std::string>("url")
+			+ " --out-format=png"
+			+ " --out=\"" + bric_screenshot + "\"";
+		systemCall(command);
 
-	command = "cd /d \"" + m_extension_path + "\" & bin\\convert.exe"
-		+ " \"" + bric_screenshot + "\""
-		+ " -crop " + bric_region[2] + "x" + bric_region[3] + "+" + bric_region[0] + "+" + bric_region[1]
-		+ " \"" + bric_screenshot + "\"";
-	systemCall(command);
+		command = "cd /d \"" + m_extension_path + "\" & bin\\convert.exe"
+			+ " \"" + bric_screenshot + "\""
+			+ " -crop " + bric_region[2] + "x" + bric_region[3] + "+" + bric_region[0] + "+" + bric_region[1]
+			+ " \"" + bric_screenshot + "\"";
+		systemCall(command);
 
-	command = "cd /d \"" + m_extension_path + "\" & bin\\7za.exe a \"" + path + "\" \"" + new_bric_path + "\"";
-	systemCall(command);
+		command = "cd /d \"" + m_extension_path + "\" & bin\\7za.exe a \"" + path + "\" \"" + new_bric_path + "\"";
+		systemCall(command);
 
-	command = "rmdir /S /Q \"" + m_extension_path + "\\temp\"";
-	systemCall(command);
+		command = "rmdir /S /Q \"" + m_extension_path + "\\temp\"";
+		systemCall(command);
+	#elif defined __APPLE__
+		command = "cd " + m_extension_path + "; bin/cutycapt"
+			+ " --print-backgrounds=on --javascript=on --plugins=on --js-can-access-clipboard=on"
+			+ " --min-width=" + brac_resolution[0]
+			+ " --min-height=" + brac_resolution[1]
+			+ " --url=" + bric_info.get<std::string>("url")
+			+ " --out-format=png"
+			+ " --out=\"" + bric_screenshot + "\"";
+		systemCall(command);
+
+		command = "cd " + m_extension_path + "; bin/convert"
+			+ bric_screenshot
+			+ " -crop " + bric_region[2] + "x" + bric_region[3] + "+" + bric_region[0] + "+" + bric_region[1]
+			+ " " + bric_screenshot;
+		systemCall(command);
+
+		command = "cd " + m_extension_path + "; bin/7za a " + path + " " + new_bric_path;
+		systemCall(command);
+
+		command = "rm -Rf " + m_extension_path + "/temp";
+		systemCall(command);
+	#endif
+
 	fire_cleanup();
 
 	return "done!";
 }
 
+const char * getEnv( const char * var ) {
+	const char * val = ::getenv(var);
+	if ( val == 0 ) {
+		return "";
+	}
+	else {
+		return val;
+	}
+}
+
 FB::variant BracExtenssionProviderAPI::setExtensionPath(const FB::variant& msg) {
 	m_extension_path = msg.cast<std::string>();
 	size_t index = 0;
-	char * env_var = "LOCALAPPDATA";
-	index = m_extension_path.find(env_var, index);
-	if (std::string::npos != index)
-		m_extension_path.replace(index - 1, std::strlen(env_var) + 2, getenv(env_var));
-	log("Extension path is set to: " + m_extension_path);
+
+	#if defined __WIN32__
+		char * env_var = "LOCALAPPDATA";
+	#elif defined __APPLE__
+		char * env_var = "USER";
+	#endif
+
+	std::string signedvar = '%' + std::string(env_var) + '%';
+	index = m_extension_path.find(signedvar, index);
+	if (std::string::npos != index) {
+		m_extension_path.replace(index, signedvar.length(), getEnv(env_var));
+		log("Extension path is set to ('" + std::string(getEnv(env_var)) + "'): " + m_extension_path);
+	} else {	
+		log("No environment variable was found: " + m_extension_path);
+	}
 	return m_extension_path;
 }
 

@@ -170,16 +170,18 @@ function setupBep() {
 	document.body.appendChild(bep);
 	
 	var version;
+
 	getVersion(function (responce) { 
 		version = responce.version; 
-		extpath = chrome.extension.getURL('').split('/')[2] + '\\' + version + '_0';
+		extpath = chrome.extension.getURL('').split('/')[2] + '/' + version + '_0';
 
 		if ('MacOS' == getOS())
-			extpath = "/Users/username/Library/Application Support/Google/Chrome/Default/Extensions/" + extpath
+			extpath = "/Users/%USER%/Library/Application\ Support/Google/Chrome/Default/Extensions/" + extpath
 		else if ('Windows' == getOS())
-			extpath = "%LOCALAPPDATA%\\Google\\Chrome\\User Data\\Default\\Extensions\\" + extpath
+			extpath = "%LOCALAPPDATA%/Google/Chrome/User Data/Default/Extensions/" + extpath
 
-		//extpath = "D:\\faham\\tim\\bric-a-brac\\chrome-extension"
+		//extpath = "D:/faham/tim/bric-a-brac/chrome-extension"
+		extpath = "/Users/faham/development/bric-a-brac/chrome-extension"
 		
 		bep.setExtensionPath(extpath);
 		bep.addEventListener("bracfileselect", onBracFileSelect, false);
