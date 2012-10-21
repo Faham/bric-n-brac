@@ -42,6 +42,9 @@ namespace jsonxx {
 	extern bool match(const char* pattern, std::istream& input);
 }
 
+FB::DOM::DocumentPtr document;
+BracExtenssionProviderAPI * brac_extenssion_provider_api = NULL;
+
 std::string system_call (const std::string & cmd) {
 	FILE* pipe = popen(cmd.c_str(), "r");
 	if (!pipe) return "ERROR";
@@ -124,14 +127,13 @@ std::string escapepath(const std::string & s)
 {
 	std::string escaped_s = s;
 	int pos = 0;
-	while ((pos = escaped_s.find(" ")) != std::string::npos)
+	while ((pos = escaped_s.find(" ", pos)) != std::string::npos) {
 		escaped_s.replace(pos, 1, "\\ ");
+		pos += 2;
+	}
 	return escaped_s;
 }
 #endif
-
-FB::DOM::DocumentPtr document;
-BracExtenssionProviderAPI * brac_extenssion_provider_api = NULL;
 
 void onReturn(const std::string& path) {
 	BracExtenssionProviderAPI * api_ptr = brac_extenssion_provider_api;
@@ -154,7 +156,10 @@ void onReturn(const std::string& path) {
 		std::string escaped_root_dir = escapepath(root_dir);
 		api_ptr->log("brac extension root dir (escaped): " + escaped_root_dir);
 
-		std::string command = "cd " + escaped_root_dir + "; bin/7za e -y " + path + " brac.xml";
+		std::string escaped_path = escapepath(path);
+		api_ptr->log("selected brac dir (escaped): " + escaped_path);
+
+		std::string command = "cd " + escaped_root_dir + "; bin/7za e -y " + escaped_path + " brac.xml";
 	#endif
 	api_ptr->systemCall(command);
 
@@ -227,7 +232,9 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 	#if defined __WIN32__
 		command = "mv \"" + path_orig + "\"  \"" + path + "\"";
 	#elif defined __APPLE__
-		command = "mv " + path_orig + " " + path;
+		std::string escaped_path = escapepath(path);
+		std::string escaped_path_orig = escapepath(path_orig);
+		command = "mv " + escaped_path_orig + " " + escaped_path;
 	#endif
 	systemCall(command);
 
@@ -235,7 +242,6 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 		command = "cd /d \"" + m_extension_path + "\" & bin\\7za.exe e -y \"" + path + "\" brac.xml";
 	#elif defined __APPLE__
 		std::string escaped_extension_path = escapepath(m_extension_path);
-		std::string escaped_path = escapepath(path);
 		command = "cd " + escaped_extension_path + "; bin/7za e -y " + escaped_path + " brac.xml";
 	#endif
 	systemCall(command);
@@ -403,7 +409,7 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 	#if defined __WIN32__
 		command = "mv \"" + path + "\"  \"" + path_orig + "\"";
 	#elif defined __APPLE__
-		command = "mv " + path + " " + path_orig;
+		command = "mv " + escaped_path + " " + escaped_path_orig;
 	#endif
 	systemCall(command);
 
@@ -440,6 +446,14 @@ FB::variant BracExtenssionProviderAPI::setExtensionPath(const FB::variant& msg) 
 	} else {	
 		log("No environment variable was found: " + m_extension_path);
 	}
+
+#if defined __APPLE__
+	std::string esc_ext_path = escapepath(m_extension_path);
+	systemCall("chmod 700 " + esc_ext_path + "/bin/7za");
+	systemCall("chmod 700 " + esc_ext_path + "/bin/convert");
+	systemCall("chmod 700 " + esc_ext_path + "/bin/webkit2png");
+#endif
+
 	return m_extension_path;
 }
 
