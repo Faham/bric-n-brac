@@ -1,0 +1,13 @@
+- download imagemagick source from http://www.imagemagick.org/script/install-source.php#unix
+- donwloaded png delegate from http://www.imagemagick.org/download/delegates/
+- extract imagemagick, and then extract png delegate into a directory titled png under imagemagick root
+- got to png dirctory and run the following commands:
+	export CFLAGS="-isysroot /Developer/SDKs/MacOSX10.6.sdk -arch ppc -arch i386"
+	export CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.6.sdk -arch ppc -arch i386"
+	export LDFLAGS="-Wl,-syslibroot,/Developer/SDKs/MacOSX10.6.sdk -arch ppc -arch i386"
+	./configure --disable-shared --disable-dependency-tracking
+	make
+	cd ..  # going to imagemagick root
+	./configure --enable-delegate-build --disable-shared --disable-dependency-tracking --prefix=(target build dir)
+	make
+	make install

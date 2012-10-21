@@ -181,7 +181,7 @@ function setupBep() {
 			extpath = "%LOCALAPPDATA%/Google/Chrome/User Data/Default/Extensions/" + extpath
 
 		//extpath = "D:/faham/tim/bric-a-brac/chrome-extension"
-		extpath = "/Users/faham/development/bric-a-brac/chrome-extension"
+		//extpath = "/Users/faham/development/bric-a-brac/chrome-extension"
 		
 		bep.setExtensionPath(extpath);
 		bep.addEventListener("bracfileselect", onBracFileSelect, false);
