@@ -1,5 +1,5 @@
 
-#if defined __WIN32__
+#if defined _WIN32
 
 #include "win_common.h"
 #include <commdlg.h>

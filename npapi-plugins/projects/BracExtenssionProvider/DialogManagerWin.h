@@ -1,4 +1,4 @@
-#if defined __WIN32__
+#if defined _WIN32
 
 #ifndef DialogManagerWin_h__
 #define DialogManagerWin_h__

@@ -20,9 +20,10 @@
 
 #include "DialogManager.h"
 
-#ifdef __WIN32__
+#if defined _WIN32
 	#include <windows.h>
 	#include <atlstr.h>
+	#include <stdlib.h>
 #endif
 
 #ifdef __APPLE__
@@ -44,6 +45,11 @@ namespace jsonxx {
 
 FB::DOM::DocumentPtr document;
 BracExtenssionProviderAPI * brac_extenssion_provider_api = NULL;
+
+#if defined _WIN32
+	#define popen _popen
+	#define pclose _pclose
+#endif
 
 std::string system_call (const std::string & cmd) {
 	FILE* pipe = popen(cmd.c_str(), "r");
@@ -109,7 +115,7 @@ FB::variant BracExtenssionProviderAPI::getSysCallResult(const FB::variant& msg)
 	return "Invalid index";
 }
 
-#if defined __WIN32__
+#if defined _WIN32
 std::wstring s2ws(const std::string& s)
 {
 	int len;
@@ -150,7 +156,7 @@ void onReturn(const std::string& path) {
 	}
 
 	std::string root_dir = api_ptr->getExtensionPath();
-	#if defined __WIN32__
+	#if defined _WIN32
 		std::string command = "cd /d \"" + root_dir + "\" & bin\\7za.exe e -y \"" + path + "\" brac.xml";
 	#elif defined __APPLE__
 		std::string escaped_root_dir = escapepath(root_dir);
@@ -176,7 +182,7 @@ void onReturn(const std::string& path) {
 	brac_xml.save(out_stream);
 	content = out_stream.str();
 
-	#if defined __WIN32__
+	#if defined _WIN32
 		command = "del /F /Q \"" + root_dir + "\\brac.xml\"";
 	#elif defined __APPLE__
 		command = "rm -f " + escaped_root_dir + "/brac.xml";
@@ -229,8 +235,13 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 	std::string path_orig = path;
 	path += ".zip";
 	
-	#if defined __WIN32__
-		command = "mv \"" + path_orig + "\"  \"" + path + "\"";
+	#if defined _WIN32
+		char drive[_MAX_DRIVE];
+		char dir[_MAX_DIR];
+		char fname[_MAX_FNAME];
+		char ext[_MAX_EXT];
+		_splitpath(path.c_str(), drive, dir, fname, ext);
+		command = "rename \"" + path_orig + "\"  \"" + fname + ext + "\"";
 	#elif defined __APPLE__
 		std::string escaped_path = escapepath(path);
 		std::string escaped_path_orig = escapepath(path_orig);
@@ -238,7 +249,7 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 	#endif
 	systemCall(command);
 
-	#if defined __WIN32__
+	#if defined _WIN32
 		command = "cd /d \"" + m_extension_path + "\" & bin\\7za.exe e -y \"" + path + "\" brac.xml";
 	#elif defined __APPLE__
 		std::string escaped_extension_path = escapepath(m_extension_path);
@@ -288,7 +299,7 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 	if (!brac_xml.save_file(out_file.c_str()))
 		log("Error occurred while creating the new brac file: " + out_file);
 
-	#if defined __WIN32__
+	#if defined _WIN32
 		command = "cd /d \"" + m_extension_path + "\" & bin\\7za.exe u \"" + path + "\" brac.xml & del /F /Q brac.xml";
 	#elif defined __APPLE__
 		command = "cd " + escaped_extension_path + "; bin/7za u " + escaped_path + " brac.xml; rm -f brac.xml";
@@ -298,7 +309,7 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 	std::stringstream stm;
 	stm << new_brac_num;
 	std::string new_bric_path = m_extension_path + "/temp/bric." + stm.str();
-	#if defined __WIN32__
+	#if defined _WIN32
 		command = "mkdir \"" + new_bric_path + "\"";
 	#elif defined __APPLE__
 		std::string escaped_new_bric_path = escapepath(new_bric_path);
@@ -359,7 +370,7 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 			--out="D:\faham\tim\bric-n-brac\chrome-extension\temp\bric.1\1.png"
 	*/
 
-	#if defined __WIN32__
+	#if defined _WIN32
 		command = "cd /d \"" + m_extension_path + "\" & bin\\cutycapt.exe"
 			+ " --print-backgrounds=on --javascript=on --plugins=on --js-can-access-clipboard=on"
 			+ " --min-width=" + brac_resolution[0]
@@ -379,6 +390,10 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 		systemCall(command);
 
 		command = "rmdir /S /Q \"" + m_extension_path + "\\temp\"";
+		systemCall(command);
+
+		_splitpath(path_orig.c_str(), drive, dir, fname, ext);
+		command = "rename \"" + path + "\"  \"" + fname + ext + "\"";
 		systemCall(command);
 	#elif defined __APPLE__
 		command = "cd " + escaped_extension_path + "; bin/webkit2png --fullsize"
@@ -404,14 +419,10 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 
 		command = "rm -Rf " + escaped_extension_path + "/temp";
 		systemCall(command);
-	#endif
 
-	#if defined __WIN32__
-		command = "mv \"" + path + "\"  \"" + path_orig + "\"";
-	#elif defined __APPLE__
 		command = "mv " + escaped_path + " " + escaped_path_orig;
+		systemCall(command);
 	#endif
-	systemCall(command);
 
 	fire_cleanup();
 
@@ -432,7 +443,7 @@ FB::variant BracExtenssionProviderAPI::setExtensionPath(const FB::variant& msg) 
 	m_extension_path = msg.cast<std::string>();
 	size_t index = 0;
 
-	#if defined __WIN32__
+	#if defined _WIN32
 		char * env_var = "LOCALAPPDATA";
 	#elif defined __APPLE__
 		char * env_var = "USER";
