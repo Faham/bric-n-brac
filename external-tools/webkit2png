@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# webkit2png - makes screenshots of web pages
+# webkit2png - makes screenshots of web pages 
 # http://www.paulhammond.org/webkit2png
 
 __version__ = "0.6 beta"
