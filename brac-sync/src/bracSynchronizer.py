@@ -4,12 +4,14 @@
 
 import wx, os, sys, json, time, fnmatch, glob
 import datetime as dt
+import platform
 import xml.etree.ElementTree as et
-from icon import Icon
 from popup import Popup
 from threading import Thread
 from frameSettings import FrameSettings
-from bracList import BracList
+if self.getOS() == 'win':
+	from icon import Icon
+#from bracList import BracList
 
 #===============================================================================
 
@@ -35,12 +37,19 @@ class BracSynchronizer(wx.App):
 		]
 
 		# main objects
-		self.icon = Icon(menu, self)
-		self.popup = Popup()
+		if self.getOS() == 'win':
+			self.icon = Icon(menu, self)
+			self.popup = Popup()
 
-		p = os.path.join(os.environ['APPDATA'], 'uofs/bric-a-brac')
+		if self.getOS() == 'win':
+			p = os.path.join(os.environ['APPDATA'], 'uofs/bric-a-brac')
+		elif self.getOS() == 'mac':
+			p = os.path.join('/Users', os.environ['USER'])
+			p = os.path.join(p, 'Library/Application Support')
+			p = os.path.join(p, 'uofs/bric-a-brac')
 		if not os.path.exists(p): os.makedirs(p)
 		self.entries_path = os.path.join(p, 'bracList.json')
+
 		self.loadEntries()
 
 		mtimer = wx.Timer(self, -1)
@@ -55,10 +64,28 @@ class BracSynchronizer(wx.App):
 		
 #-------------------------------------------------------------------------------
 
+	def getOS(self):
+		_sys = 'unknown'
+
+		if platform.mac_ver() != ('', ('', '', ''), ''):
+				_sys = 'mac'
+		elif platform.win_ver() != ('', '', '', ''):
+				_sys = 'win'
+
+		return _sys
+
+#-------------------------------------------------------------------------------
+
 	def loadEntries(self):
-		f = open(self.entries_path, 'r')
-		self.entries = json.loads(f.read())
-		f.close()
+		self.entries = []
+
+		try:
+			with open(self.entries_path, 'r') as f:
+				self.entries = json.loads(f.read())
+				f.close()
+		except IOError as e:
+			f = open(self.entries_path, 'w')
+			f.close()
 		
 #-------------------------------------------------------------------------------
 
@@ -100,9 +127,10 @@ class BracSynchronizer(wx.App):
 #-------------------------------------------------------------------------------
 
 	def setStatus(self, status, notice = None):
-		self.icon.setStatus(status)
-		if status == "on" and not self.popup.opened():
-			self.popup.show(notice)
+		if self.getOS() == 'win':
+			self.icon.setStatus(status)
+			if status == "on" and not self.popup.opened():
+				self.popup.show(notice)
 
 #-------------------------------------------------------------------------------
 
@@ -118,7 +146,8 @@ class BracSynchronizer(wx.App):
 #-------------------------------------------------------------------------------
 
 	def exit(self):
-		self.icon.close()
+		if self.getOS() == 'win':
+			self.icon.close()
 		self.Exit()
 
 #-------------------------------------------------------------------------------
@@ -239,6 +268,7 @@ class BracSynchronizer(wx.App):
 
 	def getBracTimeTable(self, path):
 		if not os.path.isfile(path): return False
+		#import pdb; pdb.set_trace()
 
 		vars = {
 			'tools': os.path.join(self.homedir, 'tools'),
@@ -249,8 +279,12 @@ class BracSynchronizer(wx.App):
 			'tempdir': os.path.join(self.homedir, 'temp'),
 		}
 
-		os.system('ren "%(bracpath-brac)s" "%(bracname-zip)s"' % vars)
-		os.system('cd /d %(tools)s & 7za.exe e -yo"%(tempdir)s" "%(bracpath-zip)s" brac.xml' % vars)
+		if self.getOS() == 'win':
+			os.system('ren "%(bracpath-brac)s" "%(bracname-zip)s"' % vars)
+			os.system('cd /d %(tools)s & 7za.exe e -yo"%(tempdir)s" "%(bracpath-zip)s" brac.xml' % vars)
+		elif self.getOS() == 'mac':
+			os.system('mv "%(bracpath-brac)s" "%(bracname-zip)s"' % vars)
+			os.system('cd %(tools)s ; 7za.exe e -yo"%(tempdir)s" "%(bracpath-zip)s" brac.xml' % vars)
 
 		vars['bracdefpath'] = os.path.join(vars['tempdir'], 'brac.xml')
 		bracxml = et.parse(vars['bracdefpath'])
@@ -263,8 +297,12 @@ class BracSynchronizer(wx.App):
 			lastupdate = bric.attrib['lastupdate']
 			timetbl.append({'id': id, 'timeinterval': timeinterval, 'lastupdate': lastupdate})
 
-		os.system('rmdir /S/Q "%(tempdir)s"' % vars)
-		os.system('ren "%(bracpath-zip)s" "%(bracname-brac)s"' % vars)
+		if self.getOS() == 'win':
+			os.system('rmdir /S/Q "%(tempdir)s"' % vars)
+			os.system('ren "%(bracpath-zip)s" "%(bracname-brac)s"' % vars)
+		elif self.getOS() == 'mac':
+			os.system('rm -r  "%(tempdir)s"' % vars)
+			os.system('mv "%(bracpath-zip)s" "%(bracname-brac)s"' % vars)
 		
 		return timetbl
 		
@@ -282,8 +320,13 @@ class BracSynchronizer(wx.App):
 			'tempdir': os.path.join(self.homedir, 'temp'),
 		}
 
-		os.system('ren "%(bracpath-brac)s" "%(bracname-zip)s"' % vars)
-		os.system('cd /d %(tools)s & 7za.exe e -yo"%(tempdir)s" "%(bracpath-zip)s" brac.xml' % vars)
+		import pdb; pdb.set_trace()
+		if self.getOS() == 'win':
+			os.system('ren "%(bracpath-brac)s" "%(bracname-zip)s"' % vars)
+			os.system('cd /d %(tools)s & 7za.exe e -yo"%(tempdir)s" "%(bracpath-zip)s" brac.xml' % vars)
+		elif self.getOS() == 'mac':
+			os.system('mv "%(bracpath-brac)s" "%(bracname-zip)s"' % vars)
+			os.system('cd %(tools)s ; 7za.exe e -yo"%(tempdir)s" "%(bracpath-zip)s" brac.xml' % vars)
 
 		vars['bracdefpath'] = os.path.join(vars['tempdir'], 'brac.xml')
 		bracxml = et.parse(vars['bracdefpath'])
@@ -297,7 +340,10 @@ class BracSynchronizer(wx.App):
 			vars['bricpath']    = os.path.join(vars['bricdir'], r'%s.png' % revision)
 			vars['bricdefpath'] = os.path.join(vars['bricdir'], 'bric.xml')
 			
-			os.system('cd /d %(tools)s & 7za.exe e -yo"%(bricdir)s" "%(bracpath-zip)s" bric.%(bricid)s/bric.xml' % vars)
+			if self.getOS() == 'win':
+				os.system('cd /d %(tools)s & 7za.exe e -yo"%(bricdir)s" "%(bracpath-zip)s" bric.%(bricid)s/bric.xml' % vars)
+			if self.getOS() == 'mac':
+				os.system('cd %(tools)s ; 7za.exe e -yo"%(bricdir)s" "%(bracpath-zip)s" bric.%(bricid)s/bric.xml' % vars)
 			
 			bricxml = et.parse(vars['bricdefpath'])
 			bricdef = bricxml.getroot()
@@ -323,15 +369,25 @@ class BracSynchronizer(wx.App):
 			bric.attrib['revision'] = revision
 			bric.attrib['lastupdate'] = snapshot_time
 			
-			os.system('cd /d %(tools)s & cutycapt.exe --print-backgrounds=on --javascript=on --plugins=on --js-can-access-clipboard=on --min-width=%(bracwidth)s --min-height=%(bracheight)s --url=%(bricurl)s --out-format=png --out="%(bricpath)s"' % vars)
-			os.system('cd /d %(tools)s & convert.exe "%(bricpath)s" -crop %(bricw)sx%(brich)s%(bricx)s%(bricy)s "%(bricpath)s"' % vars)
+			if self.getOS() == 'win':
+				os.system('cd /d %(tools)s & cutycapt.exe --print-backgrounds=on --javascript=on --plugins=on --js-can-access-clipboard=on --min-width=%(bracwidth)s --min-height=%(bracheight)s --url="%(bricurl)s" --out-format=png --out="%(bricpath)s"' % vars)
+				os.system('cd /d %(tools)s & convert.exe "%(bricpath)s" -crop %(bricw)sx%(brich)s%(bricx)s%(bricy)s "%(bricpath)s"' % vars)
+			if self.getOS() == 'mac':
+				os.system('cd %(tools)s ; webkit2png --fullsize --width=%(bracwidth)s --height=%(bracheight)s --dir=%(bricdir)s --filename=temp "%(bricurl)s"' % vars);
+				os.system('mv %(bricdir)s/temp-full.png %(bricpath)' % vars);
+				os.system('cd %(tools)s ; convert "%(bricpath)s" -crop %(bricw)sx%(brich)s%(bricx)s%(bricy)s "%(bricpath)s"' % vars)
 
 		self.indent(bracdef)
 		bracxml.write(vars['bracdefpath'])
 		
-		os.system('cd /d %(tools)s & 7za.exe a "%(bracpath-zip)s" "%(tempdir)s/*"' % vars)
-		os.system('rmdir /S/Q "%(tempdir)s"' % vars)
-		os.system('ren "%(bracpath-zip)s" "%(bracname-brac)s"' % vars)
+		if self.getOS() == 'win':
+			os.system('cd /d %(tools)s & 7za.exe a "%(bracpath-zip)s" "%(tempdir)s/*"' % vars)
+			os.system('rmdir /S/Q "%(tempdir)s"' % vars)
+			os.system('ren "%(bracpath-zip)s" "%(bracname-brac)s"' % vars)
+		if self.getOS() == 'mac':
+			os.system('cd %(tools)s ; 7za.exe a "%(bracpath-zip)s" "%(tempdir)s/*"' % vars)
+			os.system('rm -r "%(tempdir)s"' % vars)
+			os.system('mv "%(bracpath-zip)s" "%(bracname-brac)s"' % vars)
 		
 		return True
 	
