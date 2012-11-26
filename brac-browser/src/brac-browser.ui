@@ -19,40 +19,13 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QScrollArea" name="m_scroll_area">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+     <widget class="QFrame" name="m_frame_main">
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
       </property>
-      <property name="autoFillBackground">
-       <bool>false</bool>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
       </property>
-      <property name="styleSheet">
-       <string notr="true">background-image: url(../resources/transparent_checkerboard_square_125.png);
-background-repeat: repeat-xy;
-background-position: center center;</string>
-      </property>
-      <property name="lineWidth">
-       <number>1</number>
-      </property>
-      <property name="widgetResizable">
-       <bool>true</bool>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-      </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>696</width>
-         <height>516</height>
-        </rect>
-       </property>
-      </widget>
      </widget>
     </item>
     <item>
@@ -101,6 +74,8 @@ background-position: center center;</string>
     <addaction name="actionZoomOut"/>
     <addaction name="actionFitToWindow"/>
     <addaction name="actionNormalSize"/>
+    <addaction name="separator"/>
+    <addaction name="actionProperties"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_View"/>
@@ -138,7 +113,7 @@ background-position: center center;</string>
     <string>Zoom &amp;In</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+=, =</string>
+    <string>=</string>
    </property>
   </action>
   <action name="actionZoomOut">
@@ -146,7 +121,7 @@ background-position: center center;</string>
     <string>Zoom &amp;Out</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+-, -</string>
+    <string>-</string>
    </property>
   </action>
   <action name="actionFitToWindow">
@@ -163,6 +138,14 @@ background-position: center center;</string>
    </property>
    <property name="shortcut">
     <string>0</string>
+   </property>
+  </action>
+  <action name="actionProperties">
+   <property name="text">
+    <string>&amp;Properties...</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+P</string>
    </property>
   </action>
  </widget>

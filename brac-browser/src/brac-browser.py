@@ -9,6 +9,7 @@ from PIL import Image
 import zipfile
 import logging
 import shutil
+import time
 
 #===============================================================================
 
@@ -61,6 +62,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.actionZoomOut     .triggered.connect(self.onZoomOut)
 		self.actionFitToWindow .triggered.connect(self.onFitToWindow)
 		self.actionNormalSize  .triggered.connect(self.onNormalSize)
+		self.actionProperties  .triggered.connect(self.onProperties)
 		self.actionAbout       .triggered.connect(self.onAbout)
 		
 		#self.m_age_widget.m_hslider_age = self.m_hslider_age
@@ -71,74 +73,245 @@ class MainWindow(QtGui.QMainWindow):
 		anim.setStartValue(0)
 		anim.setEndValue(1)
 		anim.start()
+
+		#self.m_frame_main.setBackgroundRole(QtGui.QPalette.Dark);
+		#self.m_widget_content.setStyleSheet('''
+		#	background-image: url(../resources/transparent_checkerboard_square_125.png);
+		#	background-repeat: repeat-xy;
+		#	background-position: center center;
+		#''');
+
+		self.scroll  = {
+			'scrolling': False,
+			'start': None,
+			'offset': None,	
+		}
 		
+		self.openbrac = None
 		self.onOpen(None)
 	
 #-------------------------------------------------------------------------------
 
-	def onOpen(self, ev):
-		path = 'D:\\faham\\tim\\bric-a-brac\\distro\\brac.brac'
-		tempdir = os.path.join(self.homedir, 'temp')
+	def onBracMousePress(self, event):
+		if self.openbrac['scrollable'] and event.buttons() == QtCore.Qt.LeftButton:
+			self.openbrac['container'].setCursor(QtGui.QCursor(QtCore.Qt.ClosedHandCursor))
 
-		try:
-			if os.path.isdir(tempdir):
-				shutil.rmtree(tempdir)
-		except Exception, ex:
-			logging.error(ex)
-			return
-
-		zf_brac = zipfile.ZipFile(path, 'r')
-		zf_brac.extractall(tempdir)
-		zf_brac.close()
-
-		brics = [b for b in os.listdir(tempdir) if os.path.isdir(os.path.join(tempdir, b)) and b[:4] == 'bric']
-		self.snapshots = {}
-
-		bracxml = et.parse(os.path.join(tempdir, 'brac.xml'))
-		bracdef = bracxml.getroot()
-		res = [int(i) for i in bracdef.attrib['resolution'].split()]
-		self.image = Image.new('RGBA', res)
-		
-		scroll_area = self.scrollAreaWidgetContents
-		scroll_area.setStyleSheet('''
-			QLabel {
-				font-size: 400px;
-				color: blue;
-				background-image: url('../resources/background.jpg');
+			initial_offset = self.openbrac['position']
+			
+			self.scroll  = {
+				'scrolling': True,
+				'start': event.globalPos(),
+				'offset': initial_offset,	
 			}
-		''');
+	
+#-------------------------------------------------------------------------------
 
-		for b in brics:
-			bricdir = os.path.join(tempdir, b)
-			bricxml = et.parse(os.path.join(bricdir, 'bric.xml'))
-			bricdef = bricxml.getroot()
-			r = dict(zip(['x', 'y', 'w', 'h'], [int(i) for i in bricdef.attrib['region'].split()]))
-			region = (r['x'], r['y'], r['x'] + r['w'], r['y'] + r['h'])
+	def onBracMouseRelease(self, event):
+		if self.scroll['scrolling']:
+			self.openbrac['container'].setCursor(QtGui.QCursor(QtCore.Qt.OpenHandCursor))
+			self.scroll['scrolling'] = False
+	
+#-------------------------------------------------------------------------------
 
-			new_lbl = QtGui.QLabel(scroll_area)
-			#self.new_lbl.clicked.connect(self.lableClicked)
-			new_lbl.setGeometry(r['x'], r['y'], r['w'], r['h'])
-			new_lbl.show()
+	def onBracMouseMove(self, event):
+		if self.scroll['scrolling']:
+			diff = event.globalPos() - self.scroll['start']
+			pos = self.openbrac['position']
+			pos = [self.scroll['offset'][0] + diff.x(), self.scroll['offset'][1] + diff.y()]
+			self.openbrac['position'] = pos
+			geo = self.openbrac['container'].geometry()
+			self.openbrac['container'].setGeometry(pos[0], pos[1], geo.width(), geo.height())
+	
+#-------------------------------------------------------------------------------
 
-			for snapshot in bricdef:
-				d = snapshot.attrib['date']
-				rev = snapshot.attrib['revision']
-				if not self.snapshots.get(d, False):
-					self.snapshots[d] = [{'brac': b, 'revision': rev, 'region': region, 'label': new_lbl}]
-				else:
-					self.snapshots[d].append({'brac': b, 'revision': rev, 'region': region, 'label': new_lbl})
+	def onBracMouseWheel(self, event):
+		degrees = event.delta() / 8;
+		steps = degrees / 15;
+		self.zoom(steps)
+	
+#-------------------------------------------------------------------------------
 
-		if len(self.snapshots) > 0:
-			self.updateBrac(self.snapshots.keys()[0])
+	def checkScrollability(self, brac):
+		geo = brac['container'].geometry()
+		if geo.width() * geo.height() > self.m_frame_main.width() * self.m_frame_main.height():
+			brac['scrollable'] = True
+			brac['container'].setCursor(QtGui.QCursor(QtCore.Qt.OpenHandCursor))
+		else:
+			brac['scrollable'] = False
+			brac['container'].setCursor(QtGui.QCursor(QtCore.Qt.OpenHandCursor))
+		brac['scrollable'] = True
+	
+#-------------------------------------------------------------------------------
+
+	def zoom(self, factor):
+		self.checkScrollability(self.openbrac)
+		ratio       = 1.3
+		delta_scale = factor * ratio if factor > 0 else - factor / ratio
+		scale       = self.openbrac['scale'] * delta_scale
+		
+		if   scale > 50.0: scale = 50.0
+		elif scale < 0.05: scale = 0.05
+
+		pos = self.openbrac['position']
+		res = self.openbrac['resolution']
+		pos = [pos[0] * scale, pos[1] * scale]
+		res = [res[0] * scale, res[1] * scale]
+		self.openbrac['scale']    = scale
+		self.openbrac['position'] = pos
+		self.openbrac['container'].setGeometry(pos[0], pos[1], res[0], res[1])
+
+		for k in self.openbrac['brics']:
+			bric = self.openbrac['brics'][k]
+			bscl = scale * bric['scale']
+			bpos = bric['position']
+			bres = bric['resolution']
+			bpos = [bpos[0] * scale, bpos[1] * scale]
+			bres = [bres[0] * bscl,  bres[1] * bscl]
+			bric['label'].setGeometry(bpos[0], bpos[1], bres[0], bres[1])
+	
+#-------------------------------------------------------------------------------
+
+	def focusInEvent(self, event):
+		if self.openbrac and self.openbrac['mtime'] != os.path.getmtime(self.openbrac['path']):
+			QMessageBox.question('Message',
+				'%s has changed, do you like to reload the file?' % self.current_brac['path'],
+				QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
+				QtGui.QMessageBox.Yes)
+				
+			reloadBrac(self.openbrac['path'])
 
 #-------------------------------------------------------------------------------
 
-	def onBracAgeChanged(self, value):
-		if value < len(self.snapshots.keys()):
-			self.updateBrac(self.snapshots.keys()[value])
+	def onClose(self, ev):
+		return
+	
+#-------------------------------------------------------------------------------
+
+	def closeBrac(self):
+		if self.openbrac and self.openbrac.get('snapshots', False):
+			brics = self.openbrac['brics']
+			for key in brics:
+				self.openbrac['container'].removeWidget(brics[key]['label'])
 		
-		#for k in sorted(self.snapshots):
-		#	for snp in self.snapshots[k]:
+		self.m_frame_main.removeWidget(self.openbrac['container'])
+		
+		try:
+			if os.path.isdir(self.openbrac['tempdir']):
+				shutil.rmtree(self.openbrac['tempdir'])
+		except Exception, ex:
+			logging.error(ex)
+			return
+			
+		self.openbrac = None
+	
+#-------------------------------------------------------------------------------
+
+	def onOpen(self, ev):
+		filename = QtGui.QFileDialog.getOpenFileName(self,
+			'Open Brac', '', 'Brac Files (*.brac)');
+		
+		self.openBrac(str(filename))
+		#self.openBrac('D:/faham/tim/bric-a-brac/distro/brac.brac')
+	
+#-------------------------------------------------------------------------------
+
+	def reloadBrac(path):
+		self.closeBrac()
+		self.openBrac(path)
+	
+#-------------------------------------------------------------------------------
+
+	def openBrac(self, path):
+		print path
+		container = QtGui.QWidget(self.m_frame_main)
+		container.mousePressEvent   = self.onBracMousePress
+		container.mouseReleaseEvent = self.onBracMouseRelease
+		container.mouseMoveEvent    = self.onBracMouseMove
+		container.wheelEvent        = self.onBracMouseWheel
+		container.setBackgroundRole(QtGui.QPalette.Dark)
+
+		container.setStyleSheet('''
+			QWidget {
+				background-color: gray;
+			}
+			
+			QLabel {
+				font-size: 400px;
+				background-color: lightgray;
+			}
+		''');
+		
+		newbrac = {
+			'path'      : path,
+			'mtime'     : os.path.getmtime(path),
+			'snapshots' : {},
+			'brics'     : {},
+			'tempdir'   : os.path.join(self.homedir, 'temp_%s' % time.time()),
+			'container' : container,
+			'scale'     : 1.0,
+			'position'  : [0.0, 0.0],
+		}
+
+		zf_brac = zipfile.ZipFile(newbrac['path'], 'r')
+		zf_brac.extractall(newbrac['tempdir'])
+		zf_brac.close()
+		
+		bracxml = et.parse(os.path.join(newbrac['tempdir'], 'brac.xml'))
+		bracdef = bracxml.getroot()
+		res = [int(i) for i in bracdef.attrib['resolution'].split()]
+		newbrac['resolution'] = res
+		newbrac['container'].setGeometry(0, 0, res[0], res[1])
+		
+		self.checkScrollability(newbrac)
+
+		for bric in bracdef:
+			bricid = bric.attrib['id']
+			bricdir = os.path.join(newbrac['tempdir'], 'bric.%s' % bricid)
+
+			if not os.path.isdir(bricdir):
+				logging.error('Bric directory %s could not be found!' % bricdir)
+				continue
+
+			bricxml = et.parse(os.path.join(bricdir, 'bric.xml'))
+			bricdef = bricxml.getroot()
+			pos = [float(i) for i in bric.attrib['position'].split()]
+			res = [float(i) for i in bric.attrib['resolution'].split()]
+			scl = float(bric.attrib['scale'])
+
+			new_lbl = QtGui.QLabel(newbrac['container'])
+			#self.new_lbl.clicked.connect(self.lableClicked)
+			new_lbl.setGeometry(pos[0], pos[1], res[0] * scl, res[1] * scl)
+			new_lbl.show()
+			new_lbl.setScaledContents(True)
+			
+			newbrac['brics'][bricid] = {'label': new_lbl, 'resolution': res, 'position': pos, 'scale': scl}
+			
+			for snapshot in bricdef:
+				d = snapshot.attrib['date']
+				rev = snapshot.attrib['revision']
+				if not newbrac['snapshots'].get(d, False):
+					newbrac['snapshots'][d] = [{'bricid': bricid, 'revision': rev}]
+				else:
+					newbrac['snapshots'][d].append({'bricid': bricid, 'revision': rev})
+
+					
+		self.openbrac = newbrac
+
+		if len(newbrac['snapshots']) > 0:
+			self.updateBrac(newbrac['snapshots'].keys()[0])
+		else:
+			QMessageBox.about(self
+				, 'No Snapshot'
+				, 'No snapshot could be found in %s' % newbrac['path'])
+		
+#-------------------------------------------------------------------------------
+
+	def onBracAgeChanged(self, value):
+		if value < len(self.openbrac['snapshots'].keys()):
+			self.updateBrac(self.openbrac['snapshots'].keys()[value])
+		
+		#for k in sorted(self.openbrac['snapshots']):
+		#	for snp in self.openbrac['snapshots'][k]:
 		#		bric = snp[0]
 		#		revision = snp[1]
 		#		date = k
@@ -146,18 +319,16 @@ class MainWindow(QtGui.QMainWindow):
 #-------------------------------------------------------------------------------
 
 	def updateBrac(self, date):
-		tempdir = os.path.join(self.homedir, 'temp')
-
-		for b in self.snapshots[date]:
-			bric_dir = os.path.join(tempdir, b['brac'])
+		for b in self.openbrac['snapshots'][date]:
+			bric_dir = os.path.join(self.openbrac['tempdir'], 'bric.%s' % b['bricid'])
 			img_dir = os.path.join(bric_dir, '%s.png' % b['revision'])
-			
+			image_label = self.openbrac['brics'][b['bricid']]['label']
 			if not os.path.isfile(img_dir):
-				b['label'].setStyleSheet('''
+				image_label.setStyleSheet('''
 					background-image: url('../resources/no-image.gif');
 				''');
 			else:
-				b['label'].setPixmap(QtGui.QPixmap(img_dir));
+				image_label.setPixmap(QtGui.QPixmap(img_dir));
 
 #-------------------------------------------------------------------------------
 
@@ -167,12 +338,12 @@ class MainWindow(QtGui.QMainWindow):
 #-------------------------------------------------------------------------------
 
 	def onZoomIn(self, ev):
-		print 'zoom in menu item triggered'
+		self.zoom(1)
 
 #-------------------------------------------------------------------------------
 
 	def onZoomOut(self, ev):
-		print 'zoom out menu item triggered'
+		self.zoom(-1)
 
 #-------------------------------------------------------------------------------
 
@@ -183,6 +354,11 @@ class MainWindow(QtGui.QMainWindow):
 
 	def onNormalSize(self, ev):
 		print 'normal size menu item triggered'
+
+#-------------------------------------------------------------------------------
+
+	def onProperties(self, ev):
+		print 'properties menu item triggered'
 
 #-------------------------------------------------------------------------------
 
