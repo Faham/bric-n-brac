@@ -2,14 +2,11 @@
 
 #===============================================================================
 
-import os, sys
+import os, sys, zipfile, logging, shutil, time
 import xml.etree.ElementTree as et
+
 from PyQt4 import QtGui, QtCore, uic
 from PIL import Image
-import zipfile
-import logging
-import shutil
-import time
 
 #===============================================================================
 
@@ -143,11 +140,15 @@ class MainWindow(QtGui.QMainWindow):
 	
 #-------------------------------------------------------------------------------
 
-	def zoom(self, factor):
-		self.checkScrollability(self.openbrac)
-		ratio       = 1.3
-		delta_scale = factor * ratio if factor > 0 else - factor / ratio
-		scale       = self.openbrac['scale'] * delta_scale
+	def zoomstep(self, factor):
+		ratio = 1.3
+		scale = factor * ratio if factor > 0 else - factor / ratio
+		self.zoom(scale)
+	
+#-------------------------------------------------------------------------------
+
+	def zoom(self, value):
+		scale = self.openbrac['scale'] * value
 		
 		if   scale > 50.0: scale = 50.0
 		elif scale < 0.05: scale = 0.05
@@ -168,6 +169,8 @@ class MainWindow(QtGui.QMainWindow):
 			bpos = [bpos[0] * scale, bpos[1] * scale]
 			bres = [bres[0] * bscl,  bres[1] * bscl]
 			bric['label'].setGeometry(bpos[0], bpos[1], bres[0], bres[1])
+			
+		self.checkScrollability(self.openbrac)
 	
 #-------------------------------------------------------------------------------
 
@@ -338,17 +341,22 @@ class MainWindow(QtGui.QMainWindow):
 #-------------------------------------------------------------------------------
 
 	def onZoomIn(self, ev):
-		self.zoom(1)
+		self.zoomstep(1)
 
 #-------------------------------------------------------------------------------
 
 	def onZoomOut(self, ev):
-		self.zoom(-1)
+		self.zoomstep(-1)
 
 #-------------------------------------------------------------------------------
 
 	def onFitToWindow(self, ev):
-		print 'fit to window menu item triggered'
+		scale = self.openbrac['scale'] * value
+		pos = self.openbrac['position']
+		res = self.openbrac['resolution']
+		pos = [pos[0] * scale, pos[1] * scale]
+		res = [res[0] * scale, res[1] * scale]
+		self.zoom(-1)
 
 #-------------------------------------------------------------------------------
 
