@@ -84,6 +84,12 @@ class MainWindow(QtGui.QMainWindow):
 			'offset': None,	
 		}
 		
+		#from webkit2png import webkit2png as wp
+		#import logging
+		#renderer = wp.WebkitRenderer()
+		#import pdb; pdb.set_trace()
+		#renderer.logger = logging
+		
 		self.openbrac = None
 		self.onOpen(None)
 	

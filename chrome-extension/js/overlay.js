@@ -470,7 +470,7 @@ function setupDialog(region) {
 		btn.onclick = onDismissDialogCleanup;
 		
 		dlg.querySelector('#bric_title').value = document.location.hostname
-		dlg.querySelector('#bric_time_interval').value = "0000-00-07 00:00:00"
+		dlg.querySelector('#bric_time_interval').value = "01-00 00:00:00"
 		dt = new Date();
 		m = dt.getMonth() >= 10? dt.getMonth(): '0' + dt.getMonth();
 		d = dt.getDate() >= 10? dt.getDate(): '0' + dt.getDate();

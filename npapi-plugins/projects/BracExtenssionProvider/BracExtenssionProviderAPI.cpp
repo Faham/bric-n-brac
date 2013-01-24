@@ -217,16 +217,29 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 		last_bric_itr = itr;
 	pugi::xml_node & last_bric = *last_bric_itr;
 
+	time_t t = time(0);   // get current time
+	struct tm * now = localtime( &t );
+	char time_now[50];
+	sprintf(time_now, "%d-%02d-%02d %02d:%02d:%02d"
+		, now->tm_year + 1900
+		, now->tm_mon + 1
+		, now->tm_mday
+		, now->tm_hour
+		, now->tm_min
+		, now->tm_sec);
+
 	int new_brac_num = 1 + last_bric.attribute("id").as_int();
 	pugi::xml_node bric_node = brac_node.insert_child_after("bric", last_bric);
-	bric_node.append_attribute("id")         .set_value(new_brac_num);
-	bric_node.append_attribute("resolution") .set_value(bric_info.get<std::string>("resolution").c_str());
-	bric_node.append_attribute("position")   .set_value(bric_info.get<std::string>("position").c_str());
-	bric_node.append_attribute("rotate")     .set_value(bric_info.get<std::string>("rotation").c_str());
-	bric_node.append_attribute("scale")      .set_value(bric_info.get<std::string>("scale").c_str());
-	bric_node.append_attribute("order")      .set_value(bric_info.get<std::string>("order").c_str());
-	bric_node.append_attribute("alpha")      .set_value(bric_info.get<std::string>("alpha").c_str());
-	bric_node.append_attribute("revision")   .set_value(1);
+	bric_node.append_attribute("alpha")       .set_value(bric_info.get<std::string>("alpha").c_str());
+	bric_node.append_attribute("id")          .set_value(new_brac_num);
+	bric_node.append_attribute("lastupdate")  .set_value(time_now);
+	bric_node.append_attribute("order")       .set_value(bric_info.get<std::string>("order").c_str());
+	bric_node.append_attribute("position")    .set_value(bric_info.get<std::string>("position").c_str());
+	bric_node.append_attribute("resolution")  .set_value(bric_info.get<std::string>("resolution").c_str());
+	bric_node.append_attribute("revision")    .set_value(1);
+	bric_node.append_attribute("rotate")      .set_value(bric_info.get<std::string>("rotation").c_str());
+	bric_node.append_attribute("scale")       .set_value(bric_info.get<std::string>("scale").c_str());
+	bric_node.append_attribute("timeinterval").set_value(bric_info.get<std::string>("timeInterval").c_str());
 	bric_node.append_child(pugi::node_pcdata).set_value(bric_info.get<std::string>("comment").c_str());
 
 	brac_node.attribute("name")  .set_value(brac_info.get<std::string>("name").c_str());
@@ -276,19 +289,7 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 
 	pugi::xml_node snapshot_node = root_node.append_child("snapshot");
 	snapshot_node.append_attribute("revision").set_value("1");
-	
-	time_t t = time(0);   // get current time
-	struct tm * now = localtime( &t );
-	char buf2[50];
-	sprintf(buf2, "%d-%02d-%02d %02d:%02d:%02d"
-		, now->tm_year + 1900
-		, now->tm_mon + 1
-		, now->tm_mday
-		, now->tm_hour
-		, now->tm_min
-		, now->tm_sec);
-	
-	snapshot_node.append_attribute("date").set_value(buf2);
+	snapshot_node.append_attribute("date").set_value(time_now);
 
 	std::string new_bric_filepath = new_bric_path + "/bric.xml";
 	std::string bric_screenshot = new_bric_path + "/1.png";
