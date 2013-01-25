@@ -11,7 +11,8 @@ class BracSynchronizer(QtGui.QWidget):
 
 	def capture(self):
 		print 'capturing url'
-		captureurl.capture('http://www.google.com', 'D:/faham/tim/bric-a-brac/distro/test.png', None)
+		captureurl.capture('https://www.google.ca/search?q=game&hl=en&tbo=d&source=lnms&tbm=isch&sa=X&ei=1ycCUf3cE4PAyAHI2oCIDg&ved=0CAcQ_AUoAA&biw=1439&bih=802',
+			'test.png', None)
 
 	def __init__(self, parent=None):
 		QtGui.QWidget.__init__(self, parent)

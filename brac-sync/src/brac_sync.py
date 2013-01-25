@@ -236,6 +236,9 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 
 		tempdir = tempfile.mkdtemp()
 
+		if not os.path.isdir(tempdir):
+			print 'tempdir %s does not exists' % tempdir
+
 		zf_brac = zipfile.ZipFile(path, 'a')
 		zf_brac.extract('brac.xml', tempdir)
 		bracxml = et.parse(os.path.join(tempdir, 'brac.xml'))
@@ -294,16 +297,15 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 				'width' : int(resolution['width']),
 				'height': int(resolution['height']),
 			}
-
-			captureurl.capture(vars['bricurl'], vars['bricpath'], params)
 			
 			if common.getos() == 'win':
 				#os.system('cd /d %(tools)s & cutycapt.exe --print-backgrounds=on --javascript=on --plugins=on --js-can-access-clipboard=on --min-width=%(bracwidth)s --min-height=%(bracheight)s --url="%(bricurl)s" --out-format=png --out="%(bricpath)s"' % vars)
+				captureurl.capture(vars['bricurl'], vars['bricpath'], params)
 				os.system('cd /d %(tools)s & convert.exe "%(bricpath)s" -crop %(bricw)sx%(brich)s%(bricx)s%(bricy)s "%(bricpath)s"' % vars)
 			if common.getos() == 'mac':
-				#os.system('cd %(tools)s ; webkit2png --fullsize --width=%(bracwidth)s --height=%(bracheight)s --dir=%(bricdir)s --filename=temp "%(bricurl)s"' % vars);
-				#os.system('mv %(bricdir)s/temp-full.png %(bricpath)' % vars);
-				os.system('cd %(tools)s ; convert "%(bricpath)s" -crop %(bricw)sx%(brich)s%(bricx)s%(bricy)s "%(bricpath)s"' % vars)
+				os.system('cd %(tools)s ; python2.6 ./webkit2png --fullsize --width=%(bracwidth)s --height=%(bracheight)s --dir=%(bricdir)s --filename=temp "%(bricurl)s"' % vars);
+				os.system('mv %(bricdir)s/temp-full.png %(bricpath)s' % vars);
+				os.system('cd %(tools)s ; ./convert "%(bricpath)s" -crop %(bricw)sx%(brich)s%(bricx)s%(bricy)s "%(bricpath)s"' % vars)
 
 		common.indent(bracdef)
 		bracxml.write(os.path.join(tempdir, 'brac.xml'))
@@ -314,9 +316,9 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 			os.system('cd /d %(tools)s & 7za.exe a "%(bracpath-zip)s" "%(tempdir)s/*"' % vars)
 			os.system('ren "%(bracpath-zip)s" "%(bracname-brac)s"' % vars)
 		if common.getos() == 'mac':
-			os.system('mv "%(bracpath-brac)s" "%(bracname-zip)s"' % vars)
-			os.system('cd %(tools)s ; 7za.exe a "%(bracpath-zip)s" "%(tempdir)s/*"' % vars)
-			os.system('mv "%(bracpath-zip)s" "%(bracname-brac)s"' % vars)
+			os.system('mv "%(bracpath-brac)s" "%(bracpath-zip)s"' % vars)
+			os.system('cd %(tools)s ; ./7za a "%(bracpath-zip)s" "%(tempdir)s/*"' % vars)
+			os.system('mv "%(bracpath-zip)s" "%(bracpath-brac)s"' % vars)
 			
 		shutil.rmtree(tempdir)
 

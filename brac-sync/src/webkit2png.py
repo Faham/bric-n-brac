@@ -137,7 +137,7 @@ sys.exit(app.exec_())
         # Bind helper instance to this image to prevent the
         # object from being cleaned up (and with it the QWebPage, etc)
         # before the data has been used.
-        image.helper = helper
+        #image.helper = helper
 
         return image
 
