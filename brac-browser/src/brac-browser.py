@@ -296,7 +296,6 @@ class MainWindow(QtGui.QMainWindow):
 					newbrac['snapshots'][d] = [{'bricid': bricid, 'revision': rev}]
 				else:
 					newbrac['snapshots'][d].append({'bricid': bricid, 'revision': rev})
-
 					
 		self.openbrac = newbrac
 
