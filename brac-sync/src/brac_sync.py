@@ -8,7 +8,7 @@ import datetime as dt
 import xml.etree.ElementTree as et
 import logging
 
-LOG_FILENAME = 'brac-sync.log'
+LOG_FILENAME = 'brac_sync.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG,)
 logger = logging.getLogger('BracSync')
 
@@ -308,9 +308,11 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 			#taking screenshot
 			try:
 				image = self.renderer.render(
-					vars['bricurl'], 
-					width   = params['width'], 
-					height  = params['height'], 
+					vars['bricurl'],
+					x      = vars['bricx'],
+					y      = vars['bricy'],
+					width  = vars['bricw'],
+					height = vars['brich'],
 					timeout = 60
 				)
 
@@ -327,14 +329,6 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 				logger.error(e.message)
 				continue
 
-			#if common.getos() == 'win':
-			#	os.system('cd /d %(tools)s & cutycapt.exe --print-backgrounds=on --javascript=on --plugins=on --js-can-access-clipboard=on --min-width=%(bracwidth)s --min-height=%(bracheight)s --url="%(bricurl)s" --out-format=png --out="%(bricpath)s"' % vars)
-			#	os.system('cd /d %(tools)s & convert.exe "%(bricpath)s" -crop %(bricw)sx%(brich)s%(bricx)s%(bricy)s "%(bricpath)s"' % vars)
-			#if common.getos() == 'mac':
-			#	os.system('cd %(tools)s ; python2.6 ./webkit2png --fullsize --width=%(bracwidth)s --height=%(bracheight)s --dir=%(bricdir)s --filename=temp "%(bricurl)s"' % vars);
-			#	os.system('mv %(bricdir)s/temp-full.png %(bricpath)s' % vars);
-			#	os.system('cd %(tools)s ; ./convert "%(bricpath)s" -crop %(bricw)sx%(brich)s%(bricx)s%(bricy)s "%(bricpath)s"' % vars)
-				
 			#updating brac and bric xml files
 			snapshot_time = time.strftime('%Y-%m-%d %H:%M:%S')
 			snapshot = et.Element('snapshot', {'revision': revision, 'date': snapshot_time})
