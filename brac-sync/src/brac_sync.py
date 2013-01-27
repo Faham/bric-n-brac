@@ -6,9 +6,16 @@ import os, sys, json, time
 import shutil, glob, zipfile, tempfile
 import datetime as dt
 import xml.etree.ElementTree as et
+import logging
+
+LOG_FILENAME = 'brac-sync.log'
+logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG,)
+logger = logging.getLogger('BracSync')
+
 import entryutils
 import common
-import captureurl
+#import captureurl
+from webkitrenderer import WebkitRenderer
 
 from threading       import Thread
 from dialog_settings import DialogSettings
@@ -22,6 +29,8 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 
 	def __init__(self, icon, parent=None):
 		QtGui.QSystemTrayIcon.__init__(self, icon, parent)
+		
+		logger.debug('Initializing')
 		
 		self.trayMenu = QtGui.QMenu(parent)
 
@@ -55,6 +64,8 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 
 		self.loadEntries()
 		
+		self.renderer = WebkitRenderer()
+		
 		mtimer = QtCore.QTimer(self)
 		mtimer.timeout.connect(self.checkIfEntriesModified)
 		mtimer.start(10000)
@@ -72,9 +83,12 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 			with open(self.entries_path, 'r') as f:
 				self.entries = json.loads(f.read())
 				f.close()
+			logger.debug('loaded entries from %s' % self.entries_path)
 		except ValueError as e:
+			logger.error('couldn\'t load entries file at %s' % self.entries_path)
 			pass
 		except IOError as e:
+			logger.debug('couldn\'t load entries, creating initial entiries file at %s' % self.entries_path)
 			f = open(self.entries_path, 'w')
 			f.close()
 		
@@ -85,11 +99,12 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 		f = open(self.entries_path, 'w')
 		f.write(out_str)
 		f.close()
+		logger.debug('saved entries to %s' % self.entries_path)
 	
 #-------------------------------------------------------------------------------
 
 	def checkIfEntriesModified(self):
-		print '%s -> %s' % (common.function(1), common.function(0))
+		logger.debug('checking if any entries modified')
 
 		save = False
 		toremove = []
@@ -137,7 +152,7 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 #-------------------------------------------------------------------------------
 
 	def sync(self):
-		print '%s -> %s' % (common.function(1), common.function(0))
+		logger.debug('syncing entries')
 
 		self.syncBracs()
 		self.setStatus('off')
@@ -147,9 +162,9 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 	def setStatus(self, status, notice = None):
 		#self.icon.setStatus(status)
 		if status == "off":
-			self.setIcon(QtGui.QIcon("../resources/brac-syncing-16x16.png"))
-		elif status == "on":
 			self.setIcon(QtGui.QIcon("../resources/brac-16x16.png"))
+		elif status == "on":
+			self.setIcon(QtGui.QIcon("../resources/brac-syncing-16x16.png"))
 		#if status == "on" and not self.popup.opened():
 		#	self.popup.show(notice)
 
@@ -191,9 +206,7 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 
 #-------------------------------------------------------------------------------
 
-	def syncBracs(self):
-		print '%s -> %s' % (common.function(1), common.function(0))
-		
+	def syncBracs(self):		
 		for e in self.entries:
 			if not e.get('bracList', False):
 				continue
@@ -231,6 +244,7 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 #-------------------------------------------------------------------------------
 
 	def syncBrac(self, path):
+		logger.debug('syncing brac: %s' % path)
 
 		if not os.path.isfile(path): return False
 
@@ -256,6 +270,7 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 		}
 
 		for bric in bracdef:
+			#extracting bric files to its temp directory
 			revision = str(int(bric.attrib['revision']) + 1)
 			
 			vars['bricid']      = bric.attrib['id']
@@ -272,17 +287,8 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 			
 			if not self.needUpdate(bric.attrib['timeinterval'], bricdef[len(bricdef) - 1].attrib['date']):
 				continue
-			
-			snapshot_time = time.strftime('%Y-%m-%d %H:%M:%S')
-			snapshot = et.Element('snapshot', {'revision': revision, 'date': snapshot_time})
-			bricdef.append(snapshot)
-			common.indent(bricdef)
-			bricxml.write(os.path.join(newbricdir, 'bric.xml'))
-			
-			bric.attrib['revision'] = revision
-			bric.attrib['lastupdate'] = snapshot_time
-			
-			
+				
+			#extracting bric attributes
 			bricregion = dict(zip(['x', 'y', 'w', 'h'], bricdef.attrib['region'].split()))
 			
 			vars['bracwidth']  = resolution['width']
@@ -298,14 +304,46 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 				'height': int(resolution['height']),
 			}
 			
-			if common.getos() == 'win':
-				#os.system('cd /d %(tools)s & cutycapt.exe --print-backgrounds=on --javascript=on --plugins=on --js-can-access-clipboard=on --min-width=%(bracwidth)s --min-height=%(bracheight)s --url="%(bricurl)s" --out-format=png --out="%(bricpath)s"' % vars)
-				captureurl.capture(vars['bricurl'], vars['bricpath'], params)
-				os.system('cd /d %(tools)s & convert.exe "%(bricpath)s" -crop %(bricw)sx%(brich)s%(bricx)s%(bricy)s "%(bricpath)s"' % vars)
-			if common.getos() == 'mac':
-				os.system('cd %(tools)s ; python2.6 ./webkit2png --fullsize --width=%(bracwidth)s --height=%(bracheight)s --dir=%(bricdir)s --filename=temp "%(bricurl)s"' % vars);
-				os.system('mv %(bricdir)s/temp-full.png %(bricpath)s' % vars);
-				os.system('cd %(tools)s ; ./convert "%(bricpath)s" -crop %(bricw)sx%(brich)s%(bricx)s%(bricy)s "%(bricpath)s"' % vars)
+			#captureurl.capture(vars['bricurl'], vars['bricpath'], params)
+			#taking screenshot
+			try:
+				image = self.renderer.render(
+					vars['bricurl'], 
+					width   = params['width'], 
+					height  = params['height'], 
+					timeout = 60
+				)
+
+				#cropping
+				image = image.copy(int(vars['bricx']), int(vars['bricy']), int(vars['bricw']), int(vars['brich']))
+
+				image.save(vars['bricpath'], 'png')
+				if os.path.exists(vars['bricpath']):
+					logger.debug('generated %s' % vars['bricpath'])
+				else:
+					logger.error('failed to generate %s' % vars['bricpath'])
+					continue
+			except RuntimeError, e:
+				logger.error(e.message)
+				continue
+
+			#if common.getos() == 'win':
+			#	os.system('cd /d %(tools)s & cutycapt.exe --print-backgrounds=on --javascript=on --plugins=on --js-can-access-clipboard=on --min-width=%(bracwidth)s --min-height=%(bracheight)s --url="%(bricurl)s" --out-format=png --out="%(bricpath)s"' % vars)
+			#	os.system('cd /d %(tools)s & convert.exe "%(bricpath)s" -crop %(bricw)sx%(brich)s%(bricx)s%(bricy)s "%(bricpath)s"' % vars)
+			#if common.getos() == 'mac':
+			#	os.system('cd %(tools)s ; python2.6 ./webkit2png --fullsize --width=%(bracwidth)s --height=%(bracheight)s --dir=%(bricdir)s --filename=temp "%(bricurl)s"' % vars);
+			#	os.system('mv %(bricdir)s/temp-full.png %(bricpath)s' % vars);
+			#	os.system('cd %(tools)s ; ./convert "%(bricpath)s" -crop %(bricw)sx%(brich)s%(bricx)s%(bricy)s "%(bricpath)s"' % vars)
+				
+			#updating brac and bric xml files
+			snapshot_time = time.strftime('%Y-%m-%d %H:%M:%S')
+			snapshot = et.Element('snapshot', {'revision': revision, 'date': snapshot_time})
+			bricdef.append(snapshot)
+			common.indent(bricdef)
+			bricxml.write(os.path.join(newbricdir, 'bric.xml'))
+			
+			bric.attrib['revision'] = revision
+			bric.attrib['lastupdate'] = snapshot_time
 
 		common.indent(bracdef)
 		bracxml.write(os.path.join(tempdir, 'brac.xml'))
