@@ -309,10 +309,10 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 			try:
 				image = self.renderer.render(
 					vars['bricurl'],
-					x      = vars['bricx'],
-					y      = vars['bricy'],
-					width  = vars['bricw'],
-					height = vars['brich'],
+					x      = int(vars['bricx']),
+					y      = int(vars['bricy']),
+					width  = int(vars['bricw']),
+					height = int(vars['brich']),
 					timeout = 60
 				)
 
