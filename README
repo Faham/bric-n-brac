@@ -1,1 +1,35 @@
-Readme of bric-n-brac goes here!
+-----------------------------
+
+Windows Installation
+	Installing Python 2.7.3 and required modules
+	Settings environment variables
+
+Installing Python 2.7.3 and required modules
+
+Go to: http://www.python.org/download/releases/2.7.3/ and download "Windows x86 MSI Installer" and install it.
+Go to http://www.pythonware.com/products/pil/ then download and install "Python Imaging Library 1.1.7 for Python 2.7"
+Go to http://www.riverbankcomputing.co.uk/software/pyqt/download then donwload and install "PyQt-Py2.7-x86-gpl-4.9.6-1.exe"
+
+Settings environment variables
+
+Settings environment variables:
+This can be done visually by these steps: 
+- Control Panel -> View Advanced System Settings
+- Click the "Environment Variables..." button
+- Choose "Path" variable in the "System Variables" list box and then press "Edit"
+- Add ";C:\Python27;C:\Python27\Scripts" (without qoutes) to the end of variable value textbox.
+	Note: if you chose to install python in a different directory that C:\Python27, you need to use that directory instead.
+- Press all OK buttons to close all dialog boxes.
+
+-----------------------------
+
+Mac OS X Installation
+	Installing Python 2.7.3 and required modules
+	Settings environment variables
+
+Installing Python 2.7.3 and required modules
+
+Run the following commands
+brew install python
+brew install pyqt4
+brew install pil
