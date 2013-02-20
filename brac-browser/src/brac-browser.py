@@ -3,7 +3,13 @@
 #===============================================================================
 
 import os, sys, zipfile, logging, shutil, time
+import tempfile
 import xml.etree.ElementTree as et
+import logging
+
+LOG_FILENAME = 'brac_browser.log'
+logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG,)
+logger = logging.getLogger('BracBrowser')
 
 from PyQt4 import QtGui, QtCore, uic
 from PIL import Image
@@ -53,14 +59,17 @@ class MainWindow(QtGui.QMainWindow):
 			file_path = os.path.dirname(__file__)
 			self.homedir = os.path.abspath(os.path.join(file_path, os.path.pardir))
 		
-		self.actionOpen        .triggered.connect(self.onOpen)
-		self.actionPrint       .triggered.connect(self.onPrint)
-		self.actionZoomIn      .triggered.connect(self.onZoomIn)
-		self.actionZoomOut     .triggered.connect(self.onZoomOut)
-		self.actionFitToWindow .triggered.connect(self.onFitToWindow)
-		self.actionNormalSize  .triggered.connect(self.onNormalSize)
-		self.actionProperties  .triggered.connect(self.onProperties)
-		self.actionAbout       .triggered.connect(self.onAbout)
+		self.actionOpen        .triggered   .connect(self.onOpen)
+		self.actionClose       .triggered   .connect(self.onClose)
+		self.actionPrint       .triggered   .connect(self.onPrint)
+		self.actionZoomIn      .triggered   .connect(self.onZoomIn)
+		self.actionZoomOut     .triggered   .connect(self.onZoomOut)
+		self.actionFitToWindow .triggered   .connect(self.onFitToWindow)
+		self.actionNormalSize  .triggered   .connect(self.onNormalSize)
+		self.actionProperties  .triggered   .connect(self.onProperties)
+		self.actionAbout       .triggered   .connect(self.onAbout)
+		self.actionExit        .triggered   .connect(self.onExit)
+		self.m_hslider_age     .valueChanged.connect(self.onBracAgeChanged)
 		
 		#self.m_age_widget.m_hslider_age = self.m_hslider_age
 		#self.m_age_widget.installEventFilter(MouseEvent(self))
@@ -185,24 +194,38 @@ class MainWindow(QtGui.QMainWindow):
 
 #-------------------------------------------------------------------------------
 
+	def closeEvent(self, event):
+		self.onExit(event)
+
+#-------------------------------------------------------------------------------
+
+	def onExit(self, ev):
+		self.closeBrac()
+		sys.exit()
+	
+#-------------------------------------------------------------------------------
+
 	def onClose(self, ev):
-		return
+		self.closeBrac()
 	
 #-------------------------------------------------------------------------------
 
 	def closeBrac(self):
+		if self.openbrac is None:
+			return
+
 		if self.openbrac and self.openbrac.get('snapshots', False):
 			brics = self.openbrac['brics']
 			for key in brics:
-				self.openbrac['container'].removeWidget(brics[key]['label'])
+				brics[key]['label'].close()
 		
-		self.m_frame_main.removeWidget(self.openbrac['container'])
+		self.openbrac['container'].close()
 		
 		try:
 			if os.path.isdir(self.openbrac['tempdir']):
 				shutil.rmtree(self.openbrac['tempdir'])
 		except Exception, ex:
-			logging.error(ex)
+			logger.error(ex)
 			return
 			
 		self.openbrac = None
@@ -225,7 +248,7 @@ class MainWindow(QtGui.QMainWindow):
 #-------------------------------------------------------------------------------
 
 	def openBrac(self, path):
-		print path
+		logger.debug('openning brac %s' % path)
 		container = QtGui.QWidget(self.m_frame_main)
 		container.mousePressEvent   = self.onBracMousePress
 		container.mouseReleaseEvent = self.onBracMouseRelease
@@ -249,11 +272,16 @@ class MainWindow(QtGui.QMainWindow):
 			'mtime'     : os.path.getmtime(path),
 			'snapshots' : {},
 			'brics'     : {},
-			'tempdir'   : os.path.join(self.homedir, 'temp_%s' % time.time()),
+			'tempdir'   : tempfile.mkdtemp(),
 			'container' : container,
 			'scale'     : 1.0,
 			'position'  : [0.0, 0.0],
 		}
+		
+		if not os.path.isdir(newbrac['tempdir']):
+			logger.error('tempdir %s does not exists' % newbrac['tempdir'])
+			
+		logger.debug('extracting into %s' % newbrac['tempdir'])
 
 		zf_brac = zipfile.ZipFile(newbrac['path'], 'r')
 		zf_brac.extractall(newbrac['tempdir'])
@@ -272,7 +300,7 @@ class MainWindow(QtGui.QMainWindow):
 			bricdir = os.path.join(newbrac['tempdir'], 'bric.%s' % bricid)
 
 			if not os.path.isdir(bricdir):
-				logging.error('Bric directory %s could not be found!' % bricdir)
+				logger.error('Bric directory %s could not be found!' % bricdir)
 				continue
 
 			bricxml = et.parse(os.path.join(bricdir, 'bric.xml'))

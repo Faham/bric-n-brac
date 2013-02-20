@@ -251,7 +251,8 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 		tempdir = tempfile.mkdtemp()
 
 		if not os.path.isdir(tempdir):
-			print 'tempdir %s does not exists' % tempdir
+			logger.error('tempdir %s does not exists' % tempdir)
+			return
 
 		zf_brac = zipfile.ZipFile(path, 'a')
 		zf_brac.extract('brac.xml', tempdir)

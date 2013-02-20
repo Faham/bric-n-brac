@@ -1,36 +1,253 @@
+/*
 
-//------------------------------------------------------------------------------
+bep functions:
+
+	FB::variant systemCall(const FB::variant& msg);
+	FB::variant getLogMessage(const FB::variant& msg);
+	FB::variant getCalledCommand(const FB::variant& msg);
+	FB::variant getSysCallResult(const FB::variant& msg);
+	FB::variant selectBracFile(const FB::variant& msg);
+	FB::variant saveToBracFile(const FB::variant& msg);
+	FB::variant setExtensionPath(const FB::variant& msg);
+	FB::variant getURLSnapShot(const FB::variant& msg);
+
+*/
+
+//==============================================================================
+
+var Base64Binary = {
+	_keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+
+	/* will return a  Uint8Array type */
+	decodeArrayBuffer: function(input) {
+		var bytes = Math.ceil( (3*input.length) / 4.0);
+		var ab = new ArrayBuffer(bytes);
+		this.decode(input, ab);
+
+		return ab;
+	},
+
+	decode: function(input, arrayBuffer) {
+		//get last chars to see if are valid
+		var lkey1 = this._keyStr.indexOf(input.charAt(input.length-1));		 
+		var lkey2 = this._keyStr.indexOf(input.charAt(input.length-1));		 
+
+		var bytes = Math.ceil( (3*input.length) / 4.0);
+		if (lkey1 == 64) bytes--; //padding chars, so skip
+		if (lkey2 == 64) bytes--; //padding chars, so skip
+
+		var uarray;
+		var chr1, chr2, chr3;
+		var enc1, enc2, enc3, enc4;
+		var i = 0;
+		var j = 0;
+
+		if (arrayBuffer)
+			uarray = new Uint8Array(arrayBuffer);
+		else
+			uarray = new Uint8Array(bytes);
+
+		input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+
+		for (i=0; i<bytes; i+=3) {	
+			//get the 3 octects in 4 ascii chars
+			enc1 = this._keyStr.indexOf(input.charAt(j++));
+			enc2 = this._keyStr.indexOf(input.charAt(j++));
+			enc3 = this._keyStr.indexOf(input.charAt(j++));
+			enc4 = this._keyStr.indexOf(input.charAt(j++));
+
+			chr1 = (enc1 << 2) | (enc2 >> 4);
+			chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+			chr3 = ((enc3 & 3) << 6) | enc4;
+
+			uarray[i] = chr1;			
+			if (enc3 != 64) uarray[i+1] = chr2;
+			if (enc4 != 64) uarray[i+2] = chr3;
+		}
+
+		return uarray;	
+	}
+}		
+
+//==============================================================================
 
 var start_pos_x = 0;
 var start_pos_y = 0;
+var buttons_visible = false
+select_mode = 'lasso'; //'rect';
+m_lasso = null;
+mask_layer = null;
+
+//------------------------------------------------------------------------------
+
+function getpoint (e) {
+	if (e.pageX || e.pageY) { 
+		x = e.pageX;
+		y = e.pageY;
+	}
+	else { 
+		x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+		y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+	}
+	return [x, y]
+}
+
+//------------------------------------------------------------------------------
+
+$.fn.extend({
+	lasso: function () {
+		
+		__this = this;
+		
+		__this
+		.mousedown(function (e) {
+			// left mouse down switches on "capturing mode"
+			if (e.which === 1 && !__this.is(".lassoRunning")) {
+				var point = [e.offsetX, e.offsetY];
+				
+				__this.updateBoundries(point)
+				__this.addClass("lassoRunning");
+				__this.data("lassoPoints", [point]);
+				__this.trigger("lassoStart", [point]);
+			}
+		})
+		.mouseup(function (e) {
+			// left mouse up ends "capturing mode" + triggers "Done" event
+			if (e.which === 1 && __this.is(".lassoRunning")) {
+				__this.removeClass("lassoRunning");
+				__this.trigger("lassoDone", [__this.data("lassoPoints")]);
+			}
+		})
+		.mousemove(function (e) {
+			// mouse move captures co-ordinates + triggers "Point" event
+			if (__this.is(".lassoRunning")) {
+				var point = [e.offsetX, e.offsetY];
+				
+				__this.updateBoundries(point)
+				__this.data("lassoPoints").push(point);
+				__this.trigger("lassoPoint", [point]);
+			}
+		});
+		
+		__this
+		.updateBoundries = function (point) {
+			if (__this.region === undefined)
+				__this.region = {
+					left  : point[0],
+					top   : point[1],
+					right : point[0],
+					bottom: point[1],
+					width : 0,
+					height: 0
+				}
+			
+			__this.region.left   = Math.min(__this.region.left,   point[0])
+			__this.region.top    = Math.min(__this.region.top,    point[1])
+			__this.region.right  = Math.max(__this.region.right,  point[0])
+			__this.region.bottom = Math.max(__this.region.bottom, point[1])
+			__this.region.width  = Math.max(__this.region.width,  __this.region.right  - __this.region.left)
+			__this.region.height = Math.max(__this.region.height, __this.region.bottom - __this.region.top)
+		};
+		
+		return __this;
+	}
+});
+
+//------------------------------------------------------------------------------
+
+function fixPosition(e, gCanvasElement) {
+    var x = e[0];
+    var y = e[1];
+    x -= gCanvasElement.offsetLeft;
+    y -= gCanvasElement.offsetTop;
+    return {x: x, y:y};
+}
 
 //------------------------------------------------------------------------------
 
 function setupRegionSelector() {
-	var _div = document.createElement('div');
-	_div.setAttribute("id", "overlay-bg");
-	_div.style.zIndex = ++maxZIndex;
-	document.body.appendChild(_div);
 
-	var overlay_bg = _div
-	overlay_bg.onmousedown = overlayBackgroundMouseDown;
-	document.onmouseup = documentMouseUp;
+	//TODO: you should first take a screenshot from the page and show it in a new tab
+	// then start the selecting.
+	//$(function($){ $('#hplogo').Jcrop(); });
+	//return
 
-	_div = document.createElement('div');
-	_div.setAttribute("id", "overlay-hl");
-	_div.style.zIndex = ++maxZIndex;
-	document.body.appendChild(_div);
-	var ov_hl = _div
+	//bep.getURLSnapShot(JSON.stringify({
+	//	url: "http://www.google.ca",
+	//	width: "1280",
+	//	height: "768",
+	//	dir: extension_path,
+	//	filename: "url_snapshot.png"
+	//}))
+		
+	if (select_mode == 'rect') {
+		// creating background layer
+		var _div = document.createElement('div');
+		_div.setAttribute("id", "overlay-bg");
+		_div.style.zIndex = ++maxZIndex;
+		document.body.appendChild(_div);
+		var overlay_bg = _div;
+		overlay_bg.onmousedown = overlayBackgroundMouseDown;
 
-	_div = document.createElement('div');
-	_div.setAttribute("id", "cursor-info");
-	_div.style.zIndex = ++maxZIndex;
-	ov_hl.appendChild(_div);
+		// creating highlighting layer for rectangular selection
+		_div = document.createElement('div');
+		_div.setAttribute("id", "overlay-hl");
+		_div.style.zIndex = ++maxZIndex;
+		document.body.appendChild(_div);
+		var ov_hl = _div
 
-	start_pos_x = 0;
-	start_pos_y = 0;
+		_div = document.createElement('div');
+		_div.setAttribute("id", "cursor-info");
+		_div.style.zIndex = ++maxZIndex;
+		ov_hl.appendChild(_div);
+
+		start_pos_x = 0;
+		start_pos_y = 0;
+
+	} else if (select_mode == 'lasso') {
+
+		// creating canvas for lasso selection
+		var _canvas = document.createElement('canvas');
+		_canvas.setAttribute("id", "overlay-canvas");
+		_canvas.style.zIndex = ++maxZIndex;
+		_canvas.width = document.width
+		_canvas.height = document.height
+		document.body.appendChild(_canvas);
+		ctx = _canvas.getContext('2d'),
+
+		//ctx.rect(0, 0, _canvas.width, _canvas.height);
+		//ctx.fillStyle = '#000000';
+		//ctx.fill();
+		
+		ctx.fillStyle = '#000000'; //'#FFFFFF';
+		ctx.lineWidth = 5;
+		
+		m_lasso = $(_canvas)
+			.lasso()
+		
+			.on("lassoStart", function(e, lassoPoint) {
+
+				var pos = lassoPoint; //fixPosition(e, canvas);
+				ctx.beginPath();
+				ctx.moveTo(pos[0], pos[1]);
+			})
+			
+			.on("lassoDone", function(e, lassoPoints) {
+
+				var pos = lassoPoints[0]; //fixPosition(e, canvas);
+				ctx.lineTo(pos[0], pos[1]);
+				ctx.fill();
+			})
+			
+			.bind("lassoPoint", function(e, lassoPoint) {
+				var pos = lassoPoint; //fixPosition(lassoPoint, _canvas);
+				ctx.lineTo(pos[0], pos[1]);
+				ctx.fill();
+			});
+	}
 
 	document.body.style.cursor = "crosshair";
+	document.onmouseup = documentMouseUp;
 };
 
 //------------------------------------------------------------------------------
@@ -39,7 +256,7 @@ function removeElement(elm) {
 	if (null == elm)
 		return;
 
-	elm.style.display = 'none';
+	//elm.style.display = 'none';
 	elm.parentNode.removeChild(elm)
 	delete elm;
 }
@@ -52,11 +269,13 @@ function cleanupRegionSelector() {
 	
 	start_pos_x = 0;
 	start_pos_y = 0;
-	
-	removeButtons();
-	
-	document.body.style.cursor = "default";
 };
+
+//------------------------------------------------------------------------------
+
+function cleanupLassoSelector() {
+	removeElement(document.getElementById('overlay-canvas'));
+}
 
 //------------------------------------------------------------------------------
 
@@ -96,6 +315,9 @@ function overlayBackgroundMouseDown(e) {
 		//e2.cancelBubble = true;
 		//if (e2.stopPropagation) e2.stopPropagation();
 	
+		if (e2.pageX > document.width || e2.pageY > document.height)
+			return
+		
 		var x1 = start_pos_x;
 		var x2 = e2.pageX;
 		
@@ -138,9 +360,14 @@ function createButton(id, text) {
 //------------------------------------------------------------------------------
 
 function removeButtons() {
+	if (!buttons_visible)
+		return
+		
 	removeElement(document.getElementById('btn-save'));
 	removeElement(document.getElementById('btn-change-region'));
 	removeElement(document.getElementById('btn-cancel'));
+	
+	buttons_visible = false
 };
 
 //------------------------------------------------------------------------------
@@ -162,6 +389,7 @@ function getOS() {
 
 //------------------------------------------------------------------------------
 
+extension_path = '';
 function setupBep() {
 	bep = document.createElement('embed')
 	bep.type = "application/x-bep"
@@ -169,21 +397,26 @@ function setupBep() {
 	bep.className = 'plugin'
 	document.body.appendChild(bep);
 	
-	var version;
+	getVersion(function (info) {
+		extpath = '';
+		if (info.installType != 'development') {
+			extpath = info.id + '/' + info.version + '_0';
 
-	getVersion(function (responce) { 
-		version = responce.version; 
-		extpath = chrome.extension.getURL('').split('/')[2] + '/' + version + '_0';
-
-		if ('MacOS' == getOS())
-			extpath = "/Users/%USER%/Library/Application\ Support/Google/Chrome/Default/Extensions/" + extpath
-		else if ('Windows' == getOS())
-			extpath = "%LOCALAPPDATA%/Google/Chrome/User Data/Default/Extensions/" + extpath
-
-		//extpath = "D:/faham/tim/bric-a-brac/chrome-extension"
-		//extpath = "/Users/faham/development/bric-a-brac/chrome-extension"
+			if ('MacOS' == getOS())
+				extpath = "/Users/%USER%/Library/Application\ Support/Google/Chrome/Default/Extensions/" + extpath
+			else if ('Windows' == getOS())
+				extpath = "%LOCALAPPDATA%/Google/Chrome/User Data/Default/Extensions/" + extpath
+		} else {
+			if ('MacOS' == getOS())
+				extpath = "/Users/faham/development/bric-a-brac/chrome-extension"
+			else if ('Windows' == getOS())
+				extpath = "D:/faham/tim/bric-a-brac/chrome-extension"
+		}
+		
+		console.log('extension path is: ' + extpath);
 		
 		bep.setExtensionPath(extpath);
+		extension_path = extpath;
 		bep.addEventListener("bracfileselect", onBracFileSelect, false);
 		bep.addEventListener('cleanup', onDismissDialogCleanup, false);
 	});
@@ -450,9 +683,9 @@ function setupDialog(region) {
 
 	var xhr = new XMLHttpRequest();
 	xhr.open('GET', chrome.extension.getURL('html/save-dialog.html'), true);
-	xhr.onreadystatechange= function() {
-		if (this.readyState!==4) return;
-		if (this.status!==200) return; // or whatever error handling you want
+	xhr.onreadystatechange = function() {
+		if (this.readyState !== 4) return;
+		if (this.status !== 200) return; // or whatever error handling you want
 		dlg = document.getElementById('save-dialog');
 		dlg.innerHTML = this.responseText;
 		dlg.style.zIndex = ++maxZIndex;
@@ -474,83 +707,106 @@ function setupDialog(region) {
 		dt = new Date();
 		m = dt.getMonth() >= 10? dt.getMonth(): '0' + dt.getMonth();
 		d = dt.getDate() >= 10? dt.getDate(): '0' + dt.getDate();
+		
+		if (region != null) dlg.querySelector('#bric_region').value = region.left + " " + region.top + " " + region.width + " " + region.height;
+		else                dlg.querySelector('#bric_region').value = null;
+		
 		dlg.querySelector('#bric_start_data').value = dt.getFullYear() + '-' + m + '-' + d + ' ' + dt.toLocaleTimeString()
-		dlg.querySelector('#bric_url').value = document.URL
-		dlg.querySelector('#bric_region').value = region.left + " " + region.top + " " + region.width + " " + region.height;
-		dlg.querySelector('#bric_position').value = '0.0 0.0';
-		dlg.querySelector('#bric_rotation').value = '0.0';
-		dlg.querySelector('#bric_scale').value = '1.0';
-		dlg.querySelector('#bric_order').value = '1';
-		dlg.querySelector('#bric_alpha').value = '1.0';
-		dlg.querySelector('#bric_tags').value = '';
-		dlg.querySelector('#bric_comment').value = '';
+		dlg.querySelector('#bric_url'       ).value = document.URL
+		dlg.querySelector('#bric_window'    ).value = document.documentElement.clientWidth + ' ' + document.documentElement.clientHeight;
+		dlg.querySelector('#bric_position'  ).value = '0.0 0.0';
+		dlg.querySelector('#bric_rotation'  ).value = '0.0';
+		dlg.querySelector('#bric_scale'     ).value = '1.0';
+		dlg.querySelector('#bric_order'     ).value = '1';
+		dlg.querySelector('#bric_alpha'     ).value = '1.0';
+		dlg.querySelector('#bric_tags'      ).value = '';
+		dlg.querySelector('#bric_comment'   ).value = '';
 		
 		bricPosition = dlg.querySelector('#bric_position');
 		bricScale = dlg.querySelector('#bric_scale');
 	};
 	xhr.send();
-	setupBep();
 };
 
 //------------------------------------------------------------------------------
 
-function BtnSaveOnClick() {
-	msg = new Object();
-	msg.url = document.URL;
-	
-	//ov_hl = document.getElementById('overlay-hl');
-	//rec = ov_hl.getBoundingClientRect();
-	//msg.region = new Object();
-	//msg.region.top = ov_hl.offsetTop;
-	//msg.region.height = rec.height;
-	//msg.region.left = ov_hl.offsetLeft;
-	//msg.region.width = rec.width;
-	//chrome.extension.sendMessage('request-brac-file', function (response) {
-	//	if (response)
-	//		cleanUp();
-	//});
-	ov_hl = document.getElementById('overlay-hl');
-	//reg = ov_hl.getBoundingClientRect()
-	reg = {'left':ov_hl.offsetLeft, 'top':ov_hl.offsetTop, 'width':ov_hl.offsetWidth, 'height':ov_hl.offsetHeight}
-	
-	cleanupRegionSelector();
+function BtnSaveOnClick() {		
+	if (select_mode == 'rect') {
+		ov_hl = document.getElementById('overlay-hl');
+		reg = {'left':ov_hl.offsetLeft, 'top':ov_hl.offsetTop, 'width':ov_hl.offsetWidth, 'height':ov_hl.offsetHeight}
+		cleanupRegionSelector();
+		setupDialog(reg);
+	} else if (select_mode == 'lasso') {
+		reg = {'left':m_lasso.region.left, 'top':m_lasso.region.top, 'width':m_lasso.region.width, 'height':m_lasso.region.height}
+		var _canvas = document.getElementById('overlay-canvas');
 
-	setupDialog(reg);
+		// cropping the canvas to selected region
+		var ctx = _canvas.getContext('2d');
+		mask_data = ctx.getImageData(reg.left, reg.top, reg.width, reg.height);
+		_canvas.width = reg.width;
+		_canvas.height = reg.height;
+		ww = _canvas.width;
+		wh = _canvas.height;
+		ctx.clearRect(0,0,ww,wh);
+		ctx.putImageData(mask_data, 0, 0);
+		
+		mask_layer = _canvas.toDataURL("image/png").replace(/^data:image\/(png|jpg);base64,/, "");
+		cleanupLassoSelector();
+		setupDialog(reg);
+	}
+
+	document.body.style.cursor = "default";
+	document.onmouseup = null;
+	removeButtons();
 };
 
 //------------------------------------------------------------------------------
-
+	
 function BtnChangeRegionOnClick() {
-	ov_hl = document.getElementById('overlay-hl');
-	ov_hl.style.top = '0px';
-	ov_hl.style.left = '0px';
-	ov_hl.style.width = '0px';
-	ov_hl.style.height = '0px';
-	ov_hl.style.display = 'none';
-
-	cur_info = document.getElementById('cursor-info');
-	cur_info.value = '';
-	cur_info.style.top = '0px';
-	cur_info.style.left = '0px';
-	cur_info.style.display = 'none';
-
 	removeButtons();
 	
 	start_pos_x = 0;
 	start_pos_y = 0;
-
-	ov_bg = document.getElementById('overlay-bg');
-	ov_bg.onmousedown = overlayBackgroundMouseDown;
-	document.onmouseup = documentMouseUp;
 	
+	if (select_mode == 'rect') {
+		cur_info = document.getElementById('cursor-info');
+		cur_info.value = '';
+		cur_info.style.top = '0px';
+		cur_info.style.left = '0px';
+		cur_info.style.display = 'none';
+
+		ov_hl = document.getElementById('overlay-hl');
+		ov_hl.style.top = '0px';
+		ov_hl.style.left = '0px';
+		ov_hl.style.width = '0px';
+		ov_hl.style.height = '0px';
+		ov_hl.style.display = 'none';
+
+		ov_bg = document.getElementById('overlay-bg');
+		ov_bg.onmousedown = overlayBackgroundMouseDown;
+	} else if (select_mode == 'lasso') {
+		var _canvas = document.getElementById('overlay-canvas');
+		ctx = _canvas.getContext('2d'),
+		ctx.clearRect(0, 0, _canvas.width, _canvas.height);
+	}
+	
+	document.onmouseup = documentMouseUp;
 	document.body.style.cursor = "crosshair";
 };
 
 //------------------------------------------------------------------------------
 
 function BtnCancelOnClick() {
-	cleanupRegionSelector();
-	removeElement(document.getElementById('overlay-bg'));
+	if (select_mode == 'rect') {
+		cleanupRegionSelector();
+		removeElement(document.getElementById('overlay-bg'));
+	} else if (select_mode == 'lasso') {
+		cleanupLassoSelector();
+	}
+	
+	document.body.style.cursor = "default";
+	document.onmouseup = null;
+	removeButtons();
 };
 
 //------------------------------------------------------------------------------
@@ -599,39 +855,45 @@ function deepCss(who, css) {
 
 //------------------------------------------------------------------------------
 
-function SaveDialogBtnApplyOnClick() {
-	brac = {
-		filepath     : dlg.querySelector("#brac_filepath").innerHTML
-		, name       : dlg.querySelector("#brac_name").value
-		, artist     : dlg.querySelector("#brac_artist").value
-		, version    : dlg.querySelector("#brac_version").value
-		, resolution : dlg.querySelector("#brac_resolution").value
-		, tags       : dlg.querySelector("#brac_tags").value
-		, comment    : dlg.querySelector("#brac_comment").value
+function _arrayBufferToString(buf, callback) {
+	var bb = new Blob([new Uint8Array(buf)]);
+	var f = new FileReader();
+	f.onload = function(e) {
+		callback(e.target.result);
 	};
-	
-	res_arr = dlg.querySelector("#bric_region").value.split(' ')
-	res = res_arr[2] + ' ' + res_arr[3];
+	f.readAsText(bb);
+}
 
-	new_bric = {
-		title          : dlg.querySelector('#bric_title').value
-		, timeInterval : dlg.querySelector('#bric_time_interval').value
-		, startDate    : dlg.querySelector('#bric_start_data').value
-		, url          : dlg.querySelector('#bric_url').value.replace('https://', 'http://')
-		, region       : dlg.querySelector('#bric_region').value
-		, resolution   : res
-		, position     : dlg.querySelector('#bric_position').value
-		, rotation     : dlg.querySelector('#bric_rotation').value
-		, scale        : dlg.querySelector('#bric_scale').value
-		, order        : dlg.querySelector('#bric_order').value
-		, alpha        : dlg.querySelector('#bric_alpha').value
-		, tags         : dlg.querySelector('#bric_tags').value
-		, comment      : dlg.querySelector('#bric_comment').value
-	};
+//------------------------------------------------------------------------------
+
+function SaveDialogBtnApplyOnClick() {
 
 	message = {
-		brac: brac
-		, bric: new_bric
+		brac: {
+			filepath   : dlg.querySelector("#brac_filepath"  ).innerHTML,
+			name       : dlg.querySelector("#brac_name"      ).value,
+			artist     : dlg.querySelector("#brac_artist"    ).value,
+			version    : dlg.querySelector("#brac_version"   ).value,
+			resolution : dlg.querySelector("#brac_resolution").value,
+			tags       : dlg.querySelector("#brac_tags"      ).value,
+			comment    : dlg.querySelector("#brac_comment"   ).value
+		},
+		bric: {
+			title        : dlg.querySelector('#bric_title'        ).value,
+			timeInterval : dlg.querySelector('#bric_time_interval').value,
+			startDate    : dlg.querySelector('#bric_start_data'   ).value,
+			url          : dlg.querySelector('#bric_url'          ).value.replace('https://', 'http://'),
+			region       : dlg.querySelector('#bric_region'       ).value,
+			window       : dlg.querySelector('#bric_window'       ).value,
+			position     : dlg.querySelector('#bric_position'     ).value,
+			rotation     : dlg.querySelector('#bric_rotation'     ).value,
+			scale        : dlg.querySelector('#bric_scale'        ).value,
+			order        : dlg.querySelector('#bric_order'        ).value,
+			alpha        : dlg.querySelector('#bric_alpha'        ).value,
+			tags         : dlg.querySelector('#bric_tags'         ).value,
+			comment      : dlg.querySelector('#bric_comment'      ).value,
+			mask_b64     : mask_layer
+		}
 	};
 
 	bep = document.getElementById('plugin-bep');
@@ -648,14 +910,18 @@ function onDismissDialogCleanup() {
 //------------------------------------------------------------------------------
 
 function showButtons() {
-	ov_hl = document.getElementById('overlay-hl');
-	ht_region = ov_hl.getBoundingClientRect();
+	if (buttons_visible)
+		return
+	
+	//ov_hl = document.getElementById('overlay-hl');
+	_region = {left: 10, top: 10}; //ov_hl.getBoundingClientRect();
 
 	buttons_zindex = ++maxZIndex;
 	
 	btn = createButton('btn-save', 'Save')
-	btn.style.top = ov_hl.offsetTop + ov_hl.offsetHeight + 5 + "px";
-	btn.style.left = ht_region.left + "px";
+	btn.style.top = _region.top + "px"; //ov_hl.offsetTop + ov_hl.offsetHeight + 5 + "px";
+	btn.style.left = _region.left + "px"; //ht_region.left + "px";
+	btn.style.position = 'fixed';
 	btn.style.zIndex = buttons_zindex;
 	btn.onclick = BtnSaveOnClick
 	document.body.appendChild(btn);
@@ -663,8 +929,9 @@ function showButtons() {
 	var btn_save = btn;
 
 	btn = createButton('btn-change-region', 'Change Region')
-	btn.style.top = ov_hl.offsetTop + ov_hl.offsetHeight + 5 + "px";
+	btn.style.top = _region.top + "px"; //ov_hl.offsetTop + ov_hl.offsetHeight + 5 + "px";
 	btn.style.left = btn_save.offsetLeft + btn_save.offsetWidth + 5 + "px";
+	btn.style.position = 'fixed';
 	btn.style.zIndex = buttons_zindex;
 	btn.onclick = BtnChangeRegionOnClick;
 	document.body.appendChild(btn);
@@ -672,22 +939,28 @@ function showButtons() {
 	var btn_change = btn;
 
 	btn = createButton('btn-cancel', 'Cancel')
-	btn.style.top = ov_hl.offsetTop + ov_hl.offsetHeight + 5 + "px";
+	btn.style.top = _region.top + "px"; //ov_hl.offsetTop + ov_hl.offsetHeight + 5 + "px";
 	btn.style.left = btn_change.offsetLeft + btn_change.offsetWidth + 5 + "px";
+	btn.style.position = 'fixed';
 	btn.style.zIndex = buttons_zindex;
 	btn.onclick = BtnCancelOnClick;
 	document.body.appendChild(btn);
+	
+	buttons_visible = true
 };
 
 //------------------------------------------------------------------------------
 
 function documentMouseUp(e) {
 	showButtons();
-	ov_bg = document.getElementById('overlay-bg');
-	ov_bg.onmousedown = null;
-	document.onmousemove = null;
-	document.onmouseup = null;
-	document.body.style.cursor = "default";
+	
+	if (select_mode == 'rect') {
+		ov_bg = document.getElementById('overlay-bg');
+		ov_bg.onmousedown = null;
+		document.onmousemove = null;
+		document.onmouseup = null;
+		document.body.style.cursor = "default";
+	}
 	
 	//file_io = document.createElement('embed')
 	//file_io.type = "application/x-npapi-file-io"
@@ -699,6 +972,7 @@ function documentMouseUp(e) {
 
 //------------------------------------------------------------------------------
 
+setupBep();
 maxZIndex = getHighIndex();
 setupRegionSelector();
 

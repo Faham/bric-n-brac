@@ -20,14 +20,15 @@ public:
     BracExtenssionProviderAPI(const BracExtenssionProviderPtr& plugin, const FB::BrowserHostPtr& host) :
         m_plugin(plugin), m_host(host)
     {
-        registerProperty("version", make_property(this, &BracExtenssionProviderAPI::get_version));
-		registerMethod("systemCall", make_method(this, &BracExtenssionProviderAPI::systemCall));
-		registerMethod("getLogMessage", make_method(this, &BracExtenssionProviderAPI::getLogMessage));
-		registerMethod("getCalledCommand", make_method(this, &BracExtenssionProviderAPI::getCalledCommand));
-		registerMethod("getSysCallResult", make_method(this, &BracExtenssionProviderAPI::getSysCallResult));
-		registerMethod("selectBracFile", make_method(this, &BracExtenssionProviderAPI::selectBracFile));
-		registerMethod("saveToBracFile", make_method(this, &BracExtenssionProviderAPI::saveToBracFile));
-		registerMethod("setExtensionPath", make_method(this, &BracExtenssionProviderAPI::setExtensionPath));
+        registerProperty("version",        make_property(this, &BracExtenssionProviderAPI::get_version));
+		registerMethod("systemCall",       make_method(this,   &BracExtenssionProviderAPI::systemCall));
+		registerMethod("getLogMessage",    make_method(this,   &BracExtenssionProviderAPI::getLogMessage));
+		registerMethod("getCalledCommand", make_method(this,   &BracExtenssionProviderAPI::getCalledCommand));
+		registerMethod("getSysCallResult", make_method(this,   &BracExtenssionProviderAPI::getSysCallResult));
+		registerMethod("getURLSnapShot",   make_method(this,   &BracExtenssionProviderAPI::getURLSnapShot));
+		registerMethod("selectBracFile",   make_method(this,   &BracExtenssionProviderAPI::selectBracFile));
+		registerMethod("saveToBracFile",   make_method(this,   &BracExtenssionProviderAPI::saveToBracFile));
+		registerMethod("setExtensionPath", make_method(this,   &BracExtenssionProviderAPI::setExtensionPath));
     }
 
     virtual ~BracExtenssionProviderAPI() {};
@@ -44,6 +45,7 @@ public:
 	FB::variant selectBracFile(const FB::variant& msg);
 	FB::variant saveToBracFile(const FB::variant& msg);
 	FB::variant setExtensionPath(const FB::variant& msg);
+	FB::variant getURLSnapShot(const FB::variant& msg);
 
 	// Event helpers
     FB_JSAPI_EVENT(echo, 1, (const FB::variant&));

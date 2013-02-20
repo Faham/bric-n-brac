@@ -23,6 +23,7 @@
 #include "jsonxx.h"
 #include "pugixml.h"
 #include "common.h"
+#include "base64.h"
 
 //==============================================================================
 
@@ -94,6 +95,52 @@ FB::variant BracExtenssionProviderAPI::getSysCallResult(const FB::variant& msg) 
 
 //------------------------------------------------------------------------------
 
+FB::variant BracExtenssionProviderAPI::getURLSnapShot(const FB::variant& msg) {
+
+	if (msg.empty()) {
+		log("Received message is empty.");
+		return false;
+	}
+
+	std::string msg_str = msg.cast<std::string>();
+	std::istringstream input(msg_str);
+	jsonxx::Object o;
+	if(!jsonxx::Object::parse(input, o))
+		log("Couldn't parse the JSON message.");
+
+	std::string url = o.get<std::string>("url");
+
+	std::string width    = o.get<std::string>("width");
+	std::string height   = o.get<std::string>("height");
+	std::string dir      = o.get<std::string>("dir");
+	std::string filename = o.get<std::string>("filename");
+
+	std::string command = "";
+
+	#if defined _WIN32
+		command = "cd /d \"" + m_extension_path + "\" & bin\\cutycapt.exe"
+			+ " --print-backgrounds=on --javascript=on --plugins=on --js-can-access-clipboard=on"
+			+ " --min-width=" + width
+			+ " --min-height=" + height
+			+ " --url=\"" + url + "\""
+			+ " --out-format=png"
+			+ " --out=\"" + dir + "/" + filename + "\"";
+		systemCall(command);
+	#elif defined __APPLE__
+		command = "cd " + escaped_extension_path + "; bin/webkit2png --fullsize"
+			+ " --width=" + width
+			+ " --height=" + height
+			+ " --dir=" + dir
+			+ " --filename=" + filename
+			+ " \"" + url + "\"";
+		systemCall(command);
+	#endif
+
+	return "done!";
+}
+
+//------------------------------------------------------------------------------
+
 void onReturn(const std::string& path) {
 	BracExtenssionProviderAPI * api_ptr = brac_extenssion_provider_api;
 
@@ -157,6 +204,20 @@ FB::variant BracExtenssionProviderAPI::selectBracFile(const FB::variant& msg) {
 	dlg_mgr->OpenFileDialog(m_host, wh, "", "Brac files (*.brac)|*.brac|All files (*.*)|*.*|", &onReturn);
 	
 	return "done!";
+}
+
+//------------------------------------------------------------------------------
+
+bool saveBinaryFile(const char *filename, const char *bytes, const size_t len) {
+	FILE *file = fopen(filename, "wb");
+	if (!file) {
+		return false;
+	}
+
+	const size_t written = fwrite(bytes, 1, len, file);
+	fclose(file);
+
+	return (written == len);
 }
 
 //------------------------------------------------------------------------------
@@ -230,16 +291,17 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 
 	int new_brac_num = 1 + last_bric.attribute("id").as_int();
 	pugi::xml_node bric_node = brac_node.insert_child_after("bric", last_bric);
-	bric_node.append_attribute("alpha")       .set_value(bric_info.get<std::string>("alpha").c_str());
-	bric_node.append_attribute("id")          .set_value(new_brac_num);
-	bric_node.append_attribute("lastupdate")  .set_value(time_now);
-	bric_node.append_attribute("order")       .set_value(bric_info.get<std::string>("order").c_str());
-	bric_node.append_attribute("position")    .set_value(bric_info.get<std::string>("position").c_str());
-	bric_node.append_attribute("resolution")  .set_value(bric_info.get<std::string>("resolution").c_str());
-	bric_node.append_attribute("revision")    .set_value(1);
-	bric_node.append_attribute("rotate")      .set_value(bric_info.get<std::string>("rotation").c_str());
-	bric_node.append_attribute("scale")       .set_value(bric_info.get<std::string>("scale").c_str());
+
+	bric_node.append_attribute("revision"    ).set_value(1);
+	bric_node.append_attribute("lastupdate"  ).set_value(time_now);
+	bric_node.append_attribute("id"          ).set_value(new_brac_num);
+	bric_node.append_attribute("alpha"       ).set_value(bric_info.get<std::string>("alpha"       ).c_str());
+	bric_node.append_attribute("order"       ).set_value(bric_info.get<std::string>("order"       ).c_str());
+	bric_node.append_attribute("position"    ).set_value(bric_info.get<std::string>("position"    ).c_str());
+	bric_node.append_attribute("rotate"      ).set_value(bric_info.get<std::string>("rotation"    ).c_str());
+	bric_node.append_attribute("scale"       ).set_value(bric_info.get<std::string>("scale"       ).c_str());
 	bric_node.append_attribute("timeinterval").set_value(bric_info.get<std::string>("timeInterval").c_str());
+
 	bric_node.append_child(pugi::node_pcdata).set_value(bric_info.get<std::string>("comment").c_str());
 
 	brac_node.attribute("name")  .set_value(brac_info.get<std::string>("name").c_str());
@@ -279,20 +341,24 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 
 	pugi::xml_document bric_xml;
 	pugi::xml_node root_node = bric_xml.append_child("bric");
-	root_node.append_attribute("version")     .set_value("1.0");
-	root_node.append_attribute("title")       .set_value(bric_info.get<std::string>("title").c_str());
+	root_node.append_attribute("version"     ).set_value("1.0");
+	root_node.append_attribute("title"       ).set_value(bric_info.get<std::string>("title"       ).c_str());
 	root_node.append_attribute("timeinterval").set_value(bric_info.get<std::string>("timeInterval").c_str());
-	root_node.append_attribute("startdate")   .set_value(bric_info.get<std::string>("startDate").c_str());
-	root_node.append_attribute("url")         .set_value(bric_info.get<std::string>("url").c_str());
-	root_node.append_attribute("region")      .set_value(bric_info.get<std::string>("region").c_str());
-	root_node.append_attribute("tags")        .set_value(bric_info.get<std::string>("tags").c_str());
+	root_node.append_attribute("startdate"   ).set_value(bric_info.get<std::string>("startDate"   ).c_str());
+	root_node.append_attribute("url"         ).set_value(bric_info.get<std::string>("url"         ).c_str());
+	root_node.append_attribute("window"      ).set_value(bric_info.get<std::string>("window"      ).c_str());
+	root_node.append_attribute("region"      ).set_value(bric_info.get<std::string>("region"      ).c_str());
+	root_node.append_attribute("tags"        ).set_value(bric_info.get<std::string>("tags"        ).c_str());
 
 	pugi::xml_node snapshot_node = root_node.append_child("snapshot");
 	snapshot_node.append_attribute("revision").set_value("1");
 	snapshot_node.append_attribute("date").set_value(time_now);
 
 	std::string new_bric_filepath = new_bric_path + "/bric.xml";
-	std::string bric_screenshot = new_bric_path + "/1.png";
+	std::string bric_screenshot_filename = "1.png";
+	std::string bric_screenshot = new_bric_path + "/" + bric_screenshot_filename;
+	std::string bric_thumbnail = "thumb.png";
+	std::string bric_thumbnail_path = new_bric_path + "/" + bric_thumbnail;
 
 	if (!bric_xml.save_file(new_bric_filepath.c_str()))
 		log("Error occurred while creating the new bric file: " + new_bric_filepath);
@@ -305,6 +371,14 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 	if (bric_region.size() != 4)
 		log("Bric region should be four integer numbers, separated by space character.");
 	
+	std::string mask_layer_b64 = bric_info.get<std::string>("mask_b64").c_str();
+	bool mask_created = false;
+	std::string mask_filename = new_bric_path + "/mask.png";
+	if (!mask_layer_b64.empty()) {
+		std::string	decoded = base64_decode(mask_layer_b64);
+		mask_created = saveBinaryFile(mask_filename.c_str(), decoded.c_str(), decoded.size());
+	}
+
 	/*
 		cutycapt.exe 
 			--print-backgrounds=on 
@@ -324,6 +398,7 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 			+ " --min-width=" + brac_resolution[0]
 			+ " --min-height=" + brac_resolution[1]
 			+ " --url=\"" + bric_info.get<std::string>("url") + "\""
+			+ " --user-agent=\"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.34 (KHTML, like Gecko) Qt/4.8.4 Chrome/534.34\""
 			+ " --out-format=png"
 			+ " --out=\"" + bric_screenshot + "\"";
 		systemCall(command);
@@ -333,6 +408,17 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 			+ " -crop " + bric_region[2] + "x" + bric_region[3] + "+" + bric_region[0] + "+" + bric_region[1]
 			+ " \"" + bric_screenshot + "\"";
 		systemCall(command);
+
+		command = "cd /d \"" + new_bric_path + "\" & copy " + bric_screenshot_filename + " " + bric_thumbnail;
+		systemCall(command);
+
+		//if (mask_created) {
+		//	command = "cd /d \"" + m_extension_path + "\" & bin\\convert.exe"
+		//		+ " \"" + mask_filename + "\""
+		//		+ " -crop " + bric_region[2] + "x" + bric_region[3] + "+" + bric_region[0] + "+" + bric_region[1]
+		//		+ " \"" + mask_filename + "\"";
+		//	systemCall(command);
+		//}
 
 		command = "cd /d \"" + m_extension_path + "\" & bin\\7za.exe a \"" + path + "\" \"" + new_bric_path + "\"";
 		systemCall(command);
@@ -348,6 +434,7 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 			+ " --width=" + brac_resolution[0]
 			+ " --height=" + brac_resolution[1]
 			+ " --dir=" + escaped_new_bric_path
+			+ " --user-agent=\"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.34 (KHTML, like Gecko) Qt/4.8.4 Chrome/534.34\""
 			+ " --filename=temp"
 			+ " \"" + bric_info.get<std::string>("url") + "\"";
 		systemCall(command);
@@ -361,6 +448,19 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 			+ " -crop " + bric_region[2] + "x" + bric_region[3] + "+" + bric_region[0] + "+" + bric_region[1]
 			+ " " + escaped_bric_screenshot;
 		systemCall(command);
+
+		std::string escaped_bric_thumbnail = escape_path(bric_thumbnail_path);
+		command = "cp \"" + escaped_bric_screenshot + "\" \"" + escaped_bric_thumbnail + "\"";
+		systemCall(command);
+
+		//if (mask_created) {
+		//	std::string escaped_bric_mask = escape_path(mask_filename);
+		//	command = "cd " + escaped_extension_path + "; bin/convert"
+		//		+ " " + escaped_bric_mask
+		//		+ " -crop " + bric_region[2] + "x" + bric_region[3] + "+" + bric_region[0] + "+" + bric_region[1]
+		//		+ " " + escaped_bric_mask;
+		//	systemCall(command);
+		//}
 
 		command = "cd " + escaped_extension_path + "; bin/7za a " + escaped_path + " " + escaped_new_bric_path;
 		systemCall(command);
