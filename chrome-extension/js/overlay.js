@@ -868,6 +868,9 @@ function _arrayBufferToString(buf, callback) {
 
 function SaveDialogBtnApplyOnClick() {
 
+	var bric_res = dlg.querySelector('#bric_region').value.split(' ');
+	var res = bric_res[2] + ' ' + bric_res[3];
+
 	message = {
 		brac: {
 			filepath   : dlg.querySelector("#brac_filepath"  ).innerHTML,
@@ -884,6 +887,7 @@ function SaveDialogBtnApplyOnClick() {
 			startDate    : dlg.querySelector('#bric_start_data'   ).value,
 			url          : dlg.querySelector('#bric_url'          ).value.replace('https://', 'http://'),
 			region       : dlg.querySelector('#bric_region'       ).value,
+			resolution   : res,
 			window       : dlg.querySelector('#bric_window'       ).value,
 			position     : dlg.querySelector('#bric_position'     ).value,
 			rotation     : dlg.querySelector('#bric_rotation'     ).value,
