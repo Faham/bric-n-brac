@@ -40,7 +40,7 @@ function get7zip() {
 		if (outDir.exists)
 			Exec.system("RD /S /Q " + outDir.fsName, 10000);
 
-		var args = ["x", "-o\"" + outDir.fsName + '\"', '\"' + zipFile.fsName + '\"'];
+		var args = ["x", "-y", "-o\"" + outDir.fsName + '\"', '\"' + zipFile.fsName + '\"'];
 		this.executeBlock(args, 10000);
 	};
 
@@ -50,7 +50,7 @@ function get7zip() {
 		if (outDir.exists)
 			Exec.system("RD /S /Q " + outDir.fsName, 10000);
 
-		var args = ["x", "-o\"" + outDir.fsName + '\"', '\"' + zipFile.fsName + '\"'];
+		var args = ["x", "-y", "-o\"" + outDir.fsName + '\"', '\"' + zipFile.fsName + '\"'];
 
 		var ifile = new File(this.tmp + "/info.txt");
 
