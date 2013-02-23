@@ -127,6 +127,7 @@ FB::variant BracExtenssionProviderAPI::getURLSnapShot(const FB::variant& msg) {
 			+ " --out=\"" + dir + "/" + filename + "\"";
 		systemCall(command);
 	#elif defined __APPLE__
+		std::string escaped_extension_path = escape_path(m_extension_path);
 		command = "cd " + escaped_extension_path + "; bin/webkit2png --fullsize"
 			+ " --width=" + width
 			+ " --height=" + height
