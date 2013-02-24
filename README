@@ -23,13 +23,26 @@ This can be done visually by these steps:
 
 -----------------------------
 
-Mac OS X Installation
-	Installing Python 2.7.3 and required modules
-	Settings environment variables
+Mac OS X Installation:
 
-Installing Python 2.7.3 and required modules
-
+- Installing Python 2.7.3 and required modules
 Run the following commands
 brew install python
 brew install pyqt4
 brew install pil
+
+- Installing Chrome Extension
+drag the crx file onto chrome and install it
+within this file there are three executable files which require special access permissions (permission should be set for 555):
+./bin/7za
+./bin/convert
+./bin/webkit2png
+
+- Installing Photoshop Panel
+copy the bric-a-brac directory from ./distro/photoshop-panel into the /Applications/Adobe Photoshop CS5.1~6/Plug-ins/Panels
+you should set permission access for following files specifically
+555 for content/bric-a-brac.assets/7za
+777 for content/bric-a-brac.assets/script.sh
+
+- Install iTerm as you default terminal and set that and the default application for opening *.sh files.
+
