@@ -484,17 +484,25 @@ function setupIndicators() {
 		t = bric_wdh;
 		bric_wdh = bricIndicatorScale * bric_wdh;
 		bric_hgh = bric_hgh * bric_wdh / t
-		bric_indc.style.width = bric_wdh + 'px';
-		bric_indc.style.height = bric_hgh + 'px';
 	} else if (bric_hgh == mx) {
 		t = bric_hgh;
 		bric_hgh = bricIndicatorScale * bric_hgh;
 		bric_wdh = bric_wdh * bric_hgh / t
-		bric_indc.style.height = bric_hgh + 'px';
-		bric_indc.style.width = bric_wdh + 'px';
 	}
 	bricInitialWidth = bric_wdh;
 
+	debugger;
+	if (bric_wdh > brac_wdh) {
+		bric_wdh = brac_wdh;
+		bric_hgh = bric_wdh / bricRatio;
+	}
+	if (bric_hgh > brac_hgh) {
+		bric_hgh = brac_hgh;
+		bric_wdh = bric_hgh * bricRatio;
+	}
+
+	bric_indc.style.height = bric_hgh + 'px';
+	bric_indc.style.width = bric_wdh + 'px';
 	bric_indc.style.left = (brac_wdh / 2.0 - bric_wdh / 2.0) + 'px';
 	bric_indc.style.top = (brac_hgh / 2.0 - bric_hgh / 2.0) + 'px';
 	bric_indc.onmousedown = onBricMouseDown
