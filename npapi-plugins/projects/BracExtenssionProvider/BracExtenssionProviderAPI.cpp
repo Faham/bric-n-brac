@@ -274,10 +274,22 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 		log(result.description());
 	pugi::xml_node brac_node = brac_xml.child("brac");
 	pugi::xml_object_range<pugi::xml_named_node_iterator> brics = brac_node.children("bric");
-	pugi::xml_named_node_iterator last_bric_itr;
-	for (pugi::xml_named_node_iterator itr = brics.begin(); itr != brics.end(); ++itr)
-		last_bric_itr = itr;
-	pugi::xml_node & last_bric = *last_bric_itr;
+
+	pugi::xml_node * bric_node_ptr = NULL;
+	int new_brac_num = 1;
+
+	if (brics.begin() != brics.end()) {
+		pugi::xml_named_node_iterator last_bric_itr;
+		for (pugi::xml_named_node_iterator itr = brics.begin(); itr != brics.end(); ++itr)
+			last_bric_itr = itr;
+		pugi::xml_node & last_bric = *last_bric_itr;
+		new_brac_num = 1 + last_bric.attribute("id").as_int();
+		bric_node_ptr = &(brac_node.insert_child_after("bric", last_bric));
+	} else {
+		bric_node_ptr = &(brac_node.append_child("bric"));
+	}
+
+	pugi::xml_node & bric_node = *bric_node_ptr;
 
 	time_t t = time(0);   // get current time
 	struct tm * now = localtime( &t );
@@ -290,8 +302,6 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 		, now->tm_min
 		, now->tm_sec);
 
-	int new_brac_num = 1 + last_bric.attribute("id").as_int();
-	pugi::xml_node bric_node = brac_node.insert_child_after("bric", last_bric);
 
 	bric_node.append_attribute("revision"    ).set_value(1);
 	bric_node.append_attribute("lastupdate"  ).set_value(time_now);
@@ -348,7 +358,6 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 	root_node.append_attribute("timeinterval").set_value(bric_info.get<std::string>("timeInterval").c_str());
 	root_node.append_attribute("startdate"   ).set_value(bric_info.get<std::string>("startDate"   ).c_str());
 	root_node.append_attribute("url"         ).set_value(bric_info.get<std::string>("url"         ).c_str());
-	root_node.append_attribute("window"      ).set_value(bric_info.get<std::string>("window"      ).c_str());
 	root_node.append_attribute("region"      ).set_value(bric_info.get<std::string>("region"      ).c_str());
 	root_node.append_attribute("tags"        ).set_value(bric_info.get<std::string>("tags"        ).c_str());
 

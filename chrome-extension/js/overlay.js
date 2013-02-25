@@ -516,7 +516,8 @@ function setupIndicators() {
 	bricPosition.value = precisionRes(3, parseInt(bricIndicator.style.left) / bracIndicatorScale) 
 		+ ' ' + precisionRes(3, parseInt(bricIndicator.style.top) / bracIndicatorScale);
 		
-	bricScale.value = precisionRes(3, parseInt(bricIndicator.style.width) / bricInitialWidth);
+	var _scl = precisionRes(3, parseInt(bricIndicator.style.width) / bricInitialWidth);
+	bricScale.value = _scl + ' ' + _scl;
 }
 
 //------------------------------------------------------------------------------
@@ -585,7 +586,7 @@ function onDocumentMouseMove(event) {
 			bricIndicator.style.width = new_w + 'px';
 			bricIndicator.style.height = new_h + 'px';
 			scl = precisionRes(3, new_w / bricInitialWidth);
-			bricScale.value = scl;
+			bricScale.value = scl + ' ' + scl;
 			bricIndicator.querySelector('#inner-text').innerText = 
 				precisionRes(3, scl * bricInitialWidthActual) 
 				+ ' x ' 
@@ -713,10 +714,9 @@ function setupDialog(region) {
 		
 		dlg.querySelector('#bric_start_data').value = dt.getFullYear() + '-' + m + '-' + d + ' ' + dt.toLocaleTimeString()
 		dlg.querySelector('#bric_url'       ).value = document.URL
-		dlg.querySelector('#bric_window'    ).value = document.documentElement.clientWidth + ' ' + document.documentElement.clientHeight;
 		dlg.querySelector('#bric_position'  ).value = '0.0 0.0';
 		dlg.querySelector('#bric_rotation'  ).value = '0.0';
-		dlg.querySelector('#bric_scale'     ).value = '1.0';
+		dlg.querySelector('#bric_scale'     ).value = '1.0 1.0';
 		dlg.querySelector('#bric_order'     ).value = '1';
 		dlg.querySelector('#bric_alpha'     ).value = '1.0';
 		dlg.querySelector('#bric_tags'      ).value = '';
@@ -888,7 +888,6 @@ function SaveDialogBtnApplyOnClick() {
 			url          : dlg.querySelector('#bric_url'          ).value.replace('https://', 'http://'),
 			region       : dlg.querySelector('#bric_region'       ).value,
 			resolution   : res,
-			window       : dlg.querySelector('#bric_window'       ).value,
 			position     : dlg.querySelector('#bric_position'     ).value,
 			rotation     : dlg.querySelector('#bric_rotation'     ).value,
 			scale        : dlg.querySelector('#bric_scale'        ).value,
