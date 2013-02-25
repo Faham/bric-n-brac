@@ -87,7 +87,7 @@ function saveAs(temp_dir, target_filename) {
 	var brac_xml = new XML(brac_xml_file.read());
 	brac_xml_file.close();
 	
-	for (var j = 1; j < brac_xml.bric.length(); ++j) {
+	for (var j = 0; j < brac_xml.bric.length(); ++j) {
 		try {
 			var id_str = brac_xml.bric[j].@id;
 			var layerset = cur_doc.layerSets.getByName(id_str);
@@ -98,12 +98,12 @@ function saveAs(temp_dir, target_filename) {
 			layer = layerset.artLayers.getByName('snapshot');
 			var new_w = layer.bounds[2] - layer.bounds[0];
 			var new_h = layer.bounds[3] - layer.bounds[1];
-
 			var scl_x = prcsRes(3, new_w / res_w);
 			var scl_y = prcsRes(3, new_h / res_h);
 
-			bric.@scale = scl_x; // + ' ' + scl_y;
-			bric.@position = parseInt(layer.bounds[0]) + ' ' + parseInt(layer.bounds[1]);
+			bric.@scale = scl_x + ' ' + scl_y;
+			bric.@position = parseFloat(layer.bounds[0]) + ' ' + parseFloat(layer.bounds[1]);
+			//bric.@rotate = layer.;
 			
 			var mask = null;
 			try {

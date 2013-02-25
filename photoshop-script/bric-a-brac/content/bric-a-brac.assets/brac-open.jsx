@@ -66,7 +66,7 @@ function BracOpen() {
 	}
 
 	if (!f.exists) {
-		alert("Brac file " + f.fsName + " not found!");
+		//alert("Brac file " + f.fsName + " not found!");
 		return;
 	}
 
@@ -125,12 +125,13 @@ function BracOpen() {
 		var bric_xml = new XML(bric_xml_file.read());
 		bric_xml_file.close();
 
-		var scale              = parseFloat(bric.@scale);
-		var sc_w               = scale;
-		var sc_h               = scale;
+		var title              = bric_xml.@title;
+		var scale              = bric.@scale.split(' ');
+		var sc_w               = parseFloat(scale[0]);
+		var sc_h               = parseFloat(scale[1]);
 		var position           = bric.@position.split(' ');
-		var mv_x               = parseInt(position[0]);
-		var mv_y               = parseInt(position[1]);
+		var mv_x               = parseFloat(position[0]);
+		var mv_y               = parseFloat(position[1]);
 		var rt_deg             = parseFloat(bric.@rotate);
 		var bric_snapshot_path = bric_dir + "/thumb.png";
 		var bric_mask_path     = bric_dir + "/mask.png";
@@ -165,7 +166,7 @@ function BracOpen() {
 		if (first_bric)
 			bric_layerset = new_brac_doc.layerSets.add();
 			
-		bric_layerset.name = bric.@id;
+		bric_layerset.name = bric.@id + ' - ' + title;
 		
 		//loading layer mask
 		var bric_mask = new File(bric_mask_path);
