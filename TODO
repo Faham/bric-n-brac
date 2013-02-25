@@ -1,5 +1,5 @@
-- We need the ability to draw non-rectangular cut shapes in the chrome extension
-- Please increase the timeout value in the bric-sync tool to 60 seconds instead of 2
+done - We need the ability to draw non-rectangular cut shapes in the chrome extension
+done - Please increase the timeout value in the bric-sync tool to 60 seconds instead of 2
 - Please add a feature in the Brac panel to allow us to Save As Template. There should be a checkbox to make that template the default template
 - Add a New button to the Brac panel that creates a new brac project by loading the default template.
 - It would be nice to see a tool that could be given a URL with search terms and automatically create a Brac project by selecting the results of the search and using them to populate the same structure as found in the template file.
