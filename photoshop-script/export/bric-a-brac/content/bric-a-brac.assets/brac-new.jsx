@@ -1,18 +1,43 @@
+﻿// Copyright 2013.  University of Saskatchewan.  All rights reserved.
+// This script incorporates brac files editing operations into Adobe Photoshop.
+// Written by Faham Negini
 
 //==============================================================================
 
 #target photoshop
+#include "common.jsx"
+
+//==============================================================================
+
+// debug level: 0-2 (0:disable, 1:break on error, 2:break at beginning)
+$.level = 1;
+//debugger; // launch debugger on next line
 
 //==============================================================================
 
 //UI Strings
-var strLabelVersion = 'Version: ';
-var strTitle        = 'New Brac';
-var strLabelName    = 'Name';
-var strLabelArtist  = 'Artist';
-var strLabelTags    = 'Tags';
-var strButtonNew    = 'New';
-var strButtonCancel = 'Cancel';
+var strLabelVersion             = 'Version: ';
+var strTitle                    = 'New Brac';
+var strLabelName                = 'Name';
+var strLabelArtist              = 'Artist';
+var strLabelTags                = 'Tags';
+var strButtonOK                 = 'OK';
+var strButtonCancel             = 'Cancel';
+var strLabelWidth               = 'Width';
+var strLabelHeight              = 'Height';
+var strLabelPixel               = 'Pixels';
+var strLabelInches              = 'Inches';
+var strLabelCentimeters         = 'Centimeters';
+var strLabelMillimeters         = 'Millimeters';
+var strLabelPixelsPerInch       = 'Pixels/Inch';
+var strLabelPixelsPerCentimeter = 'Pixels/Centimeter';
+var strLabelResolution          = 'Resolution';
+var strLabelBackgroundContents  = 'Background Contents';
+var strLabelTimeinterval        = 'Timeinterval';
+var strLabelDescription         = 'Description';
+var strLabelTemplate            = 'Template';
+var strButtonBrowse             = 'Browse';
+var strLabelImportUrls          = 'Import URLs';
 
 //Buttons
 var newButtonID = 1;
@@ -20,15 +45,42 @@ var cancelButtonID = 2;
 
 //==============================================================================
 
+main();
+
+//==============================================================================
+
+function docFill2Str(df) {
+	if (df == DocumentFill.BACKGROUNDCOLOR)
+		return 'Background Color';
+	else if (df == DocumentFill.WHITE)
+		return 'White';
+	else if (df == DocumentFill.TRANSPARENT)
+		return 'Transparent';
+}
+
+//==============================================================================
+
+function Str2DocFill(df) {
+	if (df == 'Background Color')
+		return DocumentFill.BACKGROUNDCOLOR;
+	else if (df == 'White')
+		return DocumentFill.WHITE;
+	else if (df == 'Transparent')
+		return DocumentFill.TRANSPARENT;
+}
+
+//==============================================================================
+
 function main() {
     var bracInfo = new Object();
+
     initBracInfo(bracInfo);
 	
-	if ( DialogModes.ALL == app.playbackDisplayDialogs ) {
+	//if ( DialogModes.ALL == app.playbackDisplayDialogs ) {
 		if (cancelButtonID == settingDialog(bracInfo)) {
 			return 'cancel';
 		}
-	}
+	//}
 	
 	try {
 	} catch (e) {
@@ -42,10 +94,18 @@ function main() {
 //------------------------------------------------------------------------------
 
 function initBracInfo(bracInfo) {
-	bracInfo.version = 1.0;
-	bracInfo.name   = '';
-	bracInfo.artist = '';
-	bracInfo.tags   = '';
+	bracInfo.version    = '1.0';
+	bracInfo.name       = '';
+	bracInfo.artist     = '';
+	bracInfo.tags       = '';
+	bracInfo.width      = '1366';
+	bracInfo.height     = '768';
+	bracInfo.resolution = '72';
+	bracInfo.template   = '';
+	bracInfo.importUrls = false;
+	bracInfo.timeinterval = '00-00 00:00:00';
+	bracInfo.description = '';
+	bracInfo.background = '';
 }
 
 //------------------------------------------------------------------------------
@@ -70,245 +130,147 @@ function settingDialog(bracInfo) {
 	// -- group top left 
 	dlgMain.grpTopLeft = dlgMain.grpTop.add("group");
 	dlgMain.grpTopLeft.orientation = 'column';
-	dlgMain.grpTopLeft.alignChildren = 'left';
+	dlgMain.grpTopLeft.alignChildren = 'right';
 	dlgMain.grpTopLeft.alignment = 'fill';
 	
-	dlgMain.grpTopLeft.add("statictext", undefined, strLabelVersion + bracInfo.version.toString());
+	dlgMain.grpName = dlgMain.grpTopLeft.add("group");
+	dlgMain.grpName.orientation = 'row';
+	dlgMain.grpName.alignChildren = 'left';
+	dlgMain.grpName.add("statictext", undefined, strLabelName);
+	dlgMain.etName = dlgMain.grpName.add("edittext", undefined, bracInfo.name.toString());
+	dlgMain.etName.preferredSize.width = 210;
 
-	dlgMain.grpTopLeft.add("statictext", undefined, strLabelName);
-	dlgMain.etName = dlgMain.grpTopLeft.add("edittext", undefined, bracInfo.name.toString());
-	dlgMain.etName.preferredSize.width = 160;
+	dlgMain.grpArtist = dlgMain.grpTopLeft.add("group");
+	dlgMain.grpArtist.orientation = 'row';
+	dlgMain.grpArtist.alignChildren = 'left';
+	dlgMain.grpArtist.add("statictext", undefined, strLabelArtist);
+	dlgMain.etArtist = dlgMain.grpArtist.add("edittext", undefined, bracInfo.artist.toString());
+	dlgMain.etArtist.preferredSize.width = 210;
 
-	dlgMain.grpTopLeft.add("statictext", undefined, strLabelArtist);
-	dlgMain.etArtist = dlgMain.grpTopLeft.add("edittext", undefined, bracInfo.artist.toString());
-	dlgMain.etArtist.preferredSize.width = 160;
+	dlgMain.grpTags = dlgMain.grpTopLeft.add("group");
+	dlgMain.grpTags.orientation = 'row';
+	dlgMain.grpTags.alignChildren = 'left';
+	dlgMain.grpTags.add("statictext", undefined, strLabelTags);
+	dlgMain.etTags = dlgMain.grpTags.add("edittext", undefined, bracInfo.tags.toString());
+	dlgMain.etTags.preferredSize.width = 210;
 
-	dlgMain.grpTopLeft.add("statictext", undefined, strLabelTags);
-	dlgMain.etTags = dlgMain.grpTopLeft.add("edittext", undefined, bracInfo.tags.toString());
-	dlgMain.etTags.preferredSize.width = 160;
+	dlgMain.grpWidth = dlgMain.grpTopLeft.add("group");
+	dlgMain.grpWidth.orientation = 'row';
+	dlgMain.grpWidth.alignChildren = 'left';
+	dlgMain.grpWidth.add("statictext", undefined, strLabelWidth);
+	dlgMain.etWidth = dlgMain.grpWidth.add("edittext", undefined, bracInfo.width.toString());
+	dlgMain.etWidth.preferredSize.width = 80;
+	dlgMain.ddWidth = dlgMain.grpWidth.add("dropdownlist");
+    dlgMain.ddWidth.preferredSize.width = 120;
+    dlgMain.ddWidth.alignment = 'left';
+    dlgMain.ddWidth.add('item', strLabelPixel);
+    dlgMain.ddWidth.add('item', strLabelInches);
+    dlgMain.ddWidth.add('item', strLabelCentimeters);
+    dlgMain.ddWidth.add('item', strLabelMillimeters);
+    dlgMain.ddWidth.selection = 0;
 
-	dlgMain.btnNew = dlgMain.grpSecondLine.add("button", undefined, strButtonNew);
+	dlgMain.grpHeight = dlgMain.grpTopLeft.add("group");
+	dlgMain.grpHeight.orientation = 'row';
+	dlgMain.grpHeight.alignChildren = 'left';
+	dlgMain.grpHeight.add("statictext", undefined, strLabelHeight);
+	dlgMain.etHeight = dlgMain.grpHeight.add("edittext", undefined, bracInfo.height.toString());
+	dlgMain.etHeight.preferredSize.width = 80;
+	dlgMain.ddHeight = dlgMain.grpHeight.add("dropdownlist");
+    dlgMain.ddHeight.preferredSize.width = 120;
+    dlgMain.ddHeight.alignment = 'left';
+    dlgMain.ddHeight.add('item', strLabelPixel);
+    dlgMain.ddHeight.add('item', strLabelInches);
+    dlgMain.ddHeight.add('item', strLabelCentimeters);
+    dlgMain.ddHeight.add('item', strLabelMillimeters);
+    dlgMain.ddHeight.selection = 0;
+
+	dlgMain.grpResolution = dlgMain.grpTopLeft.add("group");
+	dlgMain.grpResolution.orientation = 'row';
+	dlgMain.grpResolution.alignChildren = 'left';
+	dlgMain.grpResolution.add("statictext", undefined, strLabelResolution);
+	dlgMain.etResolution = dlgMain.grpResolution.add("edittext", undefined, bracInfo.resolution.toString());
+	dlgMain.etResolution.preferredSize.width = 80;
+	dlgMain.ddResolution = dlgMain.grpResolution.add("dropdownlist");
+    dlgMain.ddResolution.preferredSize.width = 120;
+    dlgMain.ddResolution.alignment = 'left';
+    dlgMain.ddResolution.add('item', strLabelPixelsPerInch);
+    dlgMain.ddResolution.add('item', strLabelPixelsPerCentimeter);
+    dlgMain.ddResolution.selection = 0;
+	
+	dlgMain.grpBackgroundContents = dlgMain.grpTopLeft.add("group");
+	dlgMain.grpBackgroundContents.orientation = 'row';
+	dlgMain.grpBackgroundContents.alignChildren = 'left';
+	dlgMain.grpBackgroundContents.add("statictext", undefined, strLabelBackgroundContents);
+	dlgMain.ddBackgroundContents = dlgMain.grpBackgroundContents.add("dropdownlist");
+    dlgMain.ddBackgroundContents.preferredSize.width = 210;
+    dlgMain.ddBackgroundContents.alignment = 'left';
+    dlgMain.ddBackgroundContents.add('item', docFill2Str(DocumentFill.BACKGROUNDCOLOR));
+    dlgMain.ddBackgroundContents.add('item', docFill2Str(DocumentFill.WHITE));
+    dlgMain.ddBackgroundContents.add('item', docFill2Str(DocumentFill.TRANSPARENT));
+    dlgMain.ddBackgroundContents.selection = 0;
+	
+	dlgMain.grpTimeinterval = dlgMain.grpTopLeft.add("group");
+	dlgMain.grpTimeinterval.orientation = 'row';
+	dlgMain.grpTimeinterval.alignChildren = 'left';
+	dlgMain.grpTimeinterval.add("statictext", undefined, strLabelTimeinterval);
+	dlgMain.etTimeinterval = dlgMain.grpTimeinterval.add("edittext", undefined, bracInfo.timeinterval.toString());
+	dlgMain.etTimeinterval.preferredSize.width = 210;
+	
+	dlgMain.grpDescription = dlgMain.grpTopLeft.add("group");
+	dlgMain.grpDescription.orientation = 'row';
+	dlgMain.grpDescription.alignChildren = 'left';
+	dlgMain.grpDescription.add("statictext", undefined, strLabelDescription);
+	dlgMain.etDescription = dlgMain.grpDescription.add("edittext", undefined, bracInfo.description.toString());
+	dlgMain.etDescription.preferredSize.width = 210;
+	
+	dlgMain.grpTemplate = dlgMain.grpTopLeft.add("group");
+	dlgMain.grpTemplate.orientation = 'row';
+	dlgMain.grpTemplate.alignChildren = 'left';
+	dlgMain.grpTemplate.add("statictext", undefined, strLabelTemplate);
+	dlgMain.etTemplate = dlgMain.grpTemplate.add("edittext", undefined, bracInfo.template.toString());
+	dlgMain.etTemplate.preferredSize.width = 170;
+	dlgMain.btnBrowse = dlgMain.grpTemplate.add("button", undefined, strButtonBrowse);
+	dlgMain.btnBrowse.onClick = function() {
+		//TODO: choose the template file
+		dlgMain.cbImportUrls.enabled = true;
+	}
+	
+	dlgMain.grpImportUrls = dlgMain.grpTopLeft.add("group");
+	dlgMain.grpImportUrls.orientation = 'row';
+	dlgMain.grpImportUrls.alignChildren = 'left';
+	dlgMain.cbImportUrls = dlgMain.grpImportUrls.add("checkbox", undefined, strLabelImportUrls);
+	dlgMain.cbImportUrls.enabled = false;
+	
+	// -- group top right
+	dlgMain.grpTopRight = dlgMain.grpTop.add("group");
+	dlgMain.grpTopRight.orientation = 'column';
+	dlgMain.grpTopRight.alignChildren = 'center';
+	
+	dlgMain.btnNew = dlgMain.grpTopRight.add("button", undefined, strButtonOK);
 	dlgMain.btnNew.onClick = function() {
 		//TODO: create the new brac here
+		bracInfo.name         = dlgMain.etName        .text;
+		bracInfo.artist       = dlgMain.etArtist      .text;
+		bracInfo.tags         = dlgMain.etTags        .text;
+		bracInfo.width        = dlgMain.etWidth       .text;
+		bracInfo.height       = dlgMain.etHeight      .text;
+		bracInfo.resolution   = dlgMain.etResolution  .text;
+		bracInfo.template     = dlgMain.etTemplate    .text;
+		bracInfo.importUrls   = dlgMain.cbImportUrls  .value;
+		bracInfo.timeinterval = dlgMain.etTimeinterval.text;
+		bracInfo.description  = dlgMain.etDescription .text;
+		bracInfo.background   = dlgMain.ddBackgroundContents.selection.text;
+		createNewBrac(bracInfo);
 		dlgMain.close(newButtonID);
 	}
 	
-	dlgMain.btnCancel = dlgMain.grpSecondLine.add("button", undefined, strButtonCancel);
+	dlgMain.btnCancel = dlgMain.grpTopRight.add("button", undefined, strButtonCancel);
 	dlgMain.btnCancel.onClick = function() {
 		dlgMain.close(cancelButtonID); 
 	}
-/*
 
-	// -- the third line in the dialog
-	dlgMain.grpTopLeft.add("statictext", undefined, strLabelFileNamePrefix);
-
-	// -- the fourth line in the dialog
-	dlgMain.etFileNamePrefix = dlgMain.grpTopLeft.add("edittext", undefined, exportInfo.fileNamePrefix.toString());
-	dlgMain.etFileNamePrefix.alignment = 'fill';
-	dlgMain.etFileNamePrefix.preferredSize.width = StrToIntWithDefault( stretDestination, 160 );
-
-	// -- the fifth line in the dialog
-	dlgMain.cbVisible = dlgMain.grpTopLeft.add("checkbox", undefined, strCheckboxVisibleOnly);
-	dlgMain.cbVisible.value = exportInfo.visibleOnly;
-
-	// -- the sixth line is the panel
-	dlgMain.pnlFileType = dlgMain.grpTopLeft.add("panel", undefined, strLabelFileType);
-	dlgMain.pnlFileType.alignment = 'fill';
+	dlgMain.grpTopRight.add("statictext", undefined, strLabelVersion + bracInfo.version.toString());
 	
-	// -- now a dropdown list
-	dlgMain.ddFileType = dlgMain.pnlFileType.add("dropdownlist");
-	dlgMain.ddFileType.preferredSize.width = StrToIntWithDefault( strddFileType, 100 );
-	dlgMain.ddFileType.alignment = 'left';
-
-	dlgMain.ddFileType.add("item", "BMP");
-	dlgMain.ddFileType.add("item", "JPEG");
-	dlgMain.ddFileType.add("item", "PDF");
-	dlgMain.ddFileType.add("item", "PSD");
-	dlgMain.ddFileType.add("item", "Targa");
-	dlgMain.ddFileType.add("item", "TIFF");
-	dlgMain.ddFileType.add("item", "PNG-8");
-	dlgMain.ddFileType.add("item", "PNG-24");
-
-	dlgMain.ddFileType.onChange = function() {
-	}
-	
-	dlgMain.ddFileType.items[exportInfo.fileType].selected = true;
-
-	// -- now after all the radio buttons
-	dlgMain.cbIcc = dlgMain.pnlFileType.add("checkbox", undefined, strCheckboxIncludeICCProfile);
-	dlgMain.cbIcc.value = exportInfo.icc;
-	dlgMain.cbIcc.alignment = 'left';
-
-	// -- now the options panel that changes
-	dlgMain.pnlFileType.pnlOptions = dlgMain.pnlFileType.add("panel", undefined, "Options");
-	dlgMain.pnlFileType.pnlOptions.alignment = 'fill';
-	dlgMain.pnlFileType.pnlOptions.orientation = 'stack';
-	dlgMain.pnlFileType.pnlOptions.preferredSize.height = StrToIntWithDefault( strpnlOptions, 100 );
-
-	// PSD options
-	dlgMain.pnlFileType.pnlOptions.grpPSDOptions = dlgMain.pnlFileType.pnlOptions.add("group");
-	dlgMain.pnlFileType.pnlOptions.grpPSDOptions.cbMax = dlgMain.pnlFileType.pnlOptions.grpPSDOptions.add("checkbox", undefined, strCheckboxMaximizeCompatibility);
-	dlgMain.pnlFileType.pnlOptions.grpPSDOptions.cbMax.value = exportInfo.psdMaxComp;
-	dlgMain.pnlFileType.pnlOptions.grpPSDOptions.visible = (exportInfo.fileType == psdIndex);
-	
-	dlgMain.pnlFileType.pnlOptions.grpTIFFOptions.grpCompression.ddCompression.onChange = function() {
-		if (this.selection.index == compJPEGIndex) {
-			dlgMain.pnlFileType.pnlOptions.grpTIFFOptions.grpQuality.stQuality.enabled = true;
-			dlgMain.pnlFileType.pnlOptions.grpTIFFOptions.grpQuality.etQuality.enabled = true;
-		} else {
-			dlgMain.pnlFileType.pnlOptions.grpTIFFOptions.grpQuality.stQuality.enabled = false;
-			dlgMain.pnlFileType.pnlOptions.grpTIFFOptions.grpQuality.etQuality.enabled = false;
-		}
-	}
-
-	dlgMain.pnlFileType.pnlOptions.grpTIFFOptions.grpQuality = dlgMain.pnlFileType.pnlOptions.grpTIFFOptions.add("group");
-	dlgMain.pnlFileType.pnlOptions.grpTIFFOptions.grpQuality.alignment = 'left';
-	dlgMain.pnlFileType.pnlOptions.grpTIFFOptions.grpQuality.stQuality = dlgMain.pnlFileType.pnlOptions.grpTIFFOptions.grpQuality.add("statictext", undefined, strLabelQuality);
-	dlgMain.pnlFileType.pnlOptions.grpTIFFOptions.grpQuality.etQuality = dlgMain.pnlFileType.pnlOptions.grpTIFFOptions.grpQuality.add("edittext", undefined, exportInfo.tiffJpegQuality.toString());
-	dlgMain.pnlFileType.pnlOptions.grpTIFFOptions.grpQuality.etQuality.preferredSize.width = StrToIntWithDefault( stretQuality, 30 );
-	dlgMain.pnlFileType.pnlOptions.grpTIFFOptions.grpQuality.etQuality.graphics.disabledBackgroundColor = brush;
-
-	var index;
-	switch (exportInfo.tiffCompression) {
-		case TIFFEncoding.NONE:	 index = compNoneIndex; break;
-		case TIFFEncoding.TIFFLZW:  index = compLZWIndex; break;
-		case TIFFEncoding.TIFFZIP:  index = compZIPIndex; break;
-		case TIFFEncoding.JPEG:	 index = compJPEGIndex; break;
-		default: index = compNoneIndex;	break;
-	}
-
-	dlgMain.pnlFileType.pnlOptions.grpTIFFOptions.grpCompression.ddCompression.items[index].selected = true;
-
-	if (TIFFEncoding.JPEG != exportInfo.tiffCompression) { // if not JPEG
-		dlgMain.pnlFileType.pnlOptions.grpTIFFOptions.grpQuality.stQuality.enabled = false;
-		dlgMain.pnlFileType.pnlOptions.grpTIFFOptions.grpQuality.etQuality.enabled = false;
-	}
-	
-
-	// PDF options
-	dlgMain.pnlFileType.pnlOptions.grpPDFOptions = dlgMain.pnlFileType.pnlOptions.add("group");
-	dlgMain.pnlFileType.pnlOptions.grpPDFOptions.orientation = 'column';
-	dlgMain.pnlFileType.pnlOptions.grpPDFOptions.visible = (exportInfo.fileType == pdfIndex);
-
-	dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpCompression = dlgMain.pnlFileType.pnlOptions.grpPDFOptions.add("group");
-	dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpCompression.alignment = 'left';
-	dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpCompression.add("statictext", undefined, strLabelEncoding);
-
-	dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpCompression.rbZip = dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpCompression.add("radiobutton", undefined, "ZIP");
-	dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpCompression.rbZip.onClick = function() {
-		dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpQuality.stQuality.enabled = false;   
-		dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpQuality.etQuality.enabled = false;   
-	}
-
-	dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpCompression.rbJpeg = dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpCompression.add("radiobutton", undefined, "JPEG");
-	dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpCompression.rbJpeg.onClick = function() {
-		dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpQuality.stQuality.enabled = true;   
-		dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpQuality.etQuality.enabled = true;   
-	}
-	
-	dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpQuality = dlgMain.pnlFileType.pnlOptions.grpPDFOptions.add("group");
-	dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpQuality.alignment = 'left';
-	
-	dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpQuality.stQuality = dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpQuality.add("statictext", undefined, strLabelQuality);
-
-	dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpQuality.etQuality = dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpQuality.add("edittext", undefined, exportInfo.pdfJpegQuality.toString());
-	dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpQuality.etQuality.preferredSize.width = StrToIntWithDefault( stretQuality, 30 );
-	dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpQuality.etQuality.graphics.disabledBackgroundColor = brush;
-
-	switch (exportInfo.pdfEncoding) {
-		case PDFEncoding.PDFZIP: 
-			dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpCompression.rbZip.value  = true;	break;
-		case PDFEncoding.JPEG:
-		default: 
-			dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpCompression.rbJpeg.value = true;	break;
-	}
-	
-	if (PDFEncoding.JPEG != exportInfo.pdfEncoding) {
-		dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpQuality.stQuality.enabled = false;
-		dlgMain.pnlFileType.pnlOptions.grpPDFOptions.grpQuality.etQuality.enabled = false;
-	}
-
-	// Targa options
-	dlgMain.pnlFileType.pnlOptions.grpTargaOptions = dlgMain.pnlFileType.pnlOptions.add("group");
-	dlgMain.pnlFileType.pnlOptions.grpTargaOptions.add("statictext", undefined, strLabelDepth);
-	dlgMain.pnlFileType.pnlOptions.grpTargaOptions.visible = (exportInfo.fileType == targaIndex);
-	
-	dlgMain.pnlFileType.pnlOptions.grpTargaOptions.rb16bit = dlgMain.pnlFileType.pnlOptions.grpTargaOptions.add( "radiobutton", undefined, strRadiobutton16bit);
-	dlgMain.pnlFileType.pnlOptions.grpTargaOptions.rb24bit = dlgMain.pnlFileType.pnlOptions.grpTargaOptions.add( "radiobutton", undefined, strRadiobutton24bit);
-	dlgMain.pnlFileType.pnlOptions.grpTargaOptions.rb32bit = dlgMain.pnlFileType.pnlOptions.grpTargaOptions.add( "radiobutton", undefined, strRadiobutton32bit);
-
-	switch (exportInfo.targaDepth) {
-		case TargaBitsPerPixels.SIXTEEN:	 dlgMain.pnlFileType.pnlOptions.grpTargaOptions.rb16bit.value = true;   break;
-		case TargaBitsPerPixels.TWENTYFOUR:  dlgMain.pnlFileType.pnlOptions.grpTargaOptions.rb24bit.value = true;   break;
-		case TargaBitsPerPixels.THIRTYTWO:   dlgMain.pnlFileType.pnlOptions.grpTargaOptions.rb32bit.value = true;   break;
-		default: dlgMain.pnlFileType.pnlOptions.grpTargaOptions.rb24bit.value = true;   break;
-	}
-
-
-	// BMP options
-	dlgMain.pnlFileType.pnlOptions.grpBMPOptions = dlgMain.pnlFileType.pnlOptions.add("group");
-	dlgMain.pnlFileType.pnlOptions.grpBMPOptions.add("statictext", undefined, strLabelDepth);
-	dlgMain.pnlFileType.pnlOptions.grpBMPOptions.visible = (exportInfo.fileType == bmpIndex);
-
-	dlgMain.pnlFileType.pnlOptions.grpBMPOptions.rb16bit = dlgMain.pnlFileType.pnlOptions.grpBMPOptions.add( "radiobutton", undefined, strRadiobutton16bit);
-	dlgMain.pnlFileType.pnlOptions.grpBMPOptions.rb24bit = dlgMain.pnlFileType.pnlOptions.grpBMPOptions.add( "radiobutton", undefined, strRadiobutton24bit);
-	dlgMain.pnlFileType.pnlOptions.grpBMPOptions.rb32bit = dlgMain.pnlFileType.pnlOptions.grpBMPOptions.add( "radiobutton", undefined, strRadiobutton32bit);
-
-	switch (exportInfo.bmpDepth) {
-		case BMPDepthType.SIXTEEN:   dlgMain.pnlFileType.pnlOptions.grpBMPOptions.rb16bit.value = true;   break;
-		case BMPDepthType.TWENTYFOUR:dlgMain.pnlFileType.pnlOptions.grpBMPOptions.rb24bit.value = true;   break;
-		case BMPDepthType.THIRTYTWO: dlgMain.pnlFileType.pnlOptions.grpBMPOptions.rb32bit.value = true;   break;
-		default: dlgMain.pnlFileType.pnlOptions.grpBMPOptions.rb24bit.value = true;   break;
-	}
-
-	// the right side of the dialog, the ok and cancel buttons
-	dlgMain.grpTopRight = dlgMain.grpTop.add("group");
-	dlgMain.grpTopRight.orientation = 'column';
-	dlgMain.grpTopRight.alignChildren = 'fill';
-	
-	dlgMain.btnRun = dlgMain.grpTopRight.add("button", undefined, strButtonRun );
-
-	dlgMain.btnRun.onClick = function() {
-		// check if the setting is properly
-		var destination = dlgMain.etDestination.text;
-		if (destination.length == 0) {
-			alert(strAlertSpecifyDestination);
-			return;
-		}
-		var testFolder = new Folder(destination);
-		if (!testFolder.exists) {
-			alert(strAlertDestinationNotExist);
-			return;
-		}
-	
-		dlgMain.close(runButtonID);
-	}
-
-	dlgMain.btnCancel = dlgMain.grpTopRight.add("button", undefined, strButtonCancel );
-
-	dlgMain.btnCancel.onClick = function() { 
-		dlgMain.close(cancelButtonID); 
-	}
-
-	dlgMain.defaultElement = dlgMain.btnRun;
-	dlgMain.cancelElement = dlgMain.btnCancel;
-
-   	// the bottom of the dialog
-	dlgMain.grpBottom = dlgMain.add("group");
-	dlgMain.grpBottom.orientation = 'column';
-	dlgMain.grpBottom.alignChildren = 'left';
-	dlgMain.grpBottom.alignment = 'fill';
-	
-	dlgMain.pnlHelp = dlgMain.grpBottom.add("panel");
-	dlgMain.pnlHelp.alignment = 'fill';
-
-	dlgMain.etHelp = dlgMain.pnlHelp.add("statictext", undefined, strHelpText, {multiline:true});
-	dlgMain.etHelp.alignment = 'fill';
-	
-	dlgMain.onShow = function() {
-		dlgMain.ddFileType.onChange();
-	}
-*/
 	// give the hosting app the focus before showing the dialog
 	app.bringToFront();
 
@@ -325,3 +287,51 @@ function settingDialog(bracInfo) {
 
 	return result;
 }
+
+//------------------------------------------------------------------------------
+
+function createNewBrac(bracInfo) {
+	
+	setEnv();
+	
+	var ts = new Date().getTime();
+	var brac_dir = Folder.temp + "/" + ts;
+	var out_dir = new Folder(brac_dir);
+	out_dir.create();
+	var doc_name = ts + '-' + bracInfo.name;
+	
+	var brac_xml = new XML();
+	brac_xml = XML('<brac></brac>');
+	brac_xml.@artist       = bracInfo.artist;
+	brac_xml.@dpi          = bracInfo.resolution;
+	brac_xml.@name         = bracInfo.name;
+	brac_xml.@resolution   = bracInfo.width + ' ' + bracInfo.height;
+	brac_xml.@tags         = bracInfo.tags;
+	brac_xml.@timeinterval = bracInfo.timeinterval;
+	brac_xml.@version      = bracInfo.version;
+
+	brac_xml.global.static.@name = 'background';
+	brac_xml.global.static.@zindex = '0';
+	
+	var brac_xml_file = new File(brac_dir + "/" + "brac.xml");
+	brac_xml_file.open("w");
+	brac_xml_file.write(brac_xml);
+	brac_xml_file.close();
+	
+	var new_doc = app.documents.add(
+		parseInt(bracInfo.width),
+		parseInt(bracInfo.height),
+		bracInfo.resolution,
+		doc_name,
+		NewDocumentMode.RGB,
+		Str2DocFill(bracInfo.background), 1);
+	
+	var desc = new ActionDescriptor();
+	desc.putString(0, '');
+	desc.putString(1, brac_dir);
+	app.putCustomOptions(doc_name, desc, true);
+	
+	resetEnv();
+}
+
+//==============================================================================

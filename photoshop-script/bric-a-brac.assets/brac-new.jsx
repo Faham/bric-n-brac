@@ -5,6 +5,7 @@
 //==============================================================================
 
 #target photoshop
+#include "common.jsx"
 
 //==============================================================================
 
@@ -32,8 +33,8 @@ var strLabelPixelsPerInch       = 'Pixels/Inch';
 var strLabelPixelsPerCentimeter = 'Pixels/Centimeter';
 var strLabelResolution          = 'Resolution';
 var strLabelBackgroundContents  = 'Background Contents';
-var strLabelWhite               = 'White';
-var strLabelTransparent         = 'Transparent';
+var strLabelTimeinterval        = 'Timeinterval';
+var strLabelDescription         = 'Description';
 var strLabelTemplate            = 'Template';
 var strButtonBrowse             = 'Browse';
 var strLabelImportUrls          = 'Import URLs';
@@ -45,6 +46,28 @@ var cancelButtonID = 2;
 //==============================================================================
 
 main();
+
+//==============================================================================
+
+function docFill2Str(df) {
+	if (df == DocumentFill.BACKGROUNDCOLOR)
+		return 'Background Color';
+	else if (df == DocumentFill.WHITE)
+		return 'White';
+	else if (df == DocumentFill.TRANSPARENT)
+		return 'Transparent';
+}
+
+//==============================================================================
+
+function Str2DocFill(df) {
+	if (df == 'Background Color')
+		return DocumentFill.BACKGROUNDCOLOR;
+	else if (df == 'White')
+		return DocumentFill.WHITE;
+	else if (df == 'Transparent')
+		return DocumentFill.TRANSPARENT;
+}
 
 //==============================================================================
 
@@ -71,15 +94,18 @@ function main() {
 //------------------------------------------------------------------------------
 
 function initBracInfo(bracInfo) {
-	bracInfo.version    = 1.0;
+	bracInfo.version    = '1.0';
 	bracInfo.name       = '';
 	bracInfo.artist     = '';
 	bracInfo.tags       = '';
-	bracInfo.width      = 1366;
-	bracInfo.height     = 768;
-	bracInfo.resolution = 72;
+	bracInfo.width      = '1366';
+	bracInfo.height     = '768';
+	bracInfo.resolution = '72';
 	bracInfo.template   = '';
 	bracInfo.importUrls = false;
+	bracInfo.timeinterval = '00-00 00:00:00';
+	bracInfo.description = '';
+	bracInfo.background = '';
 }
 
 //------------------------------------------------------------------------------
@@ -178,9 +204,24 @@ function settingDialog(bracInfo) {
 	dlgMain.ddBackgroundContents = dlgMain.grpBackgroundContents.add("dropdownlist");
     dlgMain.ddBackgroundContents.preferredSize.width = 210;
     dlgMain.ddBackgroundContents.alignment = 'left';
-    dlgMain.ddBackgroundContents.add('item', strLabelWhite);
-    dlgMain.ddBackgroundContents.add('item', strLabelTransparent);
+    dlgMain.ddBackgroundContents.add('item', docFill2Str(DocumentFill.BACKGROUNDCOLOR));
+    dlgMain.ddBackgroundContents.add('item', docFill2Str(DocumentFill.WHITE));
+    dlgMain.ddBackgroundContents.add('item', docFill2Str(DocumentFill.TRANSPARENT));
     dlgMain.ddBackgroundContents.selection = 0;
+	
+	dlgMain.grpTimeinterval = dlgMain.grpTopLeft.add("group");
+	dlgMain.grpTimeinterval.orientation = 'row';
+	dlgMain.grpTimeinterval.alignChildren = 'left';
+	dlgMain.grpTimeinterval.add("statictext", undefined, strLabelTimeinterval);
+	dlgMain.etTimeinterval = dlgMain.grpTimeinterval.add("edittext", undefined, bracInfo.timeinterval.toString());
+	dlgMain.etTimeinterval.preferredSize.width = 210;
+	
+	dlgMain.grpDescription = dlgMain.grpTopLeft.add("group");
+	dlgMain.grpDescription.orientation = 'row';
+	dlgMain.grpDescription.alignChildren = 'left';
+	dlgMain.grpDescription.add("statictext", undefined, strLabelDescription);
+	dlgMain.etDescription = dlgMain.grpDescription.add("edittext", undefined, bracInfo.description.toString());
+	dlgMain.etDescription.preferredSize.width = 210;
 	
 	dlgMain.grpTemplate = dlgMain.grpTopLeft.add("group");
 	dlgMain.grpTemplate.orientation = 'row';
@@ -208,6 +249,18 @@ function settingDialog(bracInfo) {
 	dlgMain.btnNew = dlgMain.grpTopRight.add("button", undefined, strButtonOK);
 	dlgMain.btnNew.onClick = function() {
 		//TODO: create the new brac here
+		bracInfo.name         = dlgMain.etName        .text;
+		bracInfo.artist       = dlgMain.etArtist      .text;
+		bracInfo.tags         = dlgMain.etTags        .text;
+		bracInfo.width        = dlgMain.etWidth       .text;
+		bracInfo.height       = dlgMain.etHeight      .text;
+		bracInfo.resolution   = dlgMain.etResolution  .text;
+		bracInfo.template     = dlgMain.etTemplate    .text;
+		bracInfo.importUrls   = dlgMain.cbImportUrls  .value;
+		bracInfo.timeinterval = dlgMain.etTimeinterval.text;
+		bracInfo.description  = dlgMain.etDescription .text;
+		bracInfo.background   = dlgMain.ddBackgroundContents.selection.text;
+		createNewBrac(bracInfo);
 		dlgMain.close(newButtonID);
 	}
 	
@@ -233,6 +286,52 @@ function settingDialog(bracInfo) {
 	//exportInfo.artist = ;
 
 	return result;
+}
+
+//------------------------------------------------------------------------------
+
+function createNewBrac(bracInfo) {
+	
+	setEnv();
+	
+	var ts = new Date().getTime();
+	var brac_dir = Folder.temp + "/" + ts;
+	var out_dir = new Folder(brac_dir);
+	out_dir.create();
+	var doc_name = ts + '-' + bracInfo.name;
+	
+	var brac_xml = new XML();
+	brac_xml = XML('<brac></brac>');
+	brac_xml.@artist       = bracInfo.artist;
+	brac_xml.@dpi          = bracInfo.resolution;
+	brac_xml.@name         = bracInfo.name;
+	brac_xml.@resolution   = bracInfo.width + ' ' + bracInfo.height;
+	brac_xml.@tags         = bracInfo.tags;
+	brac_xml.@timeinterval = bracInfo.timeinterval;
+	brac_xml.@version      = bracInfo.version;
+
+	brac_xml.global.static.@name = 'background';
+	brac_xml.global.static.@zindex = '0';
+	
+	var brac_xml_file = new File(brac_dir + "/" + "brac.xml");
+	brac_xml_file.open("w");
+	brac_xml_file.write(brac_xml);
+	brac_xml_file.close();
+	
+	var new_doc = app.documents.add(
+		parseInt(bracInfo.width),
+		parseInt(bracInfo.height),
+		bracInfo.resolution,
+		doc_name,
+		NewDocumentMode.RGB,
+		Str2DocFill(bracInfo.background), 1);
+	
+	var desc = new ActionDescriptor();
+	desc.putString(0, '');
+	desc.putString(1, brac_dir);
+	app.putCustomOptions(doc_name, desc, true);
+	
+	resetEnv();
 }
 
 //==============================================================================

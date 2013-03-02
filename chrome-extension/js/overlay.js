@@ -491,7 +491,6 @@ function setupIndicators() {
 	}
 	bricInitialWidth = bric_wdh;
 
-	debugger;
 	if (bric_wdh > brac_wdh) {
 		bric_wdh = brac_wdh;
 		bric_hgh = bric_wdh / bricRatio;
