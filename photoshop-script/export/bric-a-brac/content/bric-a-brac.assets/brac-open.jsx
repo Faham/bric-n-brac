@@ -105,12 +105,12 @@ function BracOpen() {
 		, NewDocumentMode.RGB
 		, DocumentFill.TRANSPARENT, 1);
 		
-	var nbric = brac_xml.bric.length();
+	var nbric = brac_xml.brics.bric.length();
 	
 	var first_bric = true;
 	
 	for (var i = 0; i < nbric; ++i) {
-		var bric = brac_xml.bric[i];
+		var bric = brac_xml.brics.bric[i];
 
 		// extracting bric details
 		var bric_dir = brac_dir + "/bric." + bric.@id;

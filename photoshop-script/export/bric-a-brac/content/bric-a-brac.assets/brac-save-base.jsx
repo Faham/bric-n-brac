@@ -73,6 +73,16 @@ function setInvisibleAllArtLayers(obj) {
 
 //------------------------------------------------------------------------------
 
+function getBracGroup(id, doc) {
+	for (var i = 0; i < doc.layerSets.length; ++i) {
+		if (parseInt(doc.layerSets[i].name) == parseInt(id)) {
+			return doc.layerSets[i];
+		}
+	}
+}
+
+//------------------------------------------------------------------------------
+
 function saveAs(temp_dir, target_filename) {
 
 	var SevenZip = get7zip();
@@ -87,11 +97,12 @@ function saveAs(temp_dir, target_filename) {
 	var brac_xml = new XML(brac_xml_file.read());
 	brac_xml_file.close();
 	
-	for (var j = 0; j < brac_xml.bric.length(); ++j) {
+	for (var j = 0; j < brac_xml.brics.bric.length(); ++j) {
 		try {
-			var id_str = brac_xml.bric[j].@id;
-			var layerset = cur_doc.layerSets.getByName(id_str);
-			var bric = brac_xml.bric[j];
+			var bric = brac_xml.brics.bric[j];
+			var id_str = bric.@id;
+			//var layerset = cur_doc.layerSets.getByName(getBracGroupName(id_str, bric));
+			var layerset = getBracGroup(id_str, cur_doc);
 			var resolution = bric.@resolution.split(' ');
 			var res_w = parseInt(resolution[0]);
 			var res_h = parseInt(resolution[1]);

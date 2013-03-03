@@ -301,7 +301,7 @@ function createNewBrac(bracInfo) {
 	var doc_name = ts + '-' + bracInfo.name;
 	
 	var brac_xml = new XML();
-	brac_xml = XML('<brac></brac>');
+	brac_xml = XML('<brac><brics></brics></brac>');
 	brac_xml.@artist       = bracInfo.artist;
 	brac_xml.@dpi          = bracInfo.resolution;
 	brac_xml.@name         = bracInfo.name;

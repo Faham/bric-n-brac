@@ -273,7 +273,8 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 	if (!result)
 		log(result.description());
 	pugi::xml_node brac_node = brac_xml.child("brac");
-	pugi::xml_object_range<pugi::xml_named_node_iterator> brics = brac_node.children("bric");
+	pugi::xml_node brics_node = brac_node.child("brics");
+	pugi::xml_object_range<pugi::xml_named_node_iterator> brics = brics_node.children("bric");
 
 	pugi::xml_node * bric_node_ptr = NULL;
 	int new_brac_num = 1;
@@ -284,9 +285,9 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 			last_bric_itr = itr;
 		pugi::xml_node & last_bric = *last_bric_itr;
 		new_brac_num = 1 + last_bric.attribute("id").as_int();
-		bric_node_ptr = &(brac_node.insert_child_after("bric", last_bric));
+		bric_node_ptr = &(brics_node.insert_child_after("bric", last_bric));
 	} else {
-		bric_node_ptr = &(brac_node.append_child("bric"));
+		bric_node_ptr = &(brics_node.append_child("bric"));
 	}
 
 	pugi::xml_node & bric_node = *bric_node_ptr;
