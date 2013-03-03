@@ -44,7 +44,7 @@ function addLayerMask() {
 }
 
 //------------------------------------------------------------------------------
-	
+
 function BracOpen() {
 
 	var SevenZip = get7zip();
@@ -104,13 +104,26 @@ function BracOpen() {
 	var new_brac_doc = app.documents.add(doc_w_px, doc_h_px, dpi, doc_name
 		, NewDocumentMode.RGB
 		, DocumentFill.TRANSPARENT, 1);
-		
-	var nbric = brac_xml.brics.bric.length();
 	
 	var first_bric = true;
 	
-	for (var i = 0; i < nbric; ++i) {
-		var bric = brac_xml.brics.bric[i];
+	// sorting by zindex
+	var ordered_brics = [];
+	for (var i = 0; i < brac_xml.brics.bric.length(); ++i)
+		ordered_brics[i] = [i, brac_xml.brics.bric[i].@order]
+
+	for (var i = 0; i < ordered_brics.length; ++i) {
+		for (var j = i + 1; j < ordered_brics.length; ++j) {
+			if (ordered_brics[i][1] > ordered_brics[j][1]) {
+				temp = ordered_brics[j];
+				ordered_brics[j] = ordered_brics[i];
+				ordered_brics[i] = temp;
+			}
+		}
+	}
+	
+	for (var i = 0; i < ordered_brics.length; ++i) {
+		var bric = brac_xml.brics.bric[ordered_brics[i][0]];
 
 		// extracting bric details
 		var bric_dir = brac_dir + "/bric." + bric.@id;

@@ -73,12 +73,14 @@ function setInvisibleAllArtLayers(obj) {
 
 //------------------------------------------------------------------------------
 
-function getBracGroup(id, doc) {
+function getBracGroupIndex(id, doc) {
 	for (var i = 0; i < doc.layerSets.length; ++i) {
 		if (parseInt(doc.layerSets[i].name) == parseInt(id)) {
-			return doc.layerSets[i];
+			return i;
 		}
 	}
+	
+	return -1;
 }
 
 //------------------------------------------------------------------------------
@@ -101,8 +103,22 @@ function saveAs(temp_dir, target_filename) {
 		try {
 			var bric = brac_xml.brics.bric[j];
 			var id_str = bric.@id;
-			//var layerset = cur_doc.layerSets.getByName(getBracGroupName(id_str, bric));
-			var layerset = getBracGroup(id_str, cur_doc);
+			var index = getBracGroupIndex(id_str, cur_doc);
+			
+			if (index < 0) { //bric is removed
+				delete brac_xml.brics.bric[j];
+				
+				var dir = new Folder(temp_dir + "/bric." + id_str);
+				
+				if ('windows' == getOS())
+					Exec.system("RD /S /Q " + dir.fsName, 10000);
+				else if ('macos' == getOS())
+					Exec.system("rm -rf " + dir.fsName, 10000);
+				
+				continue;
+			}
+			
+			var layerset = cur_doc.layerSets[index];
 			var resolution = bric.@resolution.split(' ');
 			var res_w = parseInt(resolution[0]);
 			var res_h = parseInt(resolution[1]);
@@ -112,6 +128,7 @@ function saveAs(temp_dir, target_filename) {
 			var scl_x = prcsRes(3, new_w / res_w);
 			var scl_y = prcsRes(3, new_h / res_h);
 
+			bric.@order = cur_doc.layerSets.length - index;
 			bric.@scale = scl_x + ' ' + scl_y;
 			bric.@position = parseFloat(layer.bounds[0]) + ' ' + parseFloat(layer.bounds[1]);
 			//bric.@rotate = layer.;
@@ -135,10 +152,7 @@ function saveAs(temp_dir, target_filename) {
 				// there is no mask
 			}
 		} catch(e) {
-			var id_str = brac_xml.bric[j].@id;
-			delete brac_xml.bric[j];
-			var dir = new Folder(temp_dir + "/bric." + id_str);
-			dir.remove()
+			alert(e)
 		}
 	}
 	

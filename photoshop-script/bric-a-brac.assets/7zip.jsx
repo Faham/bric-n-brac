@@ -37,8 +37,12 @@ function get7zip() {
 //------------------------------------------------------------------------------
 
 	SevenZip.extract = function(zipFile, outDir) {
-		if (outDir.exists)
-			Exec.system("RD /S /Q " + outDir.fsName, 10000);
+		if (outDir.exists) {
+			if ('windows' == getOS())
+				Exec.system("RD /S /Q " + outDir.fsName, 10000);
+			else if ('macos' == getOS())
+				Exec.system("rm -rf " + outDir.fsName, 10000);
+		}
 
 		var args = ["x", "-y", "-o\"" + outDir.fsName + '\"', '\"' + zipFile.fsName + '\"'];
 		this.executeBlock(args, 10000);
@@ -47,8 +51,12 @@ function get7zip() {
 //------------------------------------------------------------------------------
 
 	SevenZip.extract_v = function(zipFile, outDir) {
-		if (outDir.exists)
-			Exec.system("RD /S /Q " + outDir.fsName, 10000);
+		if (outDir.exists) {
+			if ('windows' == getOS())
+				Exec.system("RD /S /Q " + outDir.fsName, 10000);
+			else if ('macos' == getOS())
+				Exec.system("rm -rf " + outDir.fsName, 10000);
+		}
 
 		var args = ["x", "-y", "-o\"" + outDir.fsName + '\"', '\"' + zipFile.fsName + '\"'];
 
