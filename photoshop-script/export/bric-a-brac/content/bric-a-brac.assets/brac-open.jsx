@@ -191,15 +191,20 @@ function BracOpen() {
 			var lyr_mask = new_brac_doc.artLayers[0];
 			lyr_mask.move(bric_layerset, ElementPlacement.INSIDE);
 			
-			w_n = lyr_mask.bounds[2] - lyr_mask.bounds[0];
-			h_n = lyr_mask.bounds[3] - lyr_mask.bounds[1];
-			w_o = parseInt(bric_xml.@region.split(' ')[2]);
-			h_o = parseInt(bric_xml.@region.split(' ')[3]);
-			sc_w_n = sc_w * w_o / w_n;
-			sc_h_n = sc_h * h_o / h_n;
+			//w_n = lyr_mask.bounds[2] - lyr_mask.bounds[0];
+			//h_n = lyr_mask.bounds[3] - lyr_mask.bounds[1];
+			//w_o = parseInt(bric_xml.@region.split(' ')[2]);
+			//h_o = parseInt(bric_xml.@region.split(' ')[3]);
+			//sc_w_n = sc_w * w_o / w_n;
+			//sc_h_n = sc_h * h_o / h_n;
 			
-			lyr_mask.resize(sc_w_n * 100.0, sc_h_n * 100.0);
-			lyr_mask.translate(mv_x - parseInt(lyr_mask.bounds[0]), mv_y - parseInt(lyr_mask.bounds[1]));
+			//lyr_mask.resize(sc_w_n * 100.0, sc_h_n * 100.0);
+			
+			var maskposition       = bric.@maskposition.split(' ');
+			var mmv_x              = parseFloat(maskposition[0]);
+			var mmv_y              = parseFloat(maskposition[1]);
+			
+			lyr_mask.translate(mmv_x - parseInt(lyr_mask.bounds[0]), mmv_y - parseInt(lyr_mask.bounds[1]));
 			lyr_mask.rotate(rt_deg);
 
 			lyr_mask.rasterize(RasterizeType.ENTIRELAYER);

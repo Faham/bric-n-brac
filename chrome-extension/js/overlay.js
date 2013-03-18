@@ -71,12 +71,14 @@ var Base64Binary = {
 
 //==============================================================================
 
-var start_pos_x = 0;
-var start_pos_y = 0;
 var buttons_visible = false
-select_mode = 'lasso'; //'rect';
-m_lasso = null;
-mask_layer = null;
+var select_mode = 'lasso'; //'rect';
+var m_selector = null;
+var mask_layer = null;
+var toolbar = null;
+var m_canvas = null;
+var m_context2d = null;
+var regionButtonsEnabled = false;
 
 //------------------------------------------------------------------------------
 
@@ -95,44 +97,90 @@ function getpoint (e) {
 //------------------------------------------------------------------------------
 
 $.fn.extend({
-	lasso: function () {
+	regionSelector: function () {
 		
-		__this = this;
-		
-		__this
-		.mousedown(function (e) {
-			// left mouse down switches on "capturing mode"
-			if (e.which === 1 && !__this.is(".lassoRunning")) {
-				var point = [e.offsetX, e.offsetY];
+		self = this;
+		self.rects = [];
+		self.lassoes = [];
+		self.mode = 'lasso';
 				
-				__this.updateBoundries(point)
-				__this.addClass("lassoRunning");
-				__this.data("lassoPoints", [point]);
-				__this.trigger("lassoStart", [point]);
-			}
-		})
-		.mouseup(function (e) {
-			// left mouse up ends "capturing mode" + triggers "Done" event
-			if (e.which === 1 && __this.is(".lassoRunning")) {
-				__this.removeClass("lassoRunning");
-				__this.trigger("lassoDone", [__this.data("lassoPoints")]);
-			}
-		})
-		.mousemove(function (e) {
-			// mouse move captures co-ordinates + triggers "Point" event
-			if (__this.is(".lassoRunning")) {
-				var point = [e.offsetX, e.offsetY];
-				
-				__this.updateBoundries(point)
-				__this.data("lassoPoints").push(point);
-				__this.trigger("lassoPoint", [point]);
-			}
-		});
+		self.clear = function () {
+			self.rects = [];
+			self.lassoes = [];
+		};
 		
-		__this
+		self.setMode = function (_mode) {
+			self.mode = _mode;
+			
+			self.unbind('mousemove')
+			self.unbind('mouseup')
+			self.unbind('mousedown')
+			
+			if ('rect' == _mode) {
+				self
+				.mousedown(function (e) {
+					if (e.which === 1 && !self.is(".running")) {
+						var rect = [e.offsetX, e.offsetY, 0, 0];
+						self.rects.push(rect);
+						self.addClass("running");
+						self.trigger("start", [[e.offsetX, e.offsetY]]);
+					}
+				})
+				.mouseup(function (e) {
+					if (e.which === 1 && self.is(".running")) {
+						self.removeClass("running");
+						rect = self.rects[self.rects.length - 1]
+						self.updateBoundries([rect[0], rect[1]])
+						self.updateBoundries([rect[0] + rect[2], rect[1] + rect[3]])
+						self.trigger("done");
+					}
+				})
+				.mousemove(function (e) {
+					if (self.is(".running")) {
+						var lastrect = self.rects[self.rects.length - 1];
+						lastrect[2] = e.offsetX - lastrect[0];
+						lastrect[3] = e.offsetY - lastrect[1];
+						self.rects[self.rects.length - 1] = lastrect;
+						self.trigger("update");
+					}
+				});
+			} else if ('lasso' == _mode) {
+				self
+				.mousedown(function (e) {
+					if (e.which === 1 && !self.is(".running")) {
+						var point = [e.offsetX, e.offsetY];
+						
+						self.updateBoundries(point)
+						self.addClass("running");
+						self.lassoes.push([point]);
+						self.trigger("start", [self.lassoes]);
+					}
+				})
+				.mouseup(function (e) {
+					if (e.which === 1 && self.is(".running")) {
+						self.removeClass("running");
+						var point = [e.offsetX, e.offsetY];
+						self.updateBoundries(point)
+						self.lassoes[self.lassoes.length - 1].push(point);
+						self.trigger("done");
+					}
+				})
+				.mousemove(function (e) {
+					if (self.is(".running")) {
+						var point = [e.offsetX, e.offsetY];
+						
+						self.updateBoundries(point)
+						self.lassoes[self.lassoes.length - 1].push(point);
+						self.trigger("update");
+					}
+				});
+			}
+		};
+		
+		self
 		.updateBoundries = function (point) {
-			if (__this.region === undefined)
-				__this.region = {
+			if (self.region === undefined)
+				self.region = {
 					left  : point[0],
 					top   : point[1],
 					right : point[0],
@@ -141,15 +189,15 @@ $.fn.extend({
 					height: 0
 				}
 			
-			__this.region.left   = Math.min(__this.region.left,   point[0])
-			__this.region.top    = Math.min(__this.region.top,    point[1])
-			__this.region.right  = Math.max(__this.region.right,  point[0])
-			__this.region.bottom = Math.max(__this.region.bottom, point[1])
-			__this.region.width  = Math.max(__this.region.width,  __this.region.right  - __this.region.left)
-			__this.region.height = Math.max(__this.region.height, __this.region.bottom - __this.region.top)
+			self.region.left   = Math.min(self.region.left,   point[0])
+			self.region.top    = Math.min(self.region.top,    point[1])
+			self.region.right  = Math.max(self.region.right,  point[0])
+			self.region.bottom = Math.max(self.region.bottom, point[1])
+			self.region.width  = Math.max(self.region.width,  self.region.right  - self.region.left)
+			self.region.height = Math.max(self.region.height, self.region.bottom - self.region.top)
 		};
 		
-		return __this;
+		return self;
 	}
 });
 
@@ -161,6 +209,147 @@ function fixPosition(e, gCanvasElement) {
     x -= gCanvasElement.offsetLeft;
     y -= gCanvasElement.offsetTop;
     return {x: x, y:y};
+}
+
+//------------------------------------------------------------------------------
+
+function unloadToolbar() {
+	if (null != toolbar) {
+		removeElement(toolbar);
+		toolbar = null;
+	}
+}
+
+//------------------------------------------------------------------------------
+
+function loadToolbar() {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', chrome.extension.getURL('html/toolbar.html'), true);
+	xhr.onreadystatechange = function() {
+		if (this.readyState !== 4) return;
+		if (this.status !== 200) return;
+
+		toolbar = document.createElement('div');
+		toolbar.setAttribute("id", "bab-toolbar");
+		toolbar.style.zIndex = ++maxZIndex;
+		toolbar.innerHTML = this.responseText;
+		
+		toolbar.querySelector('#rectangle img').src = chrome.extension.getURL("img/rectangle.png");
+		toolbar.querySelector('#lasso img'    ).src = chrome.extension.getURL("img/lasso.png"    );
+		toolbar.querySelector('#save img'     ).src = chrome.extension.getURL("img/save.png"     );
+		toolbar.querySelector('#clear img'    ).src = chrome.extension.getURL("img/clear.png"    );
+		toolbar.querySelector('#cancel img'   ).src = chrome.extension.getURL("img/cancel.png"   );
+
+		btn_rect = toolbar.querySelector('#rectangle');
+		btn_lasso = toolbar.querySelector('#lasso');
+		btn_lasso.className = 'button-pushed';
+			
+		btn_rect.onclick = function () {
+			btn_rect.className = 'button-pushed';
+			btn_lasso.className = 'button';
+			m_selector.setMode('rect');
+		}
+
+		btn_lasso.onclick = function () {
+			btn_rect.className = 'button';
+			btn_lasso.className = 'button-pushed';
+			m_selector.setMode('lasso');
+		}
+				
+		document.body.appendChild(toolbar);
+	}
+	xhr.send()
+}
+
+//------------------------------------------------------------------------------
+
+function disableRegionButtons() {
+	if (!regionButtonsEnabled)
+		return;
+		
+	btn = toolbar.querySelector('#save');
+	btn.className = 'button-disabled';
+	btn.onclick = null;
+
+	btn = toolbar.querySelector('#clear');
+	btn.className = 'button-disabled';
+	btn.onclick = null;
+	
+	btn = toolbar.querySelector('#cancel');
+	btn.className = 'button-disabled';
+	btn.onclick = null;
+	
+	regionButtonsEnabled = false;
+}
+
+//------------------------------------------------------------------------------
+
+function enableRegionButtons() {
+
+	if (regionButtonsEnabled)
+		return;
+	
+	//-----------------------------------
+
+	btn = toolbar.querySelector('#save');
+	btn.className = 'button';
+	btn.onclick = function () {
+		reg = {
+			'left'  : m_selector.region.left,
+			'top'   : m_selector.region.top,
+			'width' : m_selector.region.width,
+			'height': m_selector.region.height
+		}
+			
+		var _canvas = document.getElementById('bab-canvas');
+
+		// cropping the canvas to selected region
+		var ctx = _canvas.getContext('2d');
+		mask_data = ctx.getImageData(reg.left, reg.top, reg.width, reg.height);
+		_canvas.width = reg.width;
+		_canvas.height = reg.height;
+		ww = _canvas.width;
+		wh = _canvas.height;
+		ctx.clearRect(0, 0, ww, wh);
+		ctx.putImageData(mask_data, 0, 0);
+		
+		mask_layer = _canvas.toDataURL("image/png").replace(/^data:image\/(png|jpg);base64,/, "");
+		cleanupRegionSelector();
+		setupDialog(reg);
+
+		m_canvas.style.cursor = "default";
+		m_canvas.onmouseup = null;
+		unloadToolbar();
+	};
+	
+	//-----------------------------------
+	
+	btn = toolbar.querySelector('#clear');
+	btn.className = 'button';
+	btn.onclick = function () {
+		var _canvas = document.getElementById('bab-canvas');
+		ctx = _canvas.getContext('2d'),
+		ctx.clearRect(0, 0, _canvas.width, _canvas.height);
+		m_selector.clear();
+		m_canvas.onmouseup = canvasMouseUp;
+		m_canvas.style.cursor = "crosshair";
+		disableRegionButtons();
+	};
+	
+	//-----------------------------------
+
+	btn = toolbar.querySelector('#cancel');
+	btn.className = 'button';
+	btn.onclick = function () {
+		cleanupRegionSelector();
+		m_canvas.style.cursor = "default";
+		m_canvas.onmouseup = null;
+		unloadToolbar();
+	};
+
+	//-----------------------------------
+	
+	regionButtonsEnabled = true;
 }
 
 //------------------------------------------------------------------------------
@@ -179,75 +368,51 @@ function setupRegionSelector() {
 	//	dir: extension_path,
 	//	filename: "url_snapshot.png"
 	//}))
-		
-	if (select_mode == 'rect') {
-		// creating background layer
-		var _div = document.createElement('div');
-		_div.setAttribute("id", "overlay-bg");
-		_div.style.zIndex = ++maxZIndex;
-		document.body.appendChild(_div);
-		var overlay_bg = _div;
-		overlay_bg.onmousedown = overlayBackgroundMouseDown;
 
-		// creating highlighting layer for rectangular selection
-		_div = document.createElement('div');
-		_div.setAttribute("id", "overlay-hl");
-		_div.style.zIndex = ++maxZIndex;
-		document.body.appendChild(_div);
-		var ov_hl = _div
-
-		_div = document.createElement('div');
-		_div.setAttribute("id", "cursor-info");
-		_div.style.zIndex = ++maxZIndex;
-		ov_hl.appendChild(_div);
-
-		start_pos_x = 0;
-		start_pos_y = 0;
-
-	} else if (select_mode == 'lasso') {
-
-		// creating canvas for lasso selection
-		var _canvas = document.createElement('canvas');
-		_canvas.setAttribute("id", "overlay-canvas");
-		_canvas.style.zIndex = ++maxZIndex;
-		_canvas.width = document.width
-		_canvas.height = document.height
-		document.body.appendChild(_canvas);
-		ctx = _canvas.getContext('2d'),
-
-		//ctx.rect(0, 0, _canvas.width, _canvas.height);
-		//ctx.fillStyle = '#000000';
-		//ctx.fill();
-		
-		ctx.fillStyle = '#000000'; //'#FFFFFF';
-		ctx.lineWidth = 5;
-		
-		m_lasso = $(_canvas)
-			.lasso()
-		
-			.on("lassoStart", function(e, lassoPoint) {
-
-				var pos = lassoPoint; //fixPosition(e, canvas);
-				ctx.beginPath();
-				ctx.moveTo(pos[0], pos[1]);
+	if (m_canvas == null) {
+		document.body.classList.add('bab-unselectable');
+		m_canvas = document.createElement('canvas');
+		m_canvas.setAttribute('id', 'bab-canvas');
+		m_canvas.className = 'bab-unselectable';
+		m_canvas.style.zIndex = ++maxZIndex;
+		m_canvas.width = document.width
+		m_canvas.height = document.height
+		document.body.appendChild(m_canvas);
+		m_context2d = m_canvas.getContext('2d'),
+		m_context2d.fillStyle = '#000000';
+		//m_context2d.lineWidth = 5;
+		m_selector = $(m_canvas)
+			.regionSelector()
+			.on("start", function(e, point) {
+				if (self.mode == 'rect') {
+					m_context2d.moveTo(point[0], point[1]);
+				} else if (self.mode == 'lasso') {
+					m_context2d.moveTo(point[0], point[1]);
+				}
 			})
-			
-			.on("lassoDone", function(e, lassoPoints) {
+			.on("update", function(e) {
+				m_context2d.clearRect(0, 0, m_canvas.width, m_canvas.height);
+				for (var i = 0; i < self.rects.length; ++i) {
+					var rect = self.rects[i];
+					m_context2d.fillRect(rect[0], rect[1], rect[2], rect[3]);
+				}
 
-				var pos = lassoPoints[0]; //fixPosition(e, canvas);
-				ctx.lineTo(pos[0], pos[1]);
-				ctx.fill();
-			})
-			
-			.bind("lassoPoint", function(e, lassoPoint) {
-				var pos = lassoPoint; //fixPosition(lassoPoint, _canvas);
-				ctx.lineTo(pos[0], pos[1]);
-				ctx.fill();
+				for (var i = 0; i < self.lassoes.length; ++i) {
+					m_context2d.beginPath();
+					m_context2d.moveTo(self.lassoes[i][0][0], self.lassoes[i][0][1]);
+					for (var j = 1; j < self.lassoes[i].length; ++j) {
+						var pos = self.lassoes[i][j];
+						m_context2d.lineTo(pos[0], pos[1]);
+					}
+					m_context2d.closePath();
+					m_context2d.fill();
+				}
 			});
+		m_selector.setMode('lasso');
 	}
 
-	document.body.style.cursor = "crosshair";
-	document.onmouseup = documentMouseUp;
+	m_canvas.style.cursor = "crosshair";
+	m_canvas.onmouseup = canvasMouseUp;
 };
 
 //------------------------------------------------------------------------------
@@ -264,18 +429,9 @@ function removeElement(elm) {
 //------------------------------------------------------------------------------
 
 function cleanupRegionSelector() {
-	removeElement(document.getElementById('overlay-hl'));
-	removeElement(document.getElementById('cursor-info'));
-	
-	start_pos_x = 0;
-	start_pos_y = 0;
+	removeElement(document.getElementById('bab-canvas'));
+	document.body.classList.remove('bab-unselectable');
 };
-
-//------------------------------------------------------------------------------
-
-function cleanupLassoSelector() {
-	removeElement(document.getElementById('overlay-canvas'));
-}
 
 //------------------------------------------------------------------------------
 
@@ -283,92 +439,8 @@ function cleanupDialog() {
 	dlg = document.getElementById('save-dialog');
 	if (dlg)
 		dlg.parentNode.removeChild(dlg)
+	document.body.classList.remove('bab-unselectable');
 }
-
-//------------------------------------------------------------------------------
-
-function overlayBackgroundMouseDown(e) {
-	e.preventDefault();
-
-	//if (!e) var e = window.event;
-	//e.cancelBubble = true;
-	//if (e.stopPropagation) e.stopPropagation();
-	//document.body.style.cursor = "crosshair";
-	
-	start_pos_x = e.pageX;
-	start_pos_y = e.pageY;
-	
-	ov_hl = document.getElementById('overlay-hl');
-	ov_hl.style.display = 'block';
-	ov_hl.style.left = start_pos_x + 'px';
-	ov_hl.style.top = start_pos_y + 'px';
-	ov_hl.style.width = 0 + 'px';
-	ov_hl.style.height = 0 + 'px';
-
-	cur_info = document.getElementById('cursor-info');
-	cur_info.style.display = 'block';
-
-	document.onmousemove = function (e2) {
-		e2.preventDefault();
-
-		//if (!e2) var e2 = window.event;
-		//e2.cancelBubble = true;
-		//if (e2.stopPropagation) e2.stopPropagation();
-	
-		if (e2.pageX > document.width || e2.pageY > document.height)
-			return
-		
-		var x1 = start_pos_x;
-		var x2 = e2.pageX;
-		
-		if (x1 > x2) {
-			var t = x1;
-			x1 = x2;
-			x2 = t;
-		}
-		
-		var y1 = start_pos_y;
-		var y2 = e2.pageY;
-
-		if (y1 > y2) {
-			var t = y1;
-			y1 = y2;
-			y2 = t;
-		}
-		
-		ov_hl = document.getElementById('overlay-hl');
-		ov_hl.style.left = x1 + 'px';
-		ov_hl.style.top = y1 + 'px';
-		ov_hl.style.width = x2 - x1 + 'px';
-		ov_hl.style.height = y2 - y1 + 'px';
-
-		cur_info = document.getElementById('cursor-info');
-		cur_info.textContent = 'X: ' + x1 + ', Y: ' + y1 + ', Width: ' + (x2 - x1) + ', Height: ' + (y2 - y1);
-	}
-}
-
-//------------------------------------------------------------------------------
-
-function createButton(id, text) {
-	btn = document.createElement('botton');
-	btn.setAttribute("id", id);
-	btn.textContent = text;
-	btn.className = 'overlay-botton';
-	return btn;
-};
-
-//------------------------------------------------------------------------------
-
-function removeButtons() {
-	if (!buttons_visible)
-		return
-		
-	removeElement(document.getElementById('btn-save'));
-	removeElement(document.getElementById('btn-change-region'));
-	removeElement(document.getElementById('btn-cancel'));
-	
-	buttons_visible = false
-};
 
 //------------------------------------------------------------------------------
 
@@ -439,6 +511,7 @@ function findPos(obj) {
 
 function setupIndicators() {
 	dlg = document.getElementById("save-dialog");
+	dlg.style.className = 'bab-unselectable';
 	prv_box = dlg.querySelector('#preview-box');
 	prv_box_wdh = prv_box.getBoundingClientRect().width;
 	prv_box_hgh = prv_box.getBoundingClientRect().height;
@@ -688,6 +761,7 @@ function setupDialog(region) {
 	var dv = document.createElement('div');
 	dv.setAttribute("id", "save-dialog");
 	document.body.appendChild(dv);
+	document.body.classList.add('bab-unselectable');
 
 	var xhr = new XMLHttpRequest();
 	xhr.open('GET', chrome.extension.getURL('html/save-dialog.html'), true);
@@ -733,87 +807,6 @@ function setupDialog(region) {
 		bricScale = dlg.querySelector('#bric_scale');
 	};
 	xhr.send();
-};
-
-//------------------------------------------------------------------------------
-
-function BtnSaveOnClick() {		
-	if (select_mode == 'rect') {
-		ov_hl = document.getElementById('overlay-hl');
-		reg = {'left':ov_hl.offsetLeft, 'top':ov_hl.offsetTop, 'width':ov_hl.offsetWidth, 'height':ov_hl.offsetHeight}
-		cleanupRegionSelector();
-		setupDialog(reg);
-	} else if (select_mode == 'lasso') {
-		reg = {'left':m_lasso.region.left, 'top':m_lasso.region.top, 'width':m_lasso.region.width, 'height':m_lasso.region.height}
-		var _canvas = document.getElementById('overlay-canvas');
-
-		// cropping the canvas to selected region
-		var ctx = _canvas.getContext('2d');
-		mask_data = ctx.getImageData(reg.left, reg.top, reg.width, reg.height);
-		_canvas.width = reg.width;
-		_canvas.height = reg.height;
-		ww = _canvas.width;
-		wh = _canvas.height;
-		ctx.clearRect(0,0,ww,wh);
-		ctx.putImageData(mask_data, 0, 0);
-		
-		mask_layer = _canvas.toDataURL("image/png").replace(/^data:image\/(png|jpg);base64,/, "");
-		cleanupLassoSelector();
-		setupDialog(reg);
-	}
-
-	document.body.style.cursor = "default";
-	document.onmouseup = null;
-	removeButtons();
-};
-
-//------------------------------------------------------------------------------
-	
-function BtnChangeRegionOnClick() {
-	removeButtons();
-	
-	start_pos_x = 0;
-	start_pos_y = 0;
-	
-	if (select_mode == 'rect') {
-		cur_info = document.getElementById('cursor-info');
-		cur_info.value = '';
-		cur_info.style.top = '0px';
-		cur_info.style.left = '0px';
-		cur_info.style.display = 'none';
-
-		ov_hl = document.getElementById('overlay-hl');
-		ov_hl.style.top = '0px';
-		ov_hl.style.left = '0px';
-		ov_hl.style.width = '0px';
-		ov_hl.style.height = '0px';
-		ov_hl.style.display = 'none';
-
-		ov_bg = document.getElementById('overlay-bg');
-		ov_bg.onmousedown = overlayBackgroundMouseDown;
-	} else if (select_mode == 'lasso') {
-		var _canvas = document.getElementById('overlay-canvas');
-		ctx = _canvas.getContext('2d'),
-		ctx.clearRect(0, 0, _canvas.width, _canvas.height);
-	}
-	
-	document.onmouseup = documentMouseUp;
-	document.body.style.cursor = "crosshair";
-};
-
-//------------------------------------------------------------------------------
-
-function BtnCancelOnClick() {
-	if (select_mode == 'rect') {
-		cleanupRegionSelector();
-		removeElement(document.getElementById('overlay-bg'));
-	} else if (select_mode == 'lasso') {
-		cleanupLassoSelector();
-	}
-	
-	document.body.style.cursor = "default";
-	document.onmouseup = null;
-	removeButtons();
 };
 
 //------------------------------------------------------------------------------
@@ -896,6 +889,7 @@ function SaveDialogBtnApplyOnClick() {
 			region       : dlg.querySelector('#bric_region'       ).value,
 			resolution   : res,
 			position     : dlg.querySelector('#bric_position'     ).value,
+			maskposition : dlg.querySelector('#bric_position'     ).value,
 			rotation     : dlg.querySelector('#bric_rotation'     ).value,
 			scale        : dlg.querySelector('#bric_scale'        ).value,
 			order        : dlg.querySelector('#bric_order'        ).value,
@@ -914,70 +908,12 @@ function SaveDialogBtnApplyOnClick() {
 
 function onDismissDialogCleanup() {
 	cleanupDialog();
-	removeElement(document.getElementById('overlay-bg'));
 }
-
+	
 //------------------------------------------------------------------------------
 
-function showButtons() {
-	if (buttons_visible)
-		return
-	
-	//ov_hl = document.getElementById('overlay-hl');
-	_region = {left: 10, top: 10}; //ov_hl.getBoundingClientRect();
-
-	buttons_zindex = ++maxZIndex;
-	
-	btn = createButton('btn-save', 'Save')
-	btn.style.top = _region.top + "px"; //ov_hl.offsetTop + ov_hl.offsetHeight + 5 + "px";
-	btn.style.left = _region.left + "px"; //ht_region.left + "px";
-	btn.style.position = 'fixed';
-	btn.style.zIndex = buttons_zindex;
-	btn.onclick = BtnSaveOnClick
-	document.body.appendChild(btn);
-
-	var btn_save = btn;
-
-	btn = createButton('btn-change-region', 'Change Region')
-	btn.style.top = _region.top + "px"; //ov_hl.offsetTop + ov_hl.offsetHeight + 5 + "px";
-	btn.style.left = btn_save.offsetLeft + btn_save.offsetWidth + 5 + "px";
-	btn.style.position = 'fixed';
-	btn.style.zIndex = buttons_zindex;
-	btn.onclick = BtnChangeRegionOnClick;
-	document.body.appendChild(btn);
-
-	var btn_change = btn;
-
-	btn = createButton('btn-cancel', 'Cancel')
-	btn.style.top = _region.top + "px"; //ov_hl.offsetTop + ov_hl.offsetHeight + 5 + "px";
-	btn.style.left = btn_change.offsetLeft + btn_change.offsetWidth + 5 + "px";
-	btn.style.position = 'fixed';
-	btn.style.zIndex = buttons_zindex;
-	btn.onclick = BtnCancelOnClick;
-	document.body.appendChild(btn);
-	
-	buttons_visible = true
-};
-
-//------------------------------------------------------------------------------
-
-function documentMouseUp(e) {
-	showButtons();
-	
-	if (select_mode == 'rect') {
-		ov_bg = document.getElementById('overlay-bg');
-		ov_bg.onmousedown = null;
-		document.onmousemove = null;
-		document.onmouseup = null;
-		document.body.style.cursor = "default";
-	}
-	
-	//file_io = document.createElement('embed')
-	//file_io.type = "application/x-npapi-file-io"
-	//file_io.id = 'npapi-file-io'
-	//file_io.className = 'plugin';
-	//document.body.appendChild(file_io);
-
+function canvasMouseUp(e) {
+	enableRegionButtons();
 };
 
 //------------------------------------------------------------------------------
@@ -985,5 +921,6 @@ function documentMouseUp(e) {
 setupBep();
 maxZIndex = getHighIndex();
 setupRegionSelector();
+loadToolbar();
 
 //------------------------------------------------------------------------------

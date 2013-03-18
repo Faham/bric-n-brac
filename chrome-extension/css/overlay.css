@@ -1,49 +1,84 @@
 
-.overlay-botton {
-	position: absolute;
-	height: 17px;
-	background-color: whitesmoke;
+*.bab-unselectable {
+   -moz-user-select: -moz-none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+
+   /*
+     Introduced in IE 10.
+     See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+   */
+   -ms-user-select: none;
+   user-select: none;
+}
+
+#bab-toolbar {
+	position: fixed;
+	height: 65px;
+	width: 100px;
+	top: 10px;
+	left: 10px;
 	padding: 3px;
-	text-align: center;
 	border-radius: 5px;
 	cursor: default;
+	background-color: rgb(172, 172, 172);
+	box-shadow: gray 1px 1px 3px 1px;
 }
 
-#overlay-bg {
-	position: fixed;
-	top: 0;
-	left: 0;
-	height: 100%;
-	width: 100%;
-	background-color: black;
-	opacity: 0.4;
-	-moz-user-select: none;
-	-khtml-user-select: none;
-	-webkit-user-select: none;
-	-o-user-select: none;
+#bab-toolbar .button, #bab-toolbar .button-pushed, #bab-toolbar .button-disabled{
+	float: left;
+	width: 16px;
+	height: 16px;
+	padding: 3px;
+	margin: 5px 3px;
+	color: #e9e9e9;
+	text-shadow: 0 1px 1px rgba(0,0,0,.3);
+	-webkit-border-radius: .2em;
+	-moz-border-radius: .2em;
+	border-radius: .2em;
 }
 
-#overlay-canvas {
+#bab-toolbar .button:hover {
+	margin: 4px 2px;
+	border: solid 1px #777;
+	-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	-moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	box-shadow: 0 1px 2px rgba(0,0,0,.2);
+	background: #616161;
+	background: -webkit-gradient(linear, left top, left bottom, from(#b9b9b9), to(#959595));
+	background: -moz-linear-gradient(top, #b9b9b9, #959595);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#b9b9b9', endColorstr='#959595');
+}
+
+#bab-toolbar br {
+	clear: both;
+}
+
+#bab-toolbar hr {
+	border: solid 1px #959595;
+	clear: both;
+	margin: 0px;
+}
+
+#bab-toolbar .button-disabled img{
+	opacity: 0.3;
+}
+
+#bab-toolbar .button-pushed {
+	margin: 4px 2px;
+	border: solid 1px #777;
+	background: #616161;
+	background: -webkit-gradient(linear, left top, left bottom, from(#656565), to(#959595));
+	background: -moz-linear-gradient(top, #656565, #959595);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#656565', endColorstr='#959595');
+}
+
+#bab-canvas {
 	position: absolute;
 	top: 0;
 	left: 0;
 	background-color: transparent;
 	opacity: 0.4;
-	-moz-user-select: none;
-	-khtml-user-select: none;
-	-webkit-user-select: none;
-	-o-user-select: none;
-}
-
-#overlay-hl {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 0;
-	height: 0;
-	background-color: white;
-	opacity: 0.4;
-	display: none;
 	-moz-user-select: none;
 	-khtml-user-select: none;
 	-webkit-user-select: none;

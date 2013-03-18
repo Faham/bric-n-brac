@@ -311,6 +311,7 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 	bric_node.append_attribute("order"       ).set_value(bric_info.get<std::string>("order"       ).c_str());
 	bric_node.append_attribute("resolution"  ).set_value(bric_info.get<std::string>("resolution"  ).c_str());
 	bric_node.append_attribute("position"    ).set_value(bric_info.get<std::string>("position"    ).c_str());
+	bric_node.append_attribute("maskposition").set_value(bric_info.get<std::string>("maskposition").c_str());
 	bric_node.append_attribute("rotate"      ).set_value(bric_info.get<std::string>("rotation"    ).c_str());
 	bric_node.append_attribute("scale"       ).set_value(bric_info.get<std::string>("scale"       ).c_str());
 	bric_node.append_attribute("timeinterval").set_value(bric_info.get<std::string>("timeInterval").c_str());

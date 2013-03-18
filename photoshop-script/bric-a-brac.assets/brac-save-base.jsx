@@ -52,6 +52,12 @@ function saveFile( filename, outpath, interlacedValue, transparencyValue) {
 	executeAction( id6, desc3, DialogModes.NO );
 }
 
+//------------------------------------------------------------------------------
+
+function copy() {
+	var idcopy = charIDToTypeID( "copy" );
+	executeAction( idcopy, undefined, DialogModes.NO );
+}
 
 //------------------------------------------------------------------------------
 
@@ -62,11 +68,11 @@ function px2cm(length, dpi) {
 //------------------------------------------------------------------------------
 
 function setInvisibleAllArtLayers(obj) {
-    for( var i = 0; i < obj.artLayers.length; i++) {
+    for( var i = 0; i < obj.artLayers.length; ++i) {
         obj.artLayers[i].allLocked = false;
         obj.artLayers[i].visible = false;
     }
-    for( var i = 0; i < obj.layerSets.length; i++) {
+    for( var i = 0; i < obj.layerSets.length; ++i) {
         setInvisibleAllArtLayers(obj.layerSets[i]);
     }
 }
@@ -98,7 +104,7 @@ function saveAs(temp_dir, target_filename) {
 	brac_xml_file.open('rw');
 	var brac_xml = new XML(brac_xml_file.read());
 	brac_xml_file.close();
-	
+	var toremove = [];
 	for (var j = 0; j < brac_xml.brics.bric.length(); ++j) {
 		try {
 			var bric = brac_xml.brics.bric[j];
@@ -106,37 +112,42 @@ function saveAs(temp_dir, target_filename) {
 			var index = getBracGroupIndex(id_str, cur_doc);
 			
 			if (index < 0) { //bric is removed
-				delete brac_xml.brics.bric[j];
-				
-				var dir = new Folder(temp_dir + "/bric." + id_str);
-				
-				if ('windows' == getOS())
-					Exec.system("RD /S /Q " + dir.fsName, 10000);
-				else if ('macos' == getOS())
-					Exec.system("rm -rf " + dir.fsName, 10000);
-				
-				continue;
-			}
-			
-			var layerset = cur_doc.layerSets[index];
-			var resolution = bric.@resolution.split(' ');
-			var res_w = parseInt(resolution[0]);
-			var res_h = parseInt(resolution[1]);
-			layer = layerset.artLayers.getByName('snapshot');
-			var new_w = layer.bounds[2] - layer.bounds[0];
-			var new_h = layer.bounds[3] - layer.bounds[1];
-			var scl_x = prcsRes(3, new_w / res_w);
-			var scl_y = prcsRes(3, new_h / res_h);
+				toremove.push(j);
+			} else {
+				var layerset = cur_doc.layerSets[index];
+				var resolution = bric.@resolution.split(' ');
+				var res_w = parseInt(resolution[0]);
+				var res_h = parseInt(resolution[1]);
+				layer = layerset.artLayers.getByName('snapshot');
+				var new_w = layer.bounds[2] - layer.bounds[0];
+				var new_h = layer.bounds[3] - layer.bounds[1];
+				var scl_x = prcsRes(3, new_w / res_w);
+				var scl_y = prcsRes(3, new_h / res_h);
 
-			bric.@order = cur_doc.layerSets.length - index;
-			bric.@scale = scl_x + ' ' + scl_y;
-			bric.@position = parseFloat(layer.bounds[0]) + ' ' + parseFloat(layer.bounds[1]);
-			//bric.@rotate = layer.;
-			
-			var mask = null;
-			try {
+				bric.@order = cur_doc.layerSets.length - index;
+				bric.@scale = scl_x + ' ' + scl_y;
+				bric.@position = parseFloat(layer.bounds[0]) + ' ' + parseFloat(layer.bounds[1]);
+				//bric.@rotate = layer.;
+				
+				var mask = null;
 				mask = layerset.artLayers.getByName('mask');
-				mask.copy();
+				bric.@maskposition = parseFloat(mask.bounds[0]) + ' ' + parseFloat(mask.bounds[1]);
+				
+				var area = {
+					'x1': mask.bounds[0], 'y1': mask.bounds[1],
+					'x2': mask.bounds[2], 'y2': mask.bounds[3]
+				}
+				var shapeRef = [
+					[area.x1, area.y1],
+					[area.x1, area.y2],
+					[area.x2, area.y2],
+					[area.x2, area.y1]
+				];
+				cur_doc.selection.select(shapeRef);
+				cur_doc.activeLayer = mask
+				copy();
+				cur_doc.selection.select([[0, 0], [0, 0], [0, 0], [0, 0]]);
+				
 				var newdoc = app.documents.add(
 					mask.bounds[2] - mask.bounds[0],
 					mask.bounds[3] - mask.bounds[1],
@@ -148,12 +159,22 @@ function saveAs(temp_dir, target_filename) {
 				newdoc.trim(TrimType.TRANSPARENT);
 				saveFile('mask', temp_dir + '/bric.' + id_str, true, true);
 				newdoc.close( SaveOptions.DONOTSAVECHANGES );
-			} catch(e) {
-				// there is no mask
 			}
 		} catch(e) {
 			alert(e)
 		}
+	}
+
+	for (var i = toremove.length - 1; i >= 0; --i) {
+		id_str = brac_xml.brics.bric[toremove[i]].@id;
+		delete brac_xml.brics.bric[toremove[i]];
+		
+		var dir = new Folder(temp_dir + "/bric." + id_str);
+		
+		if ('windows' == getOS())
+			Exec.system("RD /S /Q " + dir.fsName, 10000);
+		else if ('macos' == getOS())
+			Exec.system("rm -rf " + dir.fsName, 10000);
 	}
 	
 	brac_xml_file.open('w');
@@ -169,7 +190,7 @@ function saveAs(temp_dir, target_filename) {
 }
 
 //------------------------------------------------------------------------------
-	
+
 
 //==============================================================================
 

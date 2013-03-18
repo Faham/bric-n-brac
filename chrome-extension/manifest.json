@@ -10,7 +10,12 @@
 	},
 	"web_accessible_resources": [
 		"html/save-dialog.html",
-		"html/screenshot.html"
+		"html/toolbar.html",
+		"img/rectangle.png",
+		"img/lasso.png",
+		"img/save.png",
+		"img/clear.png",
+		"img/cancel.png"
 	],
 	"content_scripts": [
 		{
@@ -24,8 +29,8 @@
 		{"path": "bin/BracExtenssionProvider.plugin", "public": true}
 	],
 	"browser_action": {
-		"default_icon": "img/camera.png",
-		"default_title": "Take a screenshot!"
+		"default_icon": "img/brac-16x16.png",
+		"default_title": "Bric-a-Brac!"
 	},
 	"permissions": [
 		"tabs",
@@ -33,5 +38,10 @@
 		"*://*/*",
 		"management"
 	],
+	"icons": {
+		"16": "img/brac-16x16.png",
+		"48": "img/brac-48x48.png",
+		"128": "img/brac-128x128.png"
+	},
 	"manifest_version": 2
 }
