@@ -301,7 +301,7 @@ function createNewBrac(bracInfo) {
 	var doc_name = ts + '-' + bracInfo.name;
 	
 	var brac_xml = new XML();
-	brac_xml = XML('<brac><brics></brics></brac>');
+	brac_xml = XML('<brac><layers></layers></brac>');
 	brac_xml.@artist       = bracInfo.artist;
 	brac_xml.@dpi          = bracInfo.resolution;
 	brac_xml.@name         = bracInfo.name;
@@ -309,9 +309,6 @@ function createNewBrac(bracInfo) {
 	brac_xml.@tags         = bracInfo.tags;
 	brac_xml.@timeinterval = bracInfo.timeinterval;
 	brac_xml.@version      = bracInfo.version;
-
-	brac_xml.global.static.@name = 'background';
-	brac_xml.global.static.@zindex = '0';
 	
 	var brac_xml_file = new File(brac_dir + "/" + "brac.xml");
 	brac_xml_file.open("w");
