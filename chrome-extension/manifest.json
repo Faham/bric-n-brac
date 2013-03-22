@@ -2,27 +2,23 @@
 	"name": "Bric Screenshot",
 	"version": "1.0",
 	"description": "Capture screenshots for bric files",
-	"background": { 
+	"background": {
 		"scripts": [
-			"js/jquery.min.js",
 			"js/background.js"
 		]
 	},
 	"web_accessible_resources": [
 		"html/save-dialog.html",
 		"html/toolbar.html",
+		"html/screenshot.html",
+		
+		"img/url_snapshot.png",
+		
 		"img/rectangle.png",
 		"img/lasso.png",
 		"img/save.png",
 		"img/clear.png",
 		"img/cancel.png"
-	],
-	"content_scripts": [
-		{
-			"matches": ["http://*/*", "https://*/*"],
-			"css": ["css/overlay.css", "css/save-dialog.css"],
-			"js": ["js/jquery.min.js"]
-		}
 	],
 	"plugins": [
 		{"path": "bin/npBracExtenssionProvider.dll", "public": true},
@@ -34,7 +30,6 @@
 	},
 	"permissions": [
 		"tabs",
-		"*://*/html/screenshot.html",
 		"*://*/*",
 		"management"
 	],

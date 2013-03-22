@@ -9,7 +9,7 @@ bep functions:
 	FB::variant selectBracFile(const FB::variant& msg);
 	FB::variant saveToBracFile(const FB::variant& msg);
 	FB::variant setExtensionPath(const FB::variant& msg);
-	FB::variant getURLSnapShot(const FB::variant& msg);
+	FB::variant takeSnapShot(const FB::variant& msg);
 
 */
 
@@ -79,6 +79,8 @@ var toolbar = null;
 var m_canvas = null;
 var m_context2d = null;
 var regionButtonsEnabled = false;
+var m_info = null;
+
 
 //------------------------------------------------------------------------------
 
@@ -354,22 +356,11 @@ function enableRegionButtons() {
 
 //------------------------------------------------------------------------------
 
-function setupRegionSelector() {
-
-	//TODO: you should first take a screenshot from the page and show it in a new tab
-	// then start the selecting.
-	//$(function($){ $('#hplogo').Jcrop(); });
-	//return
-
-	//bep.getURLSnapShot(JSON.stringify({
-	//	url: "http://www.google.ca",
-	//	width: "1280",
-	//	height: "768",
-	//	dir: extension_path,
-	//	filename: "url_snapshot.png"
-	//}))
-
+function onSnapshotCreated() {
 	if (m_canvas == null) {
+		img = document.getElementById('bab-screenshot');
+		img.src = '../img/url_snapshot.png';
+		
 		document.body.classList.add('bab-unselectable');
 		m_canvas = document.createElement('canvas');
 		m_canvas.setAttribute('id', 'bab-canvas');
@@ -413,7 +404,7 @@ function setupRegionSelector() {
 
 	m_canvas.style.cursor = "crosshair";
 	m_canvas.onmouseup = canvasMouseUp;
-};
+}
 
 //------------------------------------------------------------------------------
 
@@ -444,24 +435,6 @@ function cleanupDialog() {
 
 //------------------------------------------------------------------------------
 
-function getVersion(callback) {
-	chrome.extension.sendMessage('request-version', callback);
-}
-
-//------------------------------------------------------------------------------
-
-function getOS() {
-	var os_name = "Unknown OS";
-	if (navigator.appVersion.indexOf("Win")!=-1) os_name = "Windows";
-	if (navigator.appVersion.indexOf("Mac")!=-1) os_name = "MacOS";
-	if (navigator.appVersion.indexOf("X11")!=-1) os_name = "UNIX";
-	if (navigator.appVersion.indexOf("Linux")!=-1) os_name = "Linux";
-	return os_name;
-}
-
-//------------------------------------------------------------------------------
-
-extension_path = '';
 function setupBep() {
 	bep = document.createElement('embed')
 	bep.type = "application/x-bep"
@@ -469,28 +442,22 @@ function setupBep() {
 	bep.className = 'plugin'
 	document.body.appendChild(bep);
 	
-	getVersion(function (info) {
-		extpath = '';
-		if (info.installType != 'development') {
-			extpath = info.id + '/' + info.version + '_0';
-
-			if ('MacOS' == getOS())
-				extpath = "/Users/%USER%/Library/Application\ Support/Google/Chrome/Default/Extensions/" + extpath
-			else if ('Windows' == getOS())
-				extpath = "%LOCALAPPDATA%/Google/Chrome/User Data/Default/Extensions/" + extpath
-		} else {
-			if ('MacOS' == getOS())
-				extpath = "/Users/faham/development/bric-a-brac/chrome-extension"
-			else if ('Windows' == getOS())
-				extpath = "D:/faham/tim/bric-a-brac/chrome-extension"
-		}
+	chrome.extension.sendMessage('request-info', function (info) {
+		console.log('extension path is: ' + info.extension.path);
 		
-		console.log('extension path is: ' + extpath);
-		
-		bep.setExtensionPath(extpath);
-		extension_path = extpath;
+		bep.setExtensionPath(info.extension.path);
+		m_info = info;
 		bep.addEventListener("bracfileselect", onBracFileSelect, false);
 		bep.addEventListener('cleanup', onDismissDialogCleanup, false);
+		bep.takeSnapShot(JSON.stringify({
+			url:      m_info.page.url,
+			width:    window.innerWidth.toString(),
+			height:   window.innerHeight.toString(),
+			dir:      "/img",
+			filename: "url_snapshot.png"
+		}));
+		onSnapshotCreated();
+		loadToolbar();
 	});
 }
 
@@ -784,7 +751,7 @@ function setupDialog(region) {
 		btn = dlg.querySelector('#brac_btn_cancel');
 		btn.onclick = onDismissDialogCleanup;
 		
-		dlg.querySelector('#bric_title').value = document.location.hostname
+		dlg.querySelector('#bric_title').value = m_info.page.title
 		dlg.querySelector('#bric_time_interval').value = "01-00 00:00:00"
 		dt = new Date();
 		m = dt.getMonth() >= 10? dt.getMonth(): '0' + dt.getMonth();
@@ -794,7 +761,7 @@ function setupDialog(region) {
 		else                dlg.querySelector('#bric_region').value = null;
 		
 		dlg.querySelector('#bric_start_data').value = dt.getFullYear() + '-' + m + '-' + d + ' ' + dt.toLocaleTimeString()
-		dlg.querySelector('#bric_url'       ).value = document.URL
+		dlg.querySelector('#bric_url'       ).value = m_info.page.url
 		dlg.querySelector('#bric_position'  ).value = '0.0 0.0';
 		dlg.querySelector('#bric_rotation'  ).value = '0.0';
 		dlg.querySelector('#bric_scale'     ).value = '1.0 1.0';
@@ -901,7 +868,11 @@ function SaveDialogBtnApplyOnClick() {
 	};
 
 	bep = document.getElementById('plugin-bep');
-	bep.saveToBracFile(JSON.stringify(message));
+	res = bep.saveToBracFile(JSON.stringify(message));
+	
+	if (res == 'error') {
+		alert(bep.getLogMessage());
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -918,9 +889,9 @@ function canvasMouseUp(e) {
 
 //------------------------------------------------------------------------------
 
-setupBep();
-maxZIndex = getHighIndex();
-setupRegionSelector();
-loadToolbar();
+window.onload = function(){
+	maxZIndex = getHighIndex();
+	setupBep();
+}
 
 //------------------------------------------------------------------------------

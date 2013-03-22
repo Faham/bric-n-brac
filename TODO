@@ -7,3 +7,8 @@ done - two options for area selecction, rectangular and lasso
 done - we need the ability to draw non-rectangular cut shapes in the chrome extension
 done - please increase the timeout value in the bric-sync tool to 60 seconds instead of 2
 done - add a New button to the Brac panel that creates a new brac project by loading the default template.
+
+
+bugs:
+- a scaling happen when a mask with extra painting is stored
+- taking snapshot from http://wearinghistoryblog.com/ doesn't work

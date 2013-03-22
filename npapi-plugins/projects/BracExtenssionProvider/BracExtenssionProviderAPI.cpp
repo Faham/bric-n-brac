@@ -95,7 +95,7 @@ FB::variant BracExtenssionProviderAPI::getSysCallResult(const FB::variant& msg) 
 
 //------------------------------------------------------------------------------
 
-FB::variant BracExtenssionProviderAPI::getURLSnapShot(const FB::variant& msg) {
+FB::variant BracExtenssionProviderAPI::takeSnapShot(const FB::variant& msg) {
 
 	if (msg.empty()) {
 		log("Received message is empty.");
@@ -112,7 +112,7 @@ FB::variant BracExtenssionProviderAPI::getURLSnapShot(const FB::variant& msg) {
 
 	std::string width    = o.get<std::string>("width");
 	std::string height   = o.get<std::string>("height");
-	std::string dir      = o.get<std::string>("dir");
+	std::string dir      = m_extension_path + o.get<std::string>("dir");
 	std::string filename = o.get<std::string>("filename");
 
 	std::string command = "";
@@ -232,11 +232,15 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 	std::string msg_str = msg.cast<std::string>();
 	std::istringstream input(msg_str);
 	jsonxx::Object o;
-	if(!jsonxx::Object::parse(input, o))
+	if(!jsonxx::Object::parse(input, o)) {
 		log("Couldn't parse the JSON message.");
+		return "error";
+	}
 	
-	if(!o.has<jsonxx::Object>("brac"))
+	if(!o.has<jsonxx::Object>("brac")) {
 		log("Couldn't find the brac JSON object.");
+		return "error";
+	}
 
 	jsonxx::Object & brac_info = o.get<jsonxx::Object>("brac");
 	jsonxx::Object & bric_info = o.get<jsonxx::Object>("bric");
@@ -273,36 +277,40 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 	if (!result)
 		log(result.description());
 	pugi::xml_node brac_node = brac_xml.child("brac");
-	pugi::xml_node brics_node = brac_node.child("brics");
-	pugi::xml_object_range<pugi::xml_named_node_iterator> brics = brics_node.children("bric");
 
-	pugi::xml_node * bric_node_ptr = NULL;
-	int new_brac_num = 1;
-
-	if (brics.begin() != brics.end()) {
-		pugi::xml_named_node_iterator last_bric_itr;
-		for (pugi::xml_named_node_iterator itr = brics.begin(); itr != brics.end(); ++itr)
-			last_bric_itr = itr;
-		pugi::xml_node & last_bric = *last_bric_itr;
-		new_brac_num = 1 + last_bric.attribute("id").as_int();
-		bric_node_ptr = &(brics_node.insert_child_after("bric", last_bric));
-	} else {
-		bric_node_ptr = &(brics_node.append_child("bric"));
+	if (brac_node.empty()) {
+		log("brac node could not be found");
+		return "error";
 	}
 
-	pugi::xml_node & bric_node = *bric_node_ptr;
+	pugi::xml_node layers_node = brac_node.child("layers");
+
+	if (layers_node.empty()) {
+		log("layers node could not be found");
+		return "error";
+	}
+
+	pugi::xml_object_range<pugi::xml_node_iterator> layers = layers_node.children();
+	int max_id = -1;
+	if (layers.begin() != layers.end())
+		for (pugi::xml_node_iterator itr = layers.begin(); itr != layers.end(); ++itr)
+			if (max_id < itr->attribute("id").as_int())
+				max_id = itr->attribute("id").as_int();
+	int new_brac_num = max_id + 1;
+
+	pugi::xml_node bric_node = layers_node.append_child("bric");
 
 	time_t t = time(0);   // get current time
 	struct tm * now = localtime( &t );
 	char time_now[50];
-	sprintf(time_now, "%d-%02d-%02d %02d:%02d:%02d"
-		, now->tm_year + 1900
-		, now->tm_mon + 1
-		, now->tm_mday
-		, now->tm_hour
-		, now->tm_min
-		, now->tm_sec);
-
+	sprintf(time_now, "%d-%02d-%02d %02d:%02d:%02d",
+		now->tm_year + 1900,
+		now->tm_mon + 1,
+		now->tm_mday,
+		now->tm_hour,
+		now->tm_min,
+		now->tm_sec
+	);
 
 	bric_node.append_attribute("revision"    ).set_value(1);
 	bric_node.append_attribute("lastupdate"  ).set_value(time_now);

@@ -25,7 +25,7 @@ public:
 		registerMethod("getLogMessage",    make_method(this,   &BracExtenssionProviderAPI::getLogMessage));
 		registerMethod("getCalledCommand", make_method(this,   &BracExtenssionProviderAPI::getCalledCommand));
 		registerMethod("getSysCallResult", make_method(this,   &BracExtenssionProviderAPI::getSysCallResult));
-		registerMethod("getURLSnapShot",   make_method(this,   &BracExtenssionProviderAPI::getURLSnapShot));
+		registerMethod("takeSnapShot",   make_method(this,   &BracExtenssionProviderAPI::takeSnapShot));
 		registerMethod("selectBracFile",   make_method(this,   &BracExtenssionProviderAPI::selectBracFile));
 		registerMethod("saveToBracFile",   make_method(this,   &BracExtenssionProviderAPI::saveToBracFile));
 		registerMethod("setExtensionPath", make_method(this,   &BracExtenssionProviderAPI::setExtensionPath));
@@ -45,7 +45,7 @@ public:
 	FB::variant selectBracFile(const FB::variant& msg);
 	FB::variant saveToBracFile(const FB::variant& msg);
 	FB::variant setExtensionPath(const FB::variant& msg);
-	FB::variant getURLSnapShot(const FB::variant& msg);
+	FB::variant takeSnapShot(const FB::variant& msg);
 
 	// Event helpers
     FB_JSAPI_EVENT(echo, 1, (const FB::variant&));
