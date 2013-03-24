@@ -302,26 +302,25 @@ function enableRegionButtons() {
 			'width' : m_selector.region.width,
 			'height': m_selector.region.height
 		}
-			
-		var _canvas = document.getElementById('bab-canvas');
-
-		// cropping the canvas to selected region
-		var ctx = _canvas.getContext('2d');
-		mask_data = ctx.getImageData(reg.left, reg.top, reg.width, reg.height);
-		_canvas.width = reg.width;
-		_canvas.height = reg.height;
-		ww = _canvas.width;
-		wh = _canvas.height;
-		ctx.clearRect(0, 0, ww, wh);
-		ctx.putImageData(mask_data, 0, 0);
 		
-		mask_layer = _canvas.toDataURL("image/png").replace(/^data:image\/(png|jpg);base64,/, "");
-		cleanupRegionSelector();
+		// cropping the canvas to selected region
+		var ctx = m_canvas.getContext('2d');
+		mask_data = ctx.getImageData(reg.left, reg.top, reg.width, reg.height);
+
+		var _cnv = document.createElement('canvas');
+		_cnv.width = reg.width;
+		_cnv.height = reg.height;
+
+		var _ctx = _cnv.getContext('2d');
+		_ctx.clearRect(0, 0, _cnv.width, _cnv.height);
+		_ctx.putImageData(mask_data, 0, 0);
+		
+		mask_layer = _cnv.toDataURL("image/png").replace(/^data:image\/(png|jpg);base64,/, "");
+		//cleanupRegionSelector();
 		setupDialog(reg);
 
 		m_canvas.style.cursor = "default";
 		m_canvas.onmouseup = null;
-		unloadToolbar();
 	};
 	
 	//-----------------------------------
@@ -347,6 +346,7 @@ function enableRegionButtons() {
 		m_canvas.style.cursor = "default";
 		m_canvas.onmouseup = null;
 		unloadToolbar();
+		onCleanup();
 	};
 
 	//-----------------------------------
@@ -356,10 +356,11 @@ function enableRegionButtons() {
 
 //------------------------------------------------------------------------------
 
-function onSnapshotCreated() {
+function onSnapshotCreated(filename) {
+
 	if (m_canvas == null) {
 		img = document.getElementById('bab-screenshot');
-		img.src = '../img/url_snapshot.png';
+		img.src = '../img/screenshot/' + filename;
 		
 		document.body.classList.add('bab-unselectable');
 		m_canvas = document.createElement('canvas');
@@ -448,15 +449,16 @@ function setupBep() {
 		bep.setExtensionPath(info.extension.path);
 		m_info = info;
 		bep.addEventListener("bracfileselect", onBracFileSelect, false);
-		bep.addEventListener('cleanup', onDismissDialogCleanup, false);
+		bep.addEventListener('cleanup', onCleanup, false);
+		fn = new Date().getTime() + ".png";
+
 		bep.takeSnapShot(JSON.stringify({
 			url:      m_info.page.url,
 			width:    window.innerWidth.toString(),
 			height:   window.innerHeight.toString(),
-			dir:      "/img",
-			filename: "url_snapshot.png"
+			filename: fn
 		}));
-		onSnapshotCreated();
+		onSnapshotCreated(fn);
 		loadToolbar();
 	});
 }
@@ -879,6 +881,15 @@ function SaveDialogBtnApplyOnClick() {
 
 function onDismissDialogCleanup() {
 	cleanupDialog();
+	m_canvas.style.cursor = "crosshair";
+	m_canvas.onmouseup = canvasMouseUp;
+}
+
+//------------------------------------------------------------------------------
+
+function onCleanup() {
+	cleanupDialog();
+	window.close();
 }
 	
 //------------------------------------------------------------------------------
@@ -892,6 +903,13 @@ function canvasMouseUp(e) {
 window.onload = function(){
 	maxZIndex = getHighIndex();
 	setupBep();
+}
+
+//------------------------------------------------------------------------------
+
+window.onbeforeunload = function () {
+	bep.cleanup();
+    window.onbeforeunload = undefined;
 }
 
 //------------------------------------------------------------------------------

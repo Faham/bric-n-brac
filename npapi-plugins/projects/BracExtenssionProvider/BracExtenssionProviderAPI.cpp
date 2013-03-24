@@ -110,34 +110,58 @@ FB::variant BracExtenssionProviderAPI::takeSnapShot(const FB::variant& msg) {
 
 	std::string url = o.get<std::string>("url");
 
-	std::string width    = o.get<std::string>("width");
-	std::string height   = o.get<std::string>("height");
-	std::string dir      = m_extension_path + o.get<std::string>("dir");
-	std::string filename = o.get<std::string>("filename");
-
-	std::string command = "";
+	std::string width     = o.get<std::string>("width");
+	std::string height    = o.get<std::string>("height");
+	m_screenshot_dir      = m_extension_path + "/img/screenshot";
+	m_screenshot_filename = o.get<std::string>("filename");
+	std::string command   = "";
 
 	#if defined _WIN32
+		command = "mkdir \"" + escape_path(m_screenshot_dir) + "\"";
+		systemCall(command);
+
 		command = "cd /d \"" + m_extension_path + "\" & bin\\cutycapt.exe"
 			+ " --print-backgrounds=on --javascript=on --plugins=on --js-can-access-clipboard=on"
 			+ " --min-width=" + width
 			+ " --min-height=" + height
 			+ " --url=\"" + url + "\""
+			+ " --user-agent=\"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.34 (KHTML, like Gecko) Qt/4.8.4 Chrome/534.34\""
 			+ " --out-format=png"
-			+ " --out=\"" + dir + "/" + filename + "\"";
+			+ " --out=\"" + m_screenshot_dir + "/" + m_screenshot_filename + "\"";
 		systemCall(command);
 	#elif defined __APPLE__
 		std::string escaped_extension_path = escape_path(m_extension_path);
+		std::string escaped_dir = escape_path(m_screenshot_dir);
+
+		command = "mkdir -p " + escaped_dir;
+		systemCall(command);
+
 		command = "cd " + escaped_extension_path + "; bin/webkit2png --fullsize"
 			+ " --width=" + width
 			+ " --height=" + height
-			+ " --dir=" + dir
-			+ " --filename=" + filename
+			+ " --dir=" + escaped_dir
+			+ " --user-agent=\"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.34 (KHTML, like Gecko) Qt/4.8.4 Chrome/534.34\""
+			+ " --filename=temp"
 			+ " \"" + url + "\"";
+		systemCall(command);
+
+		command = "mv " + escaped_dir + "/temp-full.png " + escaped_dir + "/" + m_screenshot_filename;
 		systemCall(command);
 	#endif
 
 	return "done!";
+}
+
+//------------------------------------------------------------------------------
+
+FB::variant BracExtenssionProviderAPI::cleanup(const FB::variant& msg) {
+	std::string command;
+	#if defined _WIN32
+		command = "rmdir /S /Q \"" + escape_path(m_screenshot_dir) + "\"";
+	#elif defined __APPLE__
+		command = "rm -Rf " + escape_path(m_screenshot_dir);
+	#endif
+	systemCall(command);
 }
 
 //------------------------------------------------------------------------------
@@ -414,6 +438,7 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 	*/
 
 	#if defined _WIN32
+		/*
 		command = "cd /d \"" + m_extension_path + "\" & bin\\cutycapt.exe"
 			+ " --print-backgrounds=on --javascript=on --plugins=on --js-can-access-clipboard=on"
 			+ " --min-width=" + brac_resolution[0]
@@ -422,6 +447,10 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 			+ " --user-agent=\"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.34 (KHTML, like Gecko) Qt/4.8.4 Chrome/534.34\""
 			+ " --out-format=png"
 			+ " --out=\"" + bric_screenshot + "\"";
+		systemCall(command);
+		*/
+
+		command = "rename \"" + m_screenshot_dir + "\\" + m_screenshot_filename + "\"  \"" + bric_screenshot + "\"";
 		systemCall(command);
 
 		command = "cd /d \"" + m_extension_path + "\" & bin\\convert.exe"
@@ -433,14 +462,6 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 		command = "cd /d \"" + new_bric_path + "\" & copy " + bric_screenshot_filename + " " + bric_thumbnail;
 		systemCall(command);
 
-		//if (mask_created) {
-		//	command = "cd /d \"" + m_extension_path + "\" & bin\\convert.exe"
-		//		+ " \"" + mask_filename + "\""
-		//		+ " -crop " + bric_region[2] + "x" + bric_region[3] + "+" + bric_region[0] + "+" + bric_region[1]
-		//		+ " \"" + mask_filename + "\"";
-		//	systemCall(command);
-		//}
-
 		command = "cd /d \"" + m_extension_path + "\" & bin\\7za.exe a \"" + path + "\" \"" + new_bric_path + "\"";
 		systemCall(command);
 
@@ -451,6 +472,7 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 		command = "rename \"" + path + "\"  \"" + fname + ext + "\"";
 		systemCall(command);
 	#elif defined __APPLE__
+		/*
 		command = "cd " + escaped_extension_path + "; bin/webkit2png --fullsize"
 			+ " --width=" + brac_resolution[0]
 			+ " --height=" + brac_resolution[1]
@@ -463,6 +485,12 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 		std::string escaped_bric_screenshot = escape_path(bric_screenshot);
 		command = "mv " + escaped_new_bric_path + "/temp-full.png " + escaped_bric_screenshot;
 		systemCall(command);
+		*/
+
+		std::string escaped_bric_screenshot = escape_path(bric_screenshot);
+		std::string escaped_screenshot_dir  = escape_path(m_screenshot_dir);
+		command = "mv " + escaped_screenshot_dir + "/" + m_screenshot_filename + " " + escaped_bric_screenshot;
+		systemCall(command);
 
 		command = "cd " + escaped_extension_path + "; bin/convert"
 			+ " " + escaped_bric_screenshot
@@ -473,15 +501,6 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 		std::string escaped_bric_thumbnail = escape_path(bric_thumbnail_path);
 		command = "cp \"" + escaped_bric_screenshot + "\" \"" + escaped_bric_thumbnail + "\"";
 		systemCall(command);
-
-		//if (mask_created) {
-		//	std::string escaped_bric_mask = escape_path(mask_filename);
-		//	command = "cd " + escaped_extension_path + "; bin/convert"
-		//		+ " " + escaped_bric_mask
-		//		+ " -crop " + bric_region[2] + "x" + bric_region[3] + "+" + bric_region[0] + "+" + bric_region[1]
-		//		+ " " + escaped_bric_mask;
-		//	systemCall(command);
-		//}
 
 		command = "cd " + escaped_extension_path + "; bin/7za a " + escaped_path + " " + escaped_new_bric_path;
 		systemCall(command);

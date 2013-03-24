@@ -30,18 +30,25 @@
 
 //------------------------------------------------------------------------------
 
-#if defined __APPLE__
 std::string escape_path(const std::string & s)
 {
+#if defined _WIN32
+	std::string escaped_s = s;
+	int pos = 0;
+	while ((pos = escaped_s.find("/", pos)) != std::string::npos) {
+		escaped_s.replace(pos, 1, "\\");
+		pos += 1;
+	}
+#elif defined __APPLE__
 	std::string escaped_s = s;
 	int pos = 0;
 	while ((pos = escaped_s.find(" ", pos)) != std::string::npos) {
 		escaped_s.replace(pos, 1, "\\ ");
 		pos += 2;
 	}
+#endif
 	return escaped_s;
 }
-#endif
 
 //------------------------------------------------------------------------------
 

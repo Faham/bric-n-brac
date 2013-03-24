@@ -64,7 +64,6 @@ if (currVersion != prevVersion) {
 page_info = {};
 
 chrome.browserAction.onClicked.addListener(function(tab) {
-	//chrome.tabs.executeScript(tab.id, {file:"js/overlay.js"});
 	page_info.url = tab.url.replace('https', 'http');
 	page_info.title = tab.title;
 	

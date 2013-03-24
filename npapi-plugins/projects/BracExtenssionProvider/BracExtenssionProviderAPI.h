@@ -20,15 +20,16 @@ public:
     BracExtenssionProviderAPI(const BracExtenssionProviderPtr& plugin, const FB::BrowserHostPtr& host) :
         m_plugin(plugin), m_host(host)
     {
-        registerProperty("version",        make_property(this, &BracExtenssionProviderAPI::get_version));
-		registerMethod("systemCall",       make_method(this,   &BracExtenssionProviderAPI::systemCall));
-		registerMethod("getLogMessage",    make_method(this,   &BracExtenssionProviderAPI::getLogMessage));
+        registerProperty("version",        make_property(this, &BracExtenssionProviderAPI::get_version     ));
+		registerMethod("systemCall",       make_method(this,   &BracExtenssionProviderAPI::systemCall      ));
+		registerMethod("getLogMessage",    make_method(this,   &BracExtenssionProviderAPI::getLogMessage   ));
 		registerMethod("getCalledCommand", make_method(this,   &BracExtenssionProviderAPI::getCalledCommand));
 		registerMethod("getSysCallResult", make_method(this,   &BracExtenssionProviderAPI::getSysCallResult));
-		registerMethod("takeSnapShot",   make_method(this,   &BracExtenssionProviderAPI::takeSnapShot));
-		registerMethod("selectBracFile",   make_method(this,   &BracExtenssionProviderAPI::selectBracFile));
-		registerMethod("saveToBracFile",   make_method(this,   &BracExtenssionProviderAPI::saveToBracFile));
+		registerMethod("takeSnapShot",     make_method(this,   &BracExtenssionProviderAPI::takeSnapShot    ));
+		registerMethod("selectBracFile",   make_method(this,   &BracExtenssionProviderAPI::selectBracFile  ));
+		registerMethod("saveToBracFile",   make_method(this,   &BracExtenssionProviderAPI::saveToBracFile  ));
 		registerMethod("setExtensionPath", make_method(this,   &BracExtenssionProviderAPI::setExtensionPath));
+		registerMethod("cleanup",          make_method(this,   &BracExtenssionProviderAPI::cleanup         ));
     }
 
     virtual ~BracExtenssionProviderAPI() {};
@@ -38,14 +39,15 @@ public:
     // Read-only property ${PROPERTY.ident}
     std::string get_version();
 
-	FB::variant systemCall(const FB::variant& msg);
-	FB::variant getLogMessage(const FB::variant& msg);
+	FB::variant systemCall      (const FB::variant& msg);
+	FB::variant getLogMessage   (const FB::variant& msg);
 	FB::variant getCalledCommand(const FB::variant& msg);
 	FB::variant getSysCallResult(const FB::variant& msg);
-	FB::variant selectBracFile(const FB::variant& msg);
-	FB::variant saveToBracFile(const FB::variant& msg);
+	FB::variant selectBracFile  (const FB::variant& msg);
+	FB::variant saveToBracFile  (const FB::variant& msg);
 	FB::variant setExtensionPath(const FB::variant& msg);
-	FB::variant takeSnapShot(const FB::variant& msg);
+	FB::variant takeSnapShot    (const FB::variant& msg);
+	FB::variant cleanup         (const FB::variant& msg);
 
 	// Event helpers
     FB_JSAPI_EVENT(echo, 1, (const FB::variant&));
@@ -64,6 +66,8 @@ private:
 	std::vector<std::string> m_syscall_results;
 	std::vector<std::string> m_syscall_commands;
 	std::vector<std::string> m_log_messages;
+	std::string m_screenshot_filename;
+	std::string m_screenshot_dir;
 };
 
 #endif // H_BracExtenssionProviderAPI
