@@ -59,11 +59,21 @@ def getBracTimeTable(path):
 	bracxml = et.parse(os.path.join(tempdir, 'brac.xml'))
 	
 	shutil.rmtree(tempdir)
-
-	bracdef = bracxml.getroot()
 	
 	timetbl = []
-	for bric in bracdef:
+
+	bracdef = bracxml.getroot()
+	layers = bracdef.find('layers');
+
+	if layers == None:
+		logger.error('brac %s has no layers node!' % path)
+		return
+			
+	for layer in layers:
+		if layer.tag != 'bric':
+			continue
+
+		bric = layer
 		id = bric.attrib['id']
 		timeinterval = bric.attrib['timeinterval']
 		lastupdate = bric.attrib['lastupdate']

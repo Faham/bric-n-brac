@@ -258,6 +258,11 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 		zf_brac.extract('brac.xml', tempdir)
 		bracxml = et.parse(os.path.join(tempdir, 'brac.xml'))
 		bracdef = bracxml.getroot()
+		layers = bracdef.find('layers');
+
+		if layers == None:
+			logger.error('brac %s has no layers node!' % path)
+			return
 		
 		resolution = dict(zip(['width', 'height'], bracdef.attrib['resolution'].split()))
 		
@@ -270,7 +275,11 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 			'tempdir': tempdir,
 		}
 
-		for bric in bracdef:
+		for layer in layers:
+			if layer.tag != 'bric':
+				continue
+
+			bric = layer
 			#extracting bric files to its temp directory
 			revision = str(int(bric.attrib['revision']) + 1)
 			
@@ -291,14 +300,15 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 				
 			#extracting bric attributes
 			bricregion = dict(zip(['x', 'y', 'w', 'h'], bricdef.attrib['region'].split()))
-			
-			vars['bracwidth']  = resolution['width']
-			vars['bracheight'] = resolution['height']
+			bricres = dict(zip(['w', 'h'], bric.attrib['resolution'].split()))
+
+			vars['bracwidth']  = bricres['w']
+			vars['bracheight'] = bricres['h']
 			vars['bricurl']    = bricdef.attrib['url']
 			vars['bricw']      = bricregion['w']
 			vars['brich']      = bricregion['h']
-			vars['bricx']      = '%s%s' % ('+' if int(bricregion['x']) > 0 else '-', bricregion['x'])
-			vars['bricy']      = '%s%s' % ('+' if int(bricregion['y']) > 0 else '-', bricregion['y'])
+			vars['bricx']      = '%s%s' % ('+' if int(bricregion['x']) >= 0 else '-', bricregion['x'])
+			vars['bricy']      = '%s%s' % ('+' if int(bricregion['y']) >= 0 else '-', bricregion['y'])
 			
 			params = {
 				'width' : int(resolution['width']),
@@ -310,17 +320,20 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 			try:
 				image = self.renderer.render(
 					vars['bricurl'],
-					x      = int(vars['bricx']),
-					y      = int(vars['bricy']),
-					width  = int(vars['bricw']),
-					height = int(vars['brich']),
-					timeout = 60
+					filename = vars['bricpath'],
+					width    = int(vars['bracwidth']),
+					height   = int(vars['bracheight']),
+					x        = int(vars['bricx']),
+					y        = int(vars['bricy']),
+					w        = int(vars['bricw']),
+					h        = int(vars['brich']),
+					timeout  = 60
 				)
 
 				#cropping
-				image = image.copy(int(vars['bricx']), int(vars['bricy']), int(vars['bricw']), int(vars['brich']))
+				#image = image.copy(int(vars['bricx']), int(vars['bricy']), int(vars['bricw']), int(vars['brich']))
+				#image.save(vars['bricpath'], 'png')
 
-				image.save(vars['bricpath'], 'png')
 				if os.path.exists(vars['bricpath']):
 					logger.debug('generated %s' % vars['bricpath'])
 				else:

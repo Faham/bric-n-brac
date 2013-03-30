@@ -18,7 +18,9 @@
 		"img/lasso.png",
 		"img/save.png",
 		"img/clear.png",
-		"img/cancel.png"
+		"img/cancel.png",
+
+		"js/content.js"
 	],
 	"plugins": [
 		{"path": "bin/npBracExtenssionProvider.dll", "public": true},

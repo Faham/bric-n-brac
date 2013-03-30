@@ -2,44 +2,56 @@
 #-------------------------------------------------------------------------------
 
 from PyQt4 import QtGui, QtCore, uic
-import sys, logging
+import sys, logging, os, traceback
 from webkitrenderer import WebkitRenderer
 from PyQt4.QtWebKit import QWebPage
 
 #-------------------------------------------------------------------------------
 
-class BracSynchronizer(QtGui.QWidget):
+class WebCapture(QtGui.QWidget):
 
-	def capture(self):
+	def capture(self, params):
 		print 'capturing url'
-		
-		#url = 'https://www.google.ca/search?q=game&hl=en&tbo=d&source=lnms&tbm=isch&sa=X&ei=1ycCUf3cE4PAyAHI2oCIDg&ved=0CAcQ_AUoAA&biw=1439&bih=802'
-		#url = 'http://www.google.ca/search?q=benjamin+franklin&rlz=1C1LENN_enCA520CA520&aq=f&oq=benjamin+franklin&sourceid=chrome&ie=UTF-8'
-		#url = 'http://www.youtube.com/'
-			
-		image = self.renderer.render(url, 0, 4000, 1366, 768, 60)
-		image.save('test.png', 'png')
+		self.renderer.render(
+			params['url'],
+			params['filepath'],
+			params['window_width'],
+			params['window_height'],
+			params['region_left'],
+			params['region_top'],
+			params['region_width'],
+			params['region_height'],
+			params['timeout'])
+		print 'image file generated'
+		sys.exit(0)
 
-	def __init__(self, parent=None):
+	def __init__(self, params, parent=None):
 		QtGui.QWidget.__init__(self, parent)
-		
-		#mtimer = QtCore.QTimer(self)
-		#mtimer.timeout.connect(self.capture)
-		#mtimer.start(2000)
-		
 		self.renderer = WebkitRenderer()
-		self.capture()
-		sys.exit()
+		self.capture(params)
 
 #===============================================================================
 
 def main():
-	app = QtGui.QApplication(sys.argv)
+	try:
+		app = QtGui.QApplication(sys.argv)
+		print 'syntax: url, filepath, window_width, window_height, region_left, region_top, region_width, region_height, timeout'
 
-	trayIcon = BracSynchronizer()
-
-	trayIcon.show()
-	sys.exit(app.exec_())
+		params = {
+			'url'          : sys.argv[1], 
+			'filepath'     : sys.argv[2], 
+			'window_width' : int(sys.argv[3]), 
+			'window_height': int(sys.argv[4]), 
+			'region_left'  : int(sys.argv[5]), 
+			'region_top'   : int(sys.argv[6]), 
+			'region_width' : int(sys.argv[7]), 
+			'region_height': int(sys.argv[8]), 
+			'timeout'      : int(sys.argv[9]), 
+		}
+		wc = WebCapture(params)
+		sys.exit(app.exec_())
+	except Exception:
+		traceback.print_exc(file=sys.stdout)
 
 #-------------------------------------------------------------------------------
 

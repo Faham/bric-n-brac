@@ -13,6 +13,8 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtWebKit import QWebPage
 
+import common
+
 #===============================================================================
 
 class UserAgentWebPage(QWebPage):
@@ -48,7 +50,7 @@ class WebkitRenderer(QObject):
 	
 #-------------------------------------------------------------------------------
 
-	def render(self, url, x=0, y=0, width=0, height=0, timeout=0):
+	def render(self, url, filename, width=0, height=0, x=0, y=0, w=0, h=0, timeout=60, ajaxtimeout=5):
 		logger.debug("rendering %s (timeout: %d)", url, timeout)
 
 		# This is an event-based application. So we have to wait until
@@ -62,14 +64,9 @@ class WebkitRenderer(QObject):
 		
 		# Set initial viewport (the size of the "window")
 		size = self._page.mainFrame().contentsSize()
-		if width > 0:
-			size.setWidth(x + width)
-		if height > 0:
-			size.setHeight(y + height)
+		size.setWidth(width)
+		size.setHeight(height)
 		self._page.setViewportSize(size)
-		self._page.setActualVisibleContentRect(QRect(x, y, width, height))
-
-		self.region = {'x': x, 'y': y, 'width': width, 'height': height}
 		
 		# Start loading
 		self._page.mainFrame().load(qurl)
@@ -80,16 +77,34 @@ class WebkitRenderer(QObject):
 
 		logger.debug("Fetching %s..." % url)
 
+		scroll_x = 0
+		scroll_y = 0
 		if self.__loading_result == False:
 			raise RuntimeError("Failed to load %s" % url)
+		elif x + w > width or y + h > height:
+			print 'scrolling...'
+			if x + w > width:
+				scroll_x = (x + w) - width
+			if y + h > height:
+				scroll_y = (y + h) - height 
+			self._page.mainFrame().documentElement().evaluateJavaScript('window.scrollBy(%d, %d);' % (scroll_x, scroll_y))
+			stopAt = time.time() + ajaxtimeout
+			while time.time() < stopAt:
+				QCoreApplication.processEvents()
+			print 'scrolling done'
 
 		# Paint this frame into an image
-		image = QImage(self._page.viewportSize(), QImage.Format_ARGB32)
-		painter = QPainter(image)
+		img = QImage(self._page.viewportSize(), QImage.Format_ARGB32)
+		painter = QPainter(img)
 		self._page.mainFrame().render(painter)
 		painter.end()
+		img.save(filename, 'png')
+		if common.getos() == 'win':
+			os.system('../tools/convert.exe "%s" -crop %dx%d+%d+%d "%s"' % (filename, w, h, x - scroll_x, y - scroll_y, filename))
+		if common.getos() == 'mac':
+			os.system('../tools/convert %s -crop %dx%d+%d+%d %s' % (filename, w, h, x - scroll_x, y - scroll_y, filename))
 
-		return image
+		#return img
 
 #-------------------------------------------------------------------------------
 	

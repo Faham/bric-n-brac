@@ -58,28 +58,35 @@ if (currVersion != prevVersion) {
 
 	localStorage['version'] = currVersion;
 }
+pageinfo = {};
+tabid = 0;
 
-//==============================================================================
-
-page_info = {};
+//------------------------------------------------------------------------------
 
 chrome.browserAction.onClicked.addListener(function(tab) {
-	page_info.url = tab.url.replace('https', 'http');
-	page_info.title = tab.title;
-	
-	chrome.tabs.create({
-		'url': chrome.extension.getURL('html/screenshot.html'),
-		'selected': true
-	}, function(tab2) {});
+	tabid = tab.id
+	chrome.tabs.executeScript(tab.id, {file: 'js/content.js'}, function () {})
 });
+
+//------------------------------------------------------------------------------
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	if ('request-info' == request) {
 		info = {
 			'extension': ext_info,
-			'page':      page_info
+			'page':      pageinfo
 		}
 		sendResponse(info);
+	} else if ('page-info' == request.type) {
+		pageinfo = request.pageinfo
+		pageinfo.tabid = tabid
+		chrome.tabs.get(tabid, function(tab) {
+			pageinfo.url = tab.url.replace('https', 'http');
+			chrome.tabs.create({
+				'url': chrome.extension.getURL('html/screenshot.html'),
+				'selected': true
+			}, function(){});
+		});
 	}
 });
 

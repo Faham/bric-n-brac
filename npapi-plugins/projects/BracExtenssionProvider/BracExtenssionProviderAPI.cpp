@@ -110,11 +110,13 @@ FB::variant BracExtenssionProviderAPI::takeSnapShot(const FB::variant& msg) {
 
 	std::string url = o.get<std::string>("url");
 
-	std::string width     = o.get<std::string>("width");
-	std::string height    = o.get<std::string>("height");
-	m_screenshot_dir      = m_extension_path + "/img/screenshot";
-	m_screenshot_filename = o.get<std::string>("filename");
-	std::string command   = "";
+	std::string width      = o.get<std::string>("width");
+	std::string height     = o.get<std::string>("height");
+	std::string scrollLeft = o.get<std::string>("scrollLeft");
+	std::string scrollTop  = o.get<std::string>("scrollTop");
+	m_screenshot_dir       = m_extension_path + "/img/screenshot";
+	m_screenshot_filename  = o.get<std::string>("filename");
+	std::string command    = "";
 
 	#if defined _WIN32
 		command = "mkdir \"" + escape_path(m_screenshot_dir) + "\"";
@@ -136,16 +138,17 @@ FB::variant BracExtenssionProviderAPI::takeSnapShot(const FB::variant& msg) {
 		command = "mkdir -p " + escaped_dir;
 		systemCall(command);
 
-		command = "cd " + escaped_extension_path + "; bin/webkit2png --fullsize"
-			+ " --width=" + width
-			+ " --height=" + height
-			+ " --dir=" + escaped_dir
-			+ " --user-agent=\"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.34 (KHTML, like Gecko) Qt/4.8.4 Chrome/534.34\""
-			+ " --filename=temp"
-			+ " \"" + url + "\"";
-		systemCall(command);
+		std::string filepath = escaped_dir + "/" + m_screenshot_filename;
 
-		command = "mv " + escaped_dir + "/temp-full.png " + escaped_dir + "/" + m_screenshot_filename;
+		command = "cd " + escaped_extension_path + "; "
+			+ "bin/snapshot.py "
+			+ "'" + url + "' "      // target url
+			+ "'" + filepath + "' " // target filepath
+			+ width      + " "      // window width
+			+ height     + " "      // window height
+			+ scrollLeft + " "      // scrollLeft
+			+ scrollTop  + " "      // scrollTop
+			+ "60";                 // timeout
 		systemCall(command);
 	#endif
 
@@ -412,7 +415,7 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 	if (brac_resolution.size() != 2)
 		log("Brac resolution should be a pair of integer numbers, separated by space character.");
 
-	std::vector<std::string> bric_region = split(bric_info.get<std::string>("region"), ' ');
+	std::vector<std::string> bric_region = split(bric_info.get<std::string>("local_region"), ' ');
 	if (bric_region.size() != 4)
 		log("Bric region should be four integer numbers, separated by space character.");
 	
@@ -542,7 +545,7 @@ FB::variant BracExtenssionProviderAPI::setExtensionPath(const FB::variant& msg) 
 	std::string esc_ext_path = escape_path(m_extension_path);
 	systemCall("chmod 700 " + esc_ext_path + "/bin/7za");
 	systemCall("chmod 700 " + esc_ext_path + "/bin/convert");
-	systemCall("chmod 700 " + esc_ext_path + "/bin/webkit2png");
+	systemCall("chmod 700 " + esc_ext_path + "/bin/snapshot.py");
 #endif
 
 	return m_extension_path;

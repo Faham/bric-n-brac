@@ -10,6 +10,7 @@ bep functions:
 	FB::variant saveToBracFile(const FB::variant& msg);
 	FB::variant setExtensionPath(const FB::variant& msg);
 	FB::variant takeSnapShot(const FB::variant& msg);
+	FB::variant cleanup(const FB::variant& msg);
 
 */
 
@@ -361,16 +362,16 @@ function onSnapshotCreated(filename) {
 	if (m_canvas == null) {
 		img = document.getElementById('bab-screenshot');
 		img.src = '../img/screenshot/' + filename;
-		
+				
 		document.body.classList.add('bab-unselectable');
 		m_canvas = document.createElement('canvas');
 		m_canvas.setAttribute('id', 'bab-canvas');
 		m_canvas.className = 'bab-unselectable';
 		m_canvas.style.zIndex = ++maxZIndex;
-		m_canvas.width = document.width
-		m_canvas.height = document.height
+		m_canvas.width = window.innerWidth;
+		m_canvas.height = window.innerHeight;
 		document.body.appendChild(m_canvas);
-		m_context2d = m_canvas.getContext('2d'),
+		m_context2d = m_canvas.getContext('2d')
 		m_context2d.fillStyle = '#000000';
 		//m_context2d.lineWidth = 5;
 		m_selector = $(m_canvas)
@@ -453,10 +454,12 @@ function setupBep() {
 		fn = new Date().getTime() + ".png";
 
 		bep.takeSnapShot(JSON.stringify({
-			url:      m_info.page.url,
-			width:    window.innerWidth.toString(),
-			height:   window.innerHeight.toString(),
-			filename: fn
+			url       : m_info.page.url,
+			width     : window.innerWidth.toString(),
+			height    : window.innerHeight.toString(),
+			scrollTop : m_info.page.scrollTop.toString(),
+			scrollLeft: m_info.page.scrollLeft.toString(),
+			filename  : fn
 		}));
 		onSnapshotCreated(fn);
 		loadToolbar();
@@ -759,8 +762,11 @@ function setupDialog(region) {
 		m = dt.getMonth() >= 10? dt.getMonth(): '0' + dt.getMonth();
 		d = dt.getDate() >= 10? dt.getDate(): '0' + dt.getDate();
 		
-		if (region != null) dlg.querySelector('#bric_region').value = region.left + " " + region.top + " " + region.width + " " + region.height;
-		else                dlg.querySelector('#bric_region').value = null;
+		if (region != null) dlg.querySelector('#bric_region').value =
+			(region.left + m_info.page.scrollLeft) + " " +
+			(region.top + m_info.page.scrollTop) + " " +
+			region.width + " " + region.height;
+		else dlg.querySelector('#bric_region').value = null;
 		
 		dlg.querySelector('#bric_start_data').value = dt.getFullYear() + '-' + m + '-' + d + ' ' + dt.toLocaleTimeString()
 		dlg.querySelector('#bric_url'       ).value = m_info.page.url
@@ -837,8 +843,10 @@ function _arrayBufferToString(buf, callback) {
 
 function SaveDialogBtnApplyOnClick() {
 
-	var bric_res = dlg.querySelector('#bric_region').value.split(' ');
-	var res = bric_res[2] + ' ' + bric_res[3];
+	var loc_reg = dlg.querySelector('#bric_region').value.split(' ');
+	loc_reg[0] -= m_info.page.scrollLeft
+	loc_reg[1] -= m_info.page.scrollTop
+	var res = window.innerWidth + ' ' + window.innerHeight;
 
 	message = {
 		brac: {
@@ -855,6 +863,7 @@ function SaveDialogBtnApplyOnClick() {
 			timeInterval : dlg.querySelector('#bric_time_interval').value,
 			startDate    : dlg.querySelector('#bric_start_data'   ).value,
 			url          : dlg.querySelector('#bric_url'          ).value.replace('https://', 'http://'),
+			local_region : loc_reg.join(' '),
 			region       : dlg.querySelector('#bric_region'       ).value,
 			resolution   : res,
 			position     : dlg.querySelector('#bric_position'     ).value,
@@ -869,6 +878,7 @@ function SaveDialogBtnApplyOnClick() {
 		}
 	};
 
+	debugger;
 	bep = document.getElementById('plugin-bep');
 	res = bep.saveToBracFile(JSON.stringify(message));
 	
