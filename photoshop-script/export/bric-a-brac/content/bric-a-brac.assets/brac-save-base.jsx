@@ -176,15 +176,24 @@ function saveAs(temp_dir, target_filename) {
 				if (index < 0) { //bric is removed
 					toremove.push(j);
 				} else {
-					var layerset   = cur_doc.layers[index];
-					var resolution = bric.@resolution.split(' ');
-					var res_w      = parseInt(resolution[0]);
-					var res_h      = parseInt(resolution[1]);
-					layer          = layerset.artLayers.getByName('snapshot');
-					var new_w      = layer.bounds[2] - layer.bounds[0];
-					var new_h      = layer.bounds[3] - layer.bounds[1];
-					var scl_x      = prcsRes(3, new_w / res_w);
-					var scl_y      = prcsRes(3, new_h / res_h);
+					var bric_xml_file = new File(temp_dir + "/bric." + bric.@id + "/bric.xml");
+					if (!bric_xml_file.exists) {
+						alert("Bric XML file " + bric_xml_file.fsName + " not found!");
+						continue;
+					}
+					bric_xml_file.open("r");
+					var bric_xml = new XML(bric_xml_file.read());
+					bric_xml_file.close();
+
+					var layerset = cur_doc.layers[index];
+					var region   = bric_xml.@region.split(' ');
+					var reg_w    = parseInt(region[2]);
+					var reg_h    = parseInt(region[3]);
+					layer        = layerset.artLayers.getByName('snapshot');
+					var new_w    = layer.bounds[2] - layer.bounds[0];
+					var new_h    = layer.bounds[3] - layer.bounds[1];
+					var scl_x    = prcsRes(3, new_w / reg_w);
+					var scl_y    = prcsRes(3, new_h / reg_h);
 
 					bric.@alpha = layerset.opacity / 100.0;
 					bric.@order = cur_doc.layers.length - index;
