@@ -15,6 +15,18 @@
   <str name="Configurator/ActionScript/ScriptFile/desc###44" translate="yes">
     <val/>
   </str>
+  <str name="Configurator/ActionScript/ScriptFile/desc###48" translate="yes">
+    <val>Run JavaScript File</val>
+  </str>
+  <str name="Configurator/ActionScript/ScriptFile/desc###52" translate="yes">
+    <val/>
+  </str>
+  <str name="Configurator/ActionScript/ScriptFile/desc###56" translate="yes">
+    <val/>
+  </str>
+  <str name="Configurator/ActionScript/ScriptFile/desc###60" translate="yes">
+    <val/>
+  </str>
   <str name="Configurator/ActionScript/ScriptFile/name###27" translate="yes">
     <val>Open</val>
   </str>
@@ -29,6 +41,18 @@
   </str>
   <str name="Configurator/ActionScript/ScriptFile/name###43" translate="yes">
     <val>New</val>
+  </str>
+  <str name="Configurator/ActionScript/ScriptFile/name###47" translate="yes">
+    <val>Script File</val>
+  </str>
+  <str name="Configurator/ActionScript/ScriptFile/name###51" translate="yes">
+    <val>Bric info</val>
+  </str>
+  <str name="Configurator/ActionScript/ScriptFile/name###55" translate="yes">
+    <val>Brac info</val>
+  </str>
+  <str name="Configurator/ActionScript/ScriptFile/name###59" translate="yes">
+    <val>Export</val>
   </str>
   <str name="Configurator/Attribute/visible/value###29" translate="yes">
     <val>true</val>
@@ -45,6 +69,18 @@
   <str name="Configurator/Attribute/visible/value###45" translate="yes">
     <val>True</val>
   </str>
+  <str name="Configurator/Attribute/visible/value###49" translate="yes">
+    <val>True</val>
+  </str>
+  <str name="Configurator/Attribute/visible/value###53" translate="yes">
+    <val>True</val>
+  </str>
+  <str name="Configurator/Attribute/visible/value###57" translate="yes">
+    <val>True</val>
+  </str>
+  <str name="Configurator/Attribute/visible/value###61" translate="yes">
+    <val>True</val>
+  </str>
   <str name="Configurator/key_###30" translate="yes">
     <val>brac-open.jsx</val>
   </str>
@@ -59,5 +95,17 @@
   </str>
   <str name="Configurator/key_###46" translate="yes">
     <val>brac-new.jsx</val>
+  </str>
+  <str name="Configurator/key_###50" translate="yes">
+    <val/>
+  </str>
+  <str name="Configurator/key_###54" translate="yes">
+    <val>bric-edit.jsx</val>
+  </str>
+  <str name="Configurator/key_###58" translate="yes">
+    <val>brac-edit.jsx</val>
+  </str>
+  <str name="Configurator/key_###62" translate="yes">
+    <val>export-video.jsx</val>
   </str>
 </asf>

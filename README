@@ -27,16 +27,25 @@ Mac OS X Installation:
 
 - Installing Python 2.7.3 and required modules
 Run the following commands
-brew install python
-brew install pyqt4
-brew install pil
+	brew install python --framework
+it will probably install pyqt4 and pil but if it didn't:
+	brew install pyqt4
+	brew install pil
+
+- Then to install OpenCV:
+	pip install numpy
+	brew install opencv 
+if it couldn't find the formula then run the following first:
+	brew tap homebrew/science
+
+Note that Python 2.7.3 with installed modules should be either the default accible python or set specifically for the .py files.
 
 - Installing Chrome Extension
 drag the crx file onto chrome and install it
 within this file there are three executable files which require special access permissions (permission should be set for 555):
 ./bin/7za
 ./bin/convert
-./bin/webkit2png
+./bin/snapshot.py
 
 - Installing Photoshop Panel
 copy the bric-a-brac directory from ./distro/photoshop-panel into the /Applications/Adobe Photoshop CS5.1~6/Plug-ins/Panels

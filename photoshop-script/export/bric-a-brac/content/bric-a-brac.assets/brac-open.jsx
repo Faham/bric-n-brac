@@ -1,4 +1,8 @@
 ﻿//==============================================================================
+// Copyright 2013.  University of Saskatchewan.  All rights reserved.
+// This script incorporates brac files editing operations into Adobe Photoshop.
+// Written by Faham Negini
+//==============================================================================
 //
 // brac-open.jsx
 //
@@ -131,7 +135,7 @@ function BracOpen() {
 			
 			var f = new File(filepath);
 			if (!f.exists) {
-				alert("Image file " + f.fsName + " not found!");
+				alert("Image file not found! \n\n" + f.fsName);
 				continue;
 			}
 			
@@ -157,7 +161,7 @@ function BracOpen() {
 			var bric_xml_file = new File(bric_dir + "/bric.xml");
 
 			if (!bric_xml_file.exists) {
-				alert("Bric XML file " + bric_xml_file.fsName + " not found!");
+				alert("Bric XML file not found! \n\n" + bric_xml_file.fsName);
 				continue;
 			}
 
@@ -178,7 +182,7 @@ function BracOpen() {
 			
 			var bric_snapshot = new File(bric_snapshot_path);
 			if (!bric_snapshot.exists) {
-				alert("Snapshot " + bric_snapshot.fsName + " could not be found!");
+				alert("Snapshot could not be found! \n\n" + bric_snapshot.fsName);
 				continue;
 			}
 			

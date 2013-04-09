@@ -1,4 +1,8 @@
 ﻿//==============================================================================
+// Copyright 2013.  University of Saskatchewan.  All rights reserved.
+// This script incorporates brac files editing operations into Adobe Photoshop.
+// Written by Faham Negini
+//==============================================================================
 //
 // common.jsx
 //
@@ -7,6 +11,10 @@
 #target photoshop 
 
 //==============================================================================
+
+// debug level: 0-2 (0:disable, 1:break on error, 2:break at beginning)
+$.level = 1;
+//debugger; // launch debugger on next line
 
 //------------------------------------------------------------------------------
 
@@ -72,6 +80,21 @@ function resetEnv() {
 function prcsRes(res, num) {
 	res = Math.pow(10, res)
 	return Math.round(num * res) / res
+}
+
+//------------------------------------------------------------------------------
+
+// Converts the given length in the given unit at the given dpi to pixels
+function unit2pixel(unit, dpi, length) {
+	if (unit == 0) {        // Pixels
+		return length;
+	} else if (unit == 1) { // Inches
+		return length * dpi;
+	} else if (unit == 2) { // Centimeters
+		return length * dpi / 2.54;
+	} else if (unit == 3) { // Millimeters
+		return (length / 10) * dpi / 2.54;
+	}
 }
 
 //==============================================================================

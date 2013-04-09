@@ -1,17 +1,15 @@
-﻿// Copyright 2013.  University of Saskatchewan.  All rights reserved.
+﻿//==============================================================================
+// Copyright 2013.  University of Saskatchewan.  All rights reserved.
 // This script incorporates brac files editing operations into Adobe Photoshop.
 // Written by Faham Negini
-
+//==============================================================================
+//
+// brac-new.jsx
+//
 //==============================================================================
 
 #target photoshop
 #include "common.jsx"
-
-//==============================================================================
-
-// debug level: 0-2 (0:disable, 1:break on error, 2:break at beginning)
-$.level = 1;
-//debugger; // launch debugger on next line
 
 //==============================================================================
 
@@ -45,10 +43,6 @@ var cancelButtonID = 2;
 
 //==============================================================================
 
-main();
-
-//==============================================================================
-
 function docFill2Str(df) {
 	if (df == DocumentFill.BACKGROUNDCOLOR)
 		return 'Background Color';
@@ -70,28 +64,6 @@ function Str2DocFill(df) {
 }
 
 //==============================================================================
-
-function main() {
-    var bracInfo = new Object();
-
-    initBracInfo(bracInfo);
-	
-	//if ( DialogModes.ALL == app.playbackDisplayDialogs ) {
-		if (cancelButtonID == settingDialog(bracInfo)) {
-			return 'cancel';
-		}
-	//}
-	
-	try {
-	} catch (e) {
-		if ( DialogModes.NO != app.playbackDisplayDialogs ) {
-			alert(e);
-		}
-		return 'cancel';
-	}
-}
-
-//------------------------------------------------------------------------------
 
 function initBracInfo(bracInfo) {
 	bracInfo.version    = '1.0';
@@ -252,9 +224,9 @@ function settingDialog(bracInfo) {
 		bracInfo.name         = dlgMain.etName        .text;
 		bracInfo.artist       = dlgMain.etArtist      .text;
 		bracInfo.tags         = dlgMain.etTags        .text;
-		bracInfo.width        = dlgMain.etWidth       .text;
-		bracInfo.height       = dlgMain.etHeight      .text;
-		bracInfo.resolution   = dlgMain.etResolution  .text;
+		bracInfo.resolution   = parseInt(dlgMain.ddResolution.selection == 0 ? dlgMain.etResolution.text : dlgMain.etResolution.text / 2.54);
+		bracInfo.width        = unit2pixel(dlgMain.ddWidth.selection, bracInfo.resolution, dlgMain.etWidth.text);
+		bracInfo.height       = unit2pixel(dlgMain.ddHeight.selection, bracInfo.resolution, dlgMain.etHeight.text);
 		bracInfo.template     = dlgMain.etTemplate    .text;
 		bracInfo.importUrls   = dlgMain.cbImportUrls  .value;
 		bracInfo.timeinterval = dlgMain.etTimeinterval.text;
@@ -330,5 +302,31 @@ function createNewBrac(bracInfo) {
 	
 	resetEnv();
 }
+
+//==============================================================================
+
+function main() {
+    var bracInfo = new Object();
+
+    initBracInfo(bracInfo);
+	
+	//if ( DialogModes.ALL == app.playbackDisplayDialogs ) {
+		if (cancelButtonID == settingDialog(bracInfo)) {
+			return 'cancel';
+		}
+	//}
+	
+	try {
+	} catch (e) {
+		if ( DialogModes.NO != app.playbackDisplayDialogs ) {
+			alert(e);
+		}
+		return 'cancel';
+	}
+}
+
+//==============================================================================
+
+main();
 
 //==============================================================================

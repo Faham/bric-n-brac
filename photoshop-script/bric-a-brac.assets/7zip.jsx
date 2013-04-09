@@ -1,4 +1,8 @@
 ﻿//==============================================================================
+// Copyright 2013.  University of Saskatchewan.  All rights reserved.
+// This script incorporates brac files editing operations into Adobe Photoshop.
+// Written by Faham Negini
+//==============================================================================
 //
 // 7zip.jsx
 //
