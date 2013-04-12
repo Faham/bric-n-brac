@@ -10,7 +10,7 @@ import shutil
 import tempfile
 import zipfile
 import time
-import cv
+import cv, cv2
 from PIL import Image
 import xml.etree.ElementTree as et
 
@@ -43,7 +43,7 @@ def exportBrac(bracpath, outpath, timesff = 30, fps = 24):
 		resolution = dict(zip(['width', 'height'], [int(i) for i in bracdef.attrib['resolution'].split()]))
 
 		# generating timeline
-		# TODO: add support for order, static layers and masks
+		# TODO: add support for order, static layers
 		layers = bracdef.find('layers');
 
 		if layers == None:
@@ -79,20 +79,20 @@ def exportBrac(bracpath, outpath, timesff = 30, fps = 24):
 
 				for k, v in enumerate(timeline):
 					if ent['time'] < v['time']:
-						ent['images'] = v['images']
-						ent['images'][layer.attrib['id']] = imgPath
+						ent['images'] = {layer.attrib['id']: imgPath}
 						timeline.insert(k, ent)
 						inserted = True
 						break
 
 				if not inserted:
-					if len(timeline) > 0:
-						ent['images'] = timeline[-1]['images']
-					else:
-						ent['images'] = {}
-
-					ent['images'][layer.attrib['id']] = imgPath
+					ent['images'] = {layer.attrib['id']: imgPath}
 					timeline.append(ent)
+
+		for i, t in enumerate(timeline):
+			if i > 0:
+				imgs = timeline[i - 1]['images'].copy()
+				imgs.update(t['images'])
+				timeline[i]['images'] = imgs
 
 		# generating images
 		images = []
@@ -106,34 +106,50 @@ def exportBrac(bracpath, outpath, timesff = 30, fps = 24):
 			for bricid in t['images']:
 
 				imgpath = t['images'][bricid]
+				mskpath = os.path.join(os.path.abspath(os.path.join(imgpath, os.pardir)), 'mask.png')
 				img = Image.open(imgpath)
-				msk = Image.open(os.path.join(os.path.abspath(os.path.join(imgpath, os.pardir)), 'mask.png'))
+				msk = Image.open(mskpath)
 
-				alpha  = int(float(brics[bricid].attrib['alpha' ]))
-				rot    = int(float(brics[bricid].attrib['rotate']))
-				pos    = tuple([int(float(j)) for j in brics[bricid].attrib['position'    ].split()])
-				mskpos = tuple([int(float(j)) for j in brics[bricid].attrib['maskposition'].split()])
-				scl    = tuple([    float(j)  for j in brics[bricid].attrib['scale'       ].split()])
-				scl    = (int(scl[0] * img.size[0]), int(scl[1] * img.size[1]))
+				alpha   = int(float(brics[bricid].attrib['alpha' ]))
+				rot     = int(float(brics[bricid].attrib['rotate']))
+				pos     = tuple([int(float(j)) for j in brics[bricid].attrib['position'    ].split()])
+				mskpos  = tuple([int(float(j)) for j in brics[bricid].attrib['maskposition'].split()])
+				scl     = tuple([    float(j)  for j in brics[bricid].attrib['scale'       ].split()])
+				scl     = (int(scl[0] * img.size[0]), int(scl[1] * img.size[1]))
 
-				newImg.paste(img.resize(scl).rotate(rot), pos) #, msk)
+				tmpImg = Image.new('RGBA', (resolution['width'], resolution['height']), (0,0,0,0))
+				tmpImg.paste(img.resize(scl).rotate(rot), pos)
+
+				tmp2Img = Image.new('RGBA', (resolution['width'], resolution['height']), (0,0,0,0))
+				tmp2Img.paste(msk, mskpos)
+
+				newImg.paste(tmpImg, mask=tmp2Img)
 
 			pth = os.path.join(imagesdir, '%d.png' % i)
 			newImg.save(pth)
 			images.append({'time': t['time'], 'path': pth})
 
 		# generating out video
-		fourcc = cv.CV_FOURCC('I','4','2','0') #uncompressed YUV 4:2:0 chroma subsampled
-		writer = cv.CreateVideoWriter(outpath, fourcc, fps, (resolution['width'], resolution['height']), 1)
+		writer = cv2.VideoWriter(
+			filename  = outpath, 
+			fourcc    = cv.CV_FOURCC('I','4', '2', '0'), #this is the codec that works for me
+			fps       = fps,                             #frames per second, I suggest 15 as a rough initial estimate
+			frameSize = (resolution['width'], resolution['height']))
 
+		# TODO: set the duration for each fram
 		for img in images:
 			imgDuration = 1 * fps
 
-			cap = cv.CaptureFromFile(img['path'])
+			cap = cv2.VideoCapture(img['path'])
+			retval = cap.grab()
+			retval, image = cap.retrieve()
+
+			if image is None:
+				logging.error('cannot retrieve image for file (%s)' % img['path'])
+				continue
+
 			for i in range(imgDuration):
-				cv.GrabFrame(cap)
-				frame = cv.RetrieveFrame(cap)
-				cv.WriteFrame(writer, frame)
+				writer.write(image)
 
 		return True
 
@@ -167,7 +183,7 @@ def main():
 	res = exportBrac(bracfile, outfile)
 
 	if res:
-		logging.info('output generated successfully at: %s' % params['out'])
+		logging.info('output generated successfully at: %s' % outfile)
 	else:
 		logging.info('could not generate the output (error occured!)')
 
