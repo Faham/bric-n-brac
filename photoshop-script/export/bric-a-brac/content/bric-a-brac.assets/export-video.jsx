@@ -15,24 +15,22 @@
 //==============================================================================
 
 //UI Strings
-var strLabelVersion    = 'Version: ';
-var strTitle           = 'Bric Info';
-var strLabelArtist     = 'Artist';
-var strLabelDpi        = 'Dpi';
-var strLabelName       = 'Name';
-var strLabelResolution = 'Resolution';
-var strLabelTags       = 'Tags';
-var strLabelVersion    = 'Version';
-var strButtonOK        = 'OK';
-var strButtonCancel    = 'Cancel';
+var strTitle            = 'Video Setting';
+var strLabelFilename    = 'Filename';
+var strLabelFPS         = 'FPS';
+var strLabelFastForward = 'FastForward';
+var strButtonBrowse     = 'Browse';
+var strButtonOK         = 'OK';
+var strButtonCancel     = 'Cancel';
 
 //Buttons
 var applyButtonID  = 1;
 var cancelButtonID = 2;
+var browseButtonID = 3;
 
 //==============================================================================
 
-function editDialog(bracInfo) {
+function editDialog(videoInfo) {
 	dlgMain = new Window("dialog", strTitle);
 	
 	// match our dialog background color to the host application
@@ -55,63 +53,42 @@ function editDialog(bracInfo) {
 	dlgMain.grpTopLeft.alignChildren = 'right';
 	dlgMain.grpTopLeft.alignment = 'fill';
 	
-	dlgMain.grpArtist = dlgMain.grpTopLeft.add("group");
-	dlgMain.grpArtist.orientation = 'row';
-	dlgMain.grpArtist.alignChildren = 'left';
-	dlgMain.grpArtist.add("statictext", undefined, strLabelArtist);
-	dlgMain.etArtist = dlgMain.grpArtist.add("edittext", undefined, bracInfo.artist.toString());
-	dlgMain.etArtist.preferredSize.width = 210;
+	dlgMain.grpFilename = dlgMain.grpTopLeft.add("group");
+	dlgMain.grpFilename.orientation = 'row';
+	dlgMain.grpFilename.alignChildren = 'left';
+	dlgMain.grpFilename.add("statictext", undefined, strLabelFilename);
+	dlgMain.etFilename = dlgMain.grpFilename.add("edittext", undefined, videoInfo.filename.toString());
+	dlgMain.etFilename.preferredSize.width = 210;
 
-	dlgMain.grpDpi = dlgMain.grpTopLeft.add("group");
-	dlgMain.grpDpi.orientation = 'row';
-	dlgMain.grpDpi.alignChildren = 'left';
-	dlgMain.grpDpi.add("statictext", undefined, strLabelDpi);
-	dlgMain.etDpi = dlgMain.grpDpi.add("edittext", undefined, bracInfo.dpi.toString());
-	dlgMain.etDpi.preferredSize.width = 210;
-
-	dlgMain.grpName = dlgMain.grpTopLeft.add("group");
-	dlgMain.grpName.orientation = 'row';
-	dlgMain.grpName.alignChildren = 'left';
-	dlgMain.grpName.add("statictext", undefined, strLabelName);
-	dlgMain.etName = dlgMain.grpName.add("edittext", undefined, bracInfo.name.toString());
-	dlgMain.etName.preferredSize.width = 210;
-
-	dlgMain.grpResolution = dlgMain.grpTopLeft.add("group");
-	dlgMain.grpResolution.orientation = 'row';
-	dlgMain.grpResolution.alignChildren = 'left';
-	dlgMain.grpResolution.add("statictext", undefined, strLabelResolution);
-	dlgMain.etResolution = dlgMain.grpResolution.add("edittext", undefined, bracInfo.resolution.toString());
-	dlgMain.etResolution.preferredSize.width = 210;
+	dlgMain.grpFPS = dlgMain.grpTopLeft.add("group");
+	dlgMain.grpFPS.orientation = 'row';
+	dlgMain.grpFPS.alignChildren = 'left';
+	dlgMain.grpFPS.add("statictext", undefined, strLabelFPS);
+	dlgMain.etFPS = dlgMain.grpFPS.add("edittext", undefined, videoInfo.fps.toString());
+	dlgMain.etFPS.preferredSize.width = 210;
 	
-	dlgMain.grpTags = dlgMain.grpTopLeft.add("group");
-	dlgMain.grpTags.orientation = 'row';
-	dlgMain.grpTags.alignChildren = 'left';
-	dlgMain.grpTags.add("statictext", undefined, strLabelTags);
-	dlgMain.etTags = dlgMain.grpTags.add("edittext", undefined, bracInfo.tags.toString());
-	dlgMain.etTags.preferredSize.width = 210;
-	
-	dlgMain.grpVersion = dlgMain.grpTopLeft.add("group");
-	dlgMain.grpVersion.orientation = 'row';
-	dlgMain.grpVersion.alignChildren = 'left';
-	dlgMain.grpVersion.add("statictext", undefined, strLabelVersion);
-	dlgMain.stVersion = dlgMain.grpVersion.add("statictext", undefined, bracInfo.version.toString());
-	dlgMain.stVersion.preferredSize.width = 210;
+	dlgMain.grpFastForward = dlgMain.grpTopLeft.add("group");
+	dlgMain.grpFastForward.orientation = 'row';
+	dlgMain.grpFastForward.alignChildren = 'left';
+	dlgMain.grpFastForward.add("statictext", undefined, strLabelFastForward);
+	dlgMain.stFastForward = dlgMain.grpFastForward.add("edittext", undefined, videoInfo.fastforward.toString());
+	dlgMain.stFastForward.preferredSize.width = 210;
 		
 	// -- group top right
 	dlgMain.grpTopRight = dlgMain.grpTop.add("group");
 	dlgMain.grpTopRight.orientation = 'column';
 	dlgMain.grpTopRight.alignChildren = 'center';
 	
+	dlgMain.btnBrowse = dlgMain.grpTopRight.add("button", undefined, strButtonBrowse);
+	dlgMain.btnBrowse.onClick = function() {
+		dlgMain.etFilename.text = File.saveDialog("Save As", "*.avi");
+	}
+
 	dlgMain.btnApply = dlgMain.grpTopRight.add("button", undefined, strButtonOK);
 	dlgMain.btnApply.onClick = function() {
-		//TODO: create the new brac here
-		bracInfo.artist       = dlgMain.etArtist      .text;
-		bracInfo.dpi          = dlgMain.etDpi         .text;
-		bracInfo.name         = dlgMain.etName        .text;
-		bracInfo.resolution   = dlgMain.etResolution  .text;
-		bracInfo.tags         = dlgMain.etTags        .text;
-		bracInfo.timeinterval = dlgMain.stTimeInterval.text;
-		bracInfo.version      = dlgMain.stVersion     .text;
+		videoInfo.filename    = dlgMain.etFilename    .text;
+		videoInfo.fps         = dlgMain.etFPS         .text;
+		videoInfo.fastforward = dlgMain.stFastForward .text;
 		dlgMain.close(applyButtonID);
 	}
 	
@@ -119,8 +96,6 @@ function editDialog(bracInfo) {
 	dlgMain.btnCancel.onClick = function() {
 		dlgMain.close(cancelButtonID);
 	}
-
-	dlgMain.grpTopRight.add("statictext", undefined, strLabelVersion + bracInfo.version.toString());
 	
 	// give the hosting app the focus before showing the dialog
 	app.bringToFront();
@@ -147,38 +122,15 @@ function BracExport() {
 	var desc = app.getCustomOptions(cur_doc.name);
 	var temp_dir = new Folder(desc.getString(1));
 
-	var brac_xml_file = new File(temp_dir + "/brac.xml");
-	if (!brac_xml_file.exists) {
-		alert("Bric XML file not found! Are you sure you've selected a Bric group? \n\n" + brac_xml_file.fsName);
-		return;
-	}
-	brac_xml_file.open('r');
-	var brac_xml = new XML(brac_xml_file.read());
-	brac_xml_file.close();
+	var videoInfo         = new Object();
+	videoInfo.filename    = '';
+	videoInfo.fps         = '24';
+	videoInfo.fastforward = '1000';
 
-	var bracInfo          = new Object();
-	bracInfo.artist       = brac_xml.@artist;
-	bracInfo.dpi          = brac_xml.@dpi;
-	bracInfo.name         = brac_xml.@name;
-	bracInfo.resolution   = brac_xml.@resolution;
-	bracInfo.tags         = brac_xml.@tags;
-	bracInfo.timeinterval = brac_xml.@timeinterval;
-	bracInfo.version      = brac_xml.@version;
-
-	if (cancelButtonID == editDialog(bracInfo)) {
+	if (cancelButtonID == editDialog(videoInfo)) {
 		return 'cancel';
 	} else {
-		brac_xml.@artist       = bracInfo.artist;
-		brac_xml.@dpi          = bracInfo.dpi;
-		brac_xml.@name         = bracInfo.name;
-		brac_xml.@resolution   = bracInfo.resolution;
-		brac_xml.@tags         = bracInfo.tags;
-		brac_xml.@timeinterval = bracInfo.timeinterval;
-		brac_xml.@version      = bracInfo.version;
-
-		brac_xml_file.open('w');
-		brac_xml_file.write(brac_xml);
-		brac_xml_file.close();
+		//Exec.system("RD /S /Q " + outDir.fsName, 10000);
 	}
 };
 
