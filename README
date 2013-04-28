@@ -1,4 +1,4 @@
------------------------------
+--------------------------------------------------------------------------------
 
 Windows Installation
 	Installing Python 2.7.3 and required modules
@@ -6,22 +6,26 @@ Windows Installation
 
 Installing Python 2.7.3 and required modules
 
-Go to: http://www.python.org/download/releases/2.7.3/ and download "Windows x86 MSI Installer" and install it.
-Go to http://www.pythonware.com/products/pil/ then download and install "Python Imaging Library 1.1.7 for Python 2.7"
-Go to http://www.riverbankcomputing.co.uk/software/pyqt/download then donwload and install "PyQt-Py2.7-x86-gpl-4.9.6-1.exe"
+- Go to: http://www.python.org/download/releases/2.7.3/
+- Download and install "Windows x86 MSI Installer".
+- Go to: http://www.riverbankcomputing.co.uk/software/pyqt/download
+- Donwload and install "PyQt-Py2.7-x86-gpl-4.9.6-1.exe"
+- Go to: http://www.lfd.uci.edu/~gohlke/pythonlibs/#distribute
+- Download and install "distribute-0.6.36.win32-py2.7.‌exe".
+- Download and install "pip-1.3.1.win32-py2.7.‌exe".
+- Set environment variables:
+	- Control Panel -> View Advanced System Settings
+	- Click the "Environment Variables..." button
+	- Choose "Path" variable in the "System Variables" list box and then press "Edit"
+	- Add ";C:\Python27;C:\Python27\Scripts" (without qoutes) to the end of variable value textbox.
+		Note: if you chose to install python in a different directory that C:\Python27, you need to use that directory instead.
+	- Press all OK buttons to close all dialog boxes.
+- Open command prompt and run following commands
+	- pip install pil
+	- pip install numpy
+	- pip install pyopencv (you need cmake installed)
 
-Settings environment variables
-
-Settings environment variables:
-This can be done visually by these steps: 
-- Control Panel -> View Advanced System Settings
-- Click the "Environment Variables..." button
-- Choose "Path" variable in the "System Variables" list box and then press "Edit"
-- Add ";C:\Python27;C:\Python27\Scripts" (without qoutes) to the end of variable value textbox.
-	Note: if you chose to install python in a different directory that C:\Python27, you need to use that directory instead.
-- Press all OK buttons to close all dialog boxes.
-
------------------------------
+--------------------------------------------------------------------------------
 
 Mac OS X Installation:
 
@@ -55,3 +59,4 @@ you should set permission access for following files specifically
 
 - Install iTerm as you default terminal and set that and the default application for opening *.sh files.
 
+--------------------------------------------------------------------------------

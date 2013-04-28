@@ -29,7 +29,7 @@ chrome.management.get(ext_info.id, function(info) {
 		if ('MacOS' == getOS())
 			extpath = "/Users/faham/development/bric-a-brac/chrome-extension"
 		else if ('Windows' == getOS())
-			extpath = "D:/faham/tim/bric-a-brac/chrome-extension"
+			extpath = "D:/projects/bric-a-brac/chrome-extension"
 	}
 	
 	ext_info.path = extpath;

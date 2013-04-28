@@ -156,8 +156,12 @@ class WebCapture(QtGui.QWidget):
 def main():
 	try:
 		app = QtGui.QApplication(sys.argv)
-		print 'syntax: url, filepath, window_width, window_height, scrollx, scrolly, timeout'
 
+		if len(sys.argv) < 8:
+			print 'invalid input arguments'
+			print 'syntax: url, filepath, window_width, window_height, scrollx, scrolly, timeout'
+			return
+		
 		params = {
 			'url'          : sys.argv[1], 
 			'filepath'     : sys.argv[2], 

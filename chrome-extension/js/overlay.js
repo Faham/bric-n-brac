@@ -878,7 +878,6 @@ function SaveDialogBtnApplyOnClick() {
 		}
 	};
 
-	debugger;
 	bep = document.getElementById('plugin-bep');
 	res = bep.saveToBracFile(JSON.stringify(message));
 	
