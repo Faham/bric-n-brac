@@ -212,6 +212,7 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 				continue
 			
 			toremove = []
+			dirModified = False
 			for b in e['bracList']:
 				if not os.path.isfile(b['path']):
 					toremove.append(b['path'])
@@ -228,12 +229,13 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 						break
 				
 				if needupdate:
+					dirModified = True
 					self.setStatus('on', 'Synchronizing!\n%s' % b['path'])
 					self.syncBrac(b['path'])
 					b['timetable'] = entryutils.getBracTimeTable(b['path'])
 					b['mtime'] = os.path.getmtime(b['path'])
 			
-			if needupdate:
+			if dirModified:
 				e['mtime'] = os.path.getmtime(e['path'])
 			
 			if len(toremove) > 0:
@@ -301,14 +303,6 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 			#extracting bric attributes
 			bricregion = dict(zip(['x', 'y', 'w', 'h'], bricdef.attrib['region'].split()))
 			bricres = dict(zip(['w', 'h'], bric.attrib['resolution'].split()))
-
-			vars['bracwidth']  = bricres['w']
-			vars['bracheight'] = bricres['h']
-			vars['bricurl']    = bricdef.attrib['url']
-			vars['bricw']      = bricregion['w']
-			vars['brich']      = bricregion['h']
-			vars['bricx']      = '%s%s' % ('+' if int(bricregion['x']) >= 0 else '-', bricregion['x'])
-			vars['bricy']      = '%s%s' % ('+' if int(bricregion['y']) >= 0 else '-', bricregion['y'])
 			
 			params = {
 				'width' : int(resolution['width']),
@@ -319,15 +313,14 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 			#taking screenshot
 			try:
 				image = self.renderer.render(
-					vars['bricurl'],
+					url      = bricdef.attrib['url'],
 					filename = vars['bricpath'],
-					width    = int(vars['bracwidth']),
-					height   = int(vars['bracheight']),
-					x        = int(vars['bricx']),
-					y        = int(vars['bricy']),
-					w        = int(vars['bricw']),
-					h        = int(vars['brich']),
-					timeout  = 60
+					width    = int(bricres['w']),
+					height   = int(bricres['h']),
+					x        = int(bricregion['x']),
+					y        = int(bricregion['y']),
+					w        = int(bricregion['w']),
+					h        = int(bricregion['h'])
 				)
 
 				#cropping

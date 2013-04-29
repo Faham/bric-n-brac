@@ -10,5 +10,6 @@ done - add a New button to the Brac panel that creates a new brac project by loa
 
 
 bugs:
-- a scaling happen when a mask with extra painting is stored
-- taking snapshot from http://wearinghistoryblog.com/ doesn't work
+- syncing test.brac some images are not fully loaded
+- test.brac brac.2 image is so small totally fitting in the mask
+- when closing brac_sync with escape it crashes

@@ -130,8 +130,8 @@ FB::variant BracExtenssionProviderAPI::takeSnapShot(const FB::variant& msg) {
 			+ width      + " "      // window width
 			+ height     + " "      // window height
 			+ scrollLeft + " "      // scrollLeft
-			+ scrollTop  + " "      // scrollTop
-			+ "60";                 // timeout
+			+ scrollTop             // scrollTop
+			;// using default timeout
 		systemCall(command);
 	#elif defined __APPLE__
 		std::string escaped_extension_path = escape_path(m_extension_path);
@@ -149,8 +149,8 @@ FB::variant BracExtenssionProviderAPI::takeSnapShot(const FB::variant& msg) {
 			+ width      + " "      // window width
 			+ height     + " "      // window height
 			+ scrollLeft + " "      // scrollLeft
-			+ scrollTop  + " "      // scrollTop
-			+ "60";                 // timeout
+			+ scrollTop             // scrollTop
+			;// using default timeout
 		systemCall(command);
 	#endif
 
@@ -435,10 +435,9 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 		command = "cd /d \"" + m_extension_path + "\" & move \"" + m_screenshot_dir + "\\" + m_screenshot_filename + "\" \"" + bric_screenshot + "\"";
 		systemCall(command);
 
-		command = "cd /d \"" + m_extension_path + "\" & bin\\convert.exe"
-			+ " \"" + bric_screenshot + "\""
-			+ " -crop " + bric_region[2] + "x" + bric_region[3] + "+" + bric_region[0] + "+" + bric_region[1]
-			+ " \"" + bric_screenshot + "\"";
+		command = "cd /d \"" + m_extension_path + "\" & python bin\\crop.py"
+			+ " \"" + bric_screenshot + "\" "
+			+ bric_region[0] + " " + bric_region[1] + " " + bric_region[2] + " " + bric_region[3];
 		systemCall(command);
 
 		command = "cd /d \"" + new_bric_path + "\" & copy " + bric_screenshot_filename + " " + bric_thumbnail;
@@ -459,10 +458,9 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 		command = "mv " + escaped_screenshot_dir + "/" + m_screenshot_filename + " " + escaped_bric_screenshot;
 		systemCall(command);
 
-		command = "cd " + escaped_extension_path + "; bin/convert"
-			+ " " + escaped_bric_screenshot
-			+ " -crop " + bric_region[2] + "x" + bric_region[3] + "+" + bric_region[0] + "+" + bric_region[1]
-			+ " " + escaped_bric_screenshot;
+		command = "cd " + escaped_extension_path + "; bin/crop.py"
+			+ " " + escaped_bric_screenshot + " "
+			+ bric_region[0] + " " + bric_region[1] + " " + bric_region[2] + " " + bric_region[3];
 		systemCall(command);
 
 		std::string escaped_bric_thumbnail = escape_path(bric_thumbnail_path);

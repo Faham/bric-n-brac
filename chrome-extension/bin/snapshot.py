@@ -15,6 +15,7 @@ from PyQt4 import QtGui, QtCore, uic
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtWebKit import QWebPage
+from PIL import Image
 
 #===============================================================================
 
@@ -28,7 +29,7 @@ class UserAgentWebPage(QWebPage):
 		#return 'Mozilla/5.0 (X11; Linux x86_64; rv:7.0.1) Gecko/20100101 Firefox/7.0.1'
 		return 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.34 (KHTML, like Gecko) Qt/4.8.4 Chrome/534.34'
 
-#===============================================================================
+#-------------------------------------------------------------------------------
 
 class WebkitRenderer(QObject):
 
@@ -142,7 +143,8 @@ class WebCapture(QtGui.QWidget):
 			params['window_height'],
 			params['scrollx'],
 			params['scrolly'],
-			params['timeout'])
+			params['timeout']
+			)
 		print 'image file generated'
 		sys.exit(0)
 
@@ -157,19 +159,18 @@ def main():
 	try:
 		app = QtGui.QApplication(sys.argv)
 
-		if len(sys.argv) < 8:
-			print 'invalid input arguments'
-			print 'syntax: url, filepath, window_width, window_height, scrollx, scrolly, timeout'
+		if len(sys.argv) < 5:
+			print 'usage: url filepath window_width window_height [scrollx] [scrolly] [timeout]'
 			return
 		
 		params = {
 			'url'          : sys.argv[1], 
 			'filepath'     : sys.argv[2], 
-			'window_width' : int(sys.argv[3]), 
-			'window_height': int(sys.argv[4]), 
-			'scrollx'      : int(sys.argv[5]), 
-			'scrolly'      : int(sys.argv[6]), 
-			'timeout'      : int(sys.argv[7]), 
+			'window_width' : int(sys.argv[ 3]), 
+			'window_height': int(sys.argv[ 4]), 
+			'scrollx'      : int(sys.argv[ 5]) if len(sys.argv) >=  6 else  0,
+			'scrolly'      : int(sys.argv[ 6]) if len(sys.argv) >=  7 else  0,
+			'timeout'      : int(sys.argv[ 7]) if len(sys.argv) >=  8 else 60
 		}
 		wc = WebCapture(params)
 		sys.exit(app.exec_())

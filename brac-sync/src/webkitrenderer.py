@@ -12,9 +12,18 @@ logger = logging.getLogger('WebKitRenderer')
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtWebKit import QWebPage
+from PIL import Image
 
 import common
 
+#===============================================================================
+
+def cropImage(filename, left, top, width, height):
+	img = Image.open(filename)
+	box = (left, top, left + width, top + height)
+	area = img.crop(box)
+	area.save(filename, 'png')
+	
 #===============================================================================
 
 class UserAgentWebPage(QWebPage):
@@ -50,7 +59,7 @@ class WebkitRenderer(QObject):
 	
 #-------------------------------------------------------------------------------
 
-	def render(self, url, filename, width=0, height=0, x=0, y=0, w=0, h=0, timeout=60, ajaxtimeout=5):
+	def render(self, url, filename, width=0, height=0, x=0, y=0, w=0, h=0, timeout=60, ajaxtimeout=60):
 		logger.debug("rendering %s (timeout: %d)", url, timeout)
 
 		# This is an event-based application. So we have to wait until
@@ -99,10 +108,8 @@ class WebkitRenderer(QObject):
 		self._page.mainFrame().render(painter)
 		painter.end()
 		img.save(filename, 'png')
-		if common.getos() == 'win':
-			os.system('../tools/convert.exe "%s" -crop %dx%d+%d+%d "%s"' % (filename, w, h, x - scroll_x, y - scroll_y, filename))
-		if common.getos() == 'mac':
-			os.system('../tools/convert %s -crop %dx%d+%d+%d %s' % (filename, w, h, x - scroll_x, y - scroll_y, filename))
+		print 'croped at %d %d %d %d' % (x - scroll_x, y - scroll_y, w, h)
+		cropImage(filename, x - scroll_x, y - scroll_y, w, h)
 
 		#return img
 

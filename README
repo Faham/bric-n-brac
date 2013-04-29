@@ -4,15 +4,15 @@ Windows Installation
 	Installing Python 2.7.3 and required modules
 	Settings environment variables
 
-Installing Python 2.7.3 and required modules
+- Installing Python 2.7.3 and required modules
+	- Install "Windows x86 MSI Installer"                   from http://www.python.org/download/releases/2.7.3/
+	- Install "PyQt-Py2.7-x86-gpl-4.9.6-1.exe"              from http://www.riverbankcomputing.co.uk/software/pyqt/download
+	- Install "distribute-0.6.36.win32-py2.7.‌exe"           from http://www.lfd.uci.edu/~gohlke/pythonlibs/#distribute
+	- Install "pip-1.3.1.win32-py2.7.‌exe"                   from http://www.lfd.uci.edu/~gohlke/pythonlibs/#distribute
+	- Install "Python Imaging Library 1.1.7 for Python 2.7" from http://www.pythonware.com/products/pil/
+	- Install "numpy-MKL-1.7.1.win32-py2.7.‌exe"             from http://www.lfd.uci.edu/~gohlke/pythonlibs/#opencv
+	- Install "opencv-python-2.4.5.win32-py2.7.‌exe"         from http://www.lfd.uci.edu/~gohlke/pythonlibs/#opencv
 
-- Go to: http://www.python.org/download/releases/2.7.3/
-- Download and install "Windows x86 MSI Installer".
-- Go to: http://www.riverbankcomputing.co.uk/software/pyqt/download
-- Donwload and install "PyQt-Py2.7-x86-gpl-4.9.6-1.exe"
-- Go to: http://www.lfd.uci.edu/~gohlke/pythonlibs/#distribute
-- Download and install "distribute-0.6.36.win32-py2.7.‌exe".
-- Download and install "pip-1.3.1.win32-py2.7.‌exe".
 - Set environment variables:
 	- Control Panel -> View Advanced System Settings
 	- Click the "Environment Variables..." button
@@ -20,10 +20,6 @@ Installing Python 2.7.3 and required modules
 	- Add ";C:\Python27;C:\Python27\Scripts" (without qoutes) to the end of variable value textbox.
 		Note: if you chose to install python in a different directory that C:\Python27, you need to use that directory instead.
 	- Press all OK buttons to close all dialog boxes.
-- Open command prompt and run following commands
-	- pip install pil
-	- pip install numpy
-	- pip install pyopencv (you need cmake installed)
 
 --------------------------------------------------------------------------------
 
