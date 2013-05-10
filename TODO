@@ -13,3 +13,4 @@ bugs:
 - syncing test.brac some images are not fully loaded
 - test.brac brac.2 image is so small totally fitting in the mask
 - when closing brac_sync with escape it crashes
+- need to add lock for brac files when working with them in python scripts
