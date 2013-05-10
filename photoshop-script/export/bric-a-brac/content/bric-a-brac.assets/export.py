@@ -238,6 +238,8 @@ def main():
 		return;
 
 	bracfile = sys.argv[1]
+	
+	bracpath = os.path.abspath(os.path.join(bracfile, os.pardir))
 
 	if len(sys.argv) >= 3:
 		outfile = sys.argv[2]
@@ -245,6 +247,13 @@ def main():
 			outfile += '.avi'
 	else:
 		outfile = 'out.avi'
+
+	if os.path.dirname(outfile) is '':
+		outfile = os.path.join(bracpath, outfile)
+	else:
+		videopath = os.path.abspath(os.path.join(outfile, os.pardir))
+		if not os.path.isdir(videopath):
+			os.mkdir(videopath)
 
 	speed = int(sys.argv[3]) if len(sys.argv) >= 4 else 1000
 	fps   = int(sys.argv[4]) if len(sys.argv) >= 5 else 24

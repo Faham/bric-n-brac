@@ -157,9 +157,20 @@ function BricEdit() {
 		alert("Bric XML file not found! Are you sure you've selected a Bric group? \n\n" + bric_xml_file.fsName);
 		return;
 	}
+	
 	bric_xml_file.open('r');
 	var bric_xml = new XML(bric_xml_file.read());
 	bric_xml_file.close();
+	
+	var brac_xml_file = new File(temp_dir + "/brac.xml");
+	if (!brac_xml_file.exists) {
+		alert("Brac XML file not found! \n\n" + brac_xml_file.fsName);
+		return;
+	}
+	
+	brac_xml_file.open('r');
+	var brac_xml = new XML(brac_xml_file.read());
+	brac_xml_file.close();
 
 	var bricInfo          = new Object();
 	bricInfo.version      = bric_xml.@version;
@@ -183,6 +194,17 @@ function BricEdit() {
 		bric_xml_file.open('w');
 		bric_xml_file.write(bric_xml);
 		bric_xml_file.close();
+
+		for (var i = 0; i < brac_xml.layers.children().length(); ++i) {
+			var lyr = brac_xml.layers.children()[i];
+			if (lyr.@id == bric_id) {
+				lyr.@timeinterval = bricInfo.timeinterval;
+				brac_xml_file.open('w');
+				brac_xml_file.write(brac_xml);
+				brac_xml_file.close();
+				break;
+			}
+		}
 	}
 };
 
