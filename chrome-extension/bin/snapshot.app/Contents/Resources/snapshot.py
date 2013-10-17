@@ -19,6 +19,10 @@ from PIL import Image
 
 #===============================================================================
 
+_useragent = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.34 (KHTML, like Gecko) Qt/4.8.4 Chrome/534.34'
+
+#===============================================================================
+
 class UserAgentWebPage(QWebPage):
     def userAgentForUrl(self, url):
 		#default is made like:
@@ -27,7 +31,9 @@ class UserAgentWebPage(QWebPage):
 		#Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.34 (KHTML, like Gecko) Qt/4.8.4 Safari/534.34
 		
 		#return 'Mozilla/5.0 (X11; Linux x86_64; rv:7.0.1) Gecko/20100101 Firefox/7.0.1'
-		return 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.34 (KHTML, like Gecko) Qt/4.8.4 Chrome/534.34'
+		#return 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.34 (KHTML, like Gecko) Qt/4.8.4 Chrome/534.34'
+		global _useragent
+		return _useragent
 
 #-------------------------------------------------------------------------------
 
@@ -162,7 +168,7 @@ def main():
 		if len(sys.argv) < 5:
 			print 'usage: url filepath window_width window_height [scrollx] [scrolly] [timeout]'
 			return
-		
+		global _useragent
 		params = {
 			'url'          : sys.argv[1], 
 			'filepath'     : sys.argv[2], 
@@ -170,8 +176,10 @@ def main():
 			'window_height': int(sys.argv[ 4]), 
 			'scrollx'      : int(sys.argv[ 5]) if len(sys.argv) >=  6 else  0,
 			'scrolly'      : int(sys.argv[ 6]) if len(sys.argv) >=  7 else  0,
-			'timeout'      : int(sys.argv[ 7]) if len(sys.argv) >=  8 else 60
+			'timeout'      : int(sys.argv[ 7]) if len(sys.argv) >=  8 else 60,
+			'useragent'    : sys.argv[ 8] if len(sys.argv) >=  9 else _useragent
 		}
+		_useragent = params['useragent']
 		wc = WebCapture(params)
 		sys.exit(app.exec_())
 	except Exception:

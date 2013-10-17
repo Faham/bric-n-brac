@@ -143,7 +143,7 @@ FB::variant BracExtenssionProviderAPI::takeSnapShot(const FB::variant& msg) {
 		std::string filepath = escaped_dir + "/" + m_screenshot_filename;
 
 		command = "cd " + escaped_extension_path + "; "
-			+ "bin/snapshot.py "
+			+ "open -W bin/snapshot.app --args "
 			+ "'" + url + "' "      // target url
 			+ "'" + filepath + "' " // target filepath
 			+ width      + " "      // window width
@@ -458,7 +458,7 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 		command = "mv " + escaped_screenshot_dir + "/" + m_screenshot_filename + " " + escaped_bric_screenshot;
 		systemCall(command);
 
-		command = "cd " + escaped_extension_path + "; bin/crop.py"
+		command = "cd " + escaped_extension_path + "; open -W bin/crop.app --args "
 			+ " " + escaped_bric_screenshot + " "
 			+ bric_region[0] + " " + bric_region[1] + " " + bric_region[2] + " " + bric_region[3];
 		systemCall(command);
@@ -507,7 +507,7 @@ FB::variant BracExtenssionProviderAPI::setExtensionPath(const FB::variant& msg) 
 	std::string esc_ext_path = escape_path(m_extension_path);
 	systemCall("chmod 700 " + esc_ext_path + "/bin/7za");
 	systemCall("chmod 700 " + esc_ext_path + "/bin/convert");
-	systemCall("chmod 700 " + esc_ext_path + "/bin/snapshot.py");
+	systemCall("chmod 700 " + esc_ext_path + "/bin/snapshot.app");
 #endif
 
 	return m_extension_path;
