@@ -35,7 +35,7 @@ if env == 'darwin':
 	py2app_options = {
 		'argv_emulation': True,
 		'dist_dir'      : 'dist',
-		'iconfile'      : 'snapshot-icon.png',
+		'iconfile'      : 'icon.ico',
 		'optimize'      : optimize,
 		'qt_plugins'    : 'imageformats'
 	}
