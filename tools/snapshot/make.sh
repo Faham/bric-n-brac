@@ -23,8 +23,8 @@ else
 	echo 'os not supported'
 fi
 
-rm -fr ../../distro/snapshot
-mkdir ../../distro/snapshot
-cp -r dist/* ../../distro/snapshot/
+rm -fr ../../distro/$OS/snapshot
+mkdir ../../distro/$OS/snapshot
+cp -r dist/* ../../distro/$OS/snapshot/
 
 cd $CURPATH

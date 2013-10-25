@@ -23,8 +23,8 @@ else
 	echo 'os not supported'
 fi
 
-rm -fr ../../distro/crop
-mkdir ../../distro/crop
-cp -r dist/* ../../distro/crop/
+rm -fr ../../distro/$OS/crop
+mkdir ../../distro/$OS/crop
+cp -r dist/* ../../distro/$OS/crop/
 
 cd $CURPATH

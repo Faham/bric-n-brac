@@ -43,13 +43,13 @@ fi
 
 # copy crop
 ../tools/crop/make.sh
-cp -r ../distro/crop/clg-crop* ext/bin/
+cp -r ../distro/$OS/crop/clg-crop* ext/bin/
 
 #-------------------------------------------------------------------------------
 
 # copy snapshot
 ../tools/snapshot/make.sh
-cp -r ../distro/snapshot/clg-snapshot* ext/bin/
+cp -r ../distro/$OS/snapshot/clg-snapshot* ext/bin/
 
 #-------------------------------------------------------------------------------
 
@@ -71,18 +71,18 @@ outfl.write(dtout)
 outfl.close()
 """
 
-rm $SCRIPTPATH/ext.crx ../distro/bracollage.crx
+rm $SCRIPTPATH/ext.crx ../distro/$OS/bracollage.crx
 
 # build crx
 if [ "${OS}" = 'mac' ]; then
-	google-chrome --pack-extension=`pwd`/ext/ --pack-extension-key=`pwd`/ext.pem
+	chrome --pack-extension=`pwd`/ext/ --pack-extension-key=`pwd`/ext.pem
 elif [ "${OS}" = 'win' ]; then
 	'/c/Program Files (x86)/Google/Chrome/Application/chrome.exe' --pack-extension=`pwd`/ext/ --pack-extension-key=`pwd`/ext.pem
 else
 	echo 'os not supported'
 fi
 
-cp $SCRIPTPATH/ext.crx ../distro/bracollage.crx
+cp $SCRIPTPATH/ext.crx ../distro/$OS/bracollage.crx
 
 #-------------------------------------------------------------------------------
 

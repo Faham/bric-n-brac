@@ -506,8 +506,8 @@ FB::variant BracExtenssionProviderAPI::setExtensionPath(const FB::variant& msg) 
 #if defined __APPLE__
 	std::string esc_ext_path = escape_path(m_extension_path);
 	systemCall("chmod 700 " + esc_ext_path + "/bin/7za");
-	systemCall("chmod 700 " + esc_ext_path + "/bin/convert");
-	systemCall("chmod 700 " + esc_ext_path + "/bin/snapshot.app");
+	systemCall("chmod 700 " + esc_ext_path + "/bin/clg-crop.app");
+	systemCall("chmod 700 " + esc_ext_path + "/bin/clg-snapshot.app");
 #endif
 
 	return m_extension_path;
