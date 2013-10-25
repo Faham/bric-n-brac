@@ -489,16 +489,16 @@ FB::variant BracExtenssionProviderAPI::setExtensionPath(const FB::variant& msg) 
 	size_t index = 0;
 
 	#if defined _WIN32
-		char * env_var = "LOCALAPPDATA";
+		std::string env_var = "LOCALAPPDATA";
 	#elif defined __APPLE__
-		char * env_var = "USER";
+		std::string env_var = "USER";
 	#endif
 
 	std::string signedvar = '%' + std::string(env_var) + '%';
 	index = m_extension_path.find(signedvar, index);
 	if (std::string::npos != index) {
-		m_extension_path.replace(index, signedvar.length(), get_env(env_var));
-		log("Extension path is set to ('" + std::string(get_env(env_var)) + "'): " + m_extension_path);
+		m_extension_path.replace(index, signedvar.length(), get_env(env_var.c_str()));
+		log("Extension path is set to ('" + std::string(get_env(env_var.c_str())) + "'): " + m_extension_path);
 	} else {	
 		log("No environment variable was found: " + m_extension_path);
 	}

@@ -24,7 +24,8 @@ mkdir ext/bin
 
 # copy plugin
 if [ "${OS}" = 'mac' ]; then
-	cp plugin/build/bin/BracExtenssionProvider/MinSizeRel/npBracExtenssionProvider.plugin ext/bin/
+	#xcodebuild ARCHS=i386 ONLY_ACTIVE_ARCH=NO -project plugin/build/projects/BracExtenssionProvider/BracExtenssionProvider.xcodeproj -configuration MinSizeRel clean build
+	cp -r plugin/build/projects/BracExtenssionProvider/MinSizeRel/BracExtenssionProvider.plugin ext/bin/
 elif [ "${OS}" = 'win' ]; then
 	cp plugin/build/bin/BracExtenssionProvider/MinSizeRel/npBracExtenssionProvider.dll ext/bin/
 fi
@@ -42,13 +43,13 @@ fi
 
 # copy crop
 ../tools/crop/make.sh
-cp ../distro/crop/clg-crop* ext/bin/
+cp -r ../distro/crop/clg-crop* ext/bin/
 
 #-------------------------------------------------------------------------------
 
 # copy snapshot
 ../tools/snapshot/make.sh
-cp ../distro/snapshot/clg-snapshot* ext/bin/
+cp -r ../distro/snapshot/clg-snapshot* ext/bin/
 
 #-------------------------------------------------------------------------------
 

@@ -41,7 +41,7 @@ std::string escape_path(const std::string & s)
 	}
 #elif defined __APPLE__
 	std::string escaped_s = s;
-	int pos = 0;
+	std::string::size_type pos = 0;
 	while ((pos = escaped_s.find(" ", pos)) != std::string::npos) {
 		escaped_s.replace(pos, 1, "\\ ");
 		pos += 2;

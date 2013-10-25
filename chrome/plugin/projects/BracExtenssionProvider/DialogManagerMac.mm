@@ -72,3 +72,4 @@ void DialogManagerMac::_showFileDialog(FB::PluginWindow* win, const std::string&
     [pool release];
     cb(out);
 }
+
