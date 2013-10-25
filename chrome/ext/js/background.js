@@ -27,9 +27,9 @@ chrome.management.get(ext_info.id, function(info) {
 			extpath = "%LOCALAPPDATA%/Google/Chrome/User Data/Default/Extensions/" + extpath
 	} else {
 		if ('MacOS' == getOS())
-			extpath = "/Users/faham/development/bric-a-brac/chrome-extension"
+			extpath = "/Users/faham/development/bric-a-brac/chrome/ext"
 		else if ('Windows' == getOS())
-			extpath = "D:/projects/bric-a-brac/chrome-extension"
+			extpath = "D:/projects/bric-a-brac/chrome/ext"
 	}
 	
 	ext_info.path = extpath;
