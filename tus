@@ -1,0 +1,215 @@
+[1mdiff --git a/photoshop-script/bric-a-brac.assets/brac-close.jsx b/photoshop-script/bric-a-brac.assets/brac-close.jsx[m
+[1mindex 31b99e1..3463762 100644[m
+[1m--- a/photoshop-script/bric-a-brac.assets/brac-close.jsx[m
+[1m+++ b/photoshop-script/bric-a-brac.assets/brac-close.jsx[m
+[36m@@ -48,7 +48,8 @@[m [mfunction BracClose() {[m
+ 		return;[m
+ 	}[m
+ 	var cur_doc = app.activeDocument;[m
+[31m-	var desc = app.getCustomOptions(cur_doc.name);[m
+[32m+[m	[32mdebugger;[m
+[32m+[m	[32mvar desc = app.getCustomOptions(cur_doc.path);[m
+ 	var temp_dir = new Folder(desc.getString(1));[m
+ [m
+ 	for(var w = 0; w < 20; ++w) {[m
+[1mdiff --git a/photoshop-script/bric-a-brac.assets/brac-new.jsx b/photoshop-script/bric-a-brac.assets/brac-new.jsx[m
+[1mindex 7b1c347..70d8ebd 100644[m
+[1m--- a/photoshop-script/bric-a-brac.assets/brac-new.jsx[m
+[1m+++ b/photoshop-script/bric-a-brac.assets/brac-new.jsx[m
+[36m@@ -270,7 +270,7 @@[m [mfunction createNewBrac(bracInfo) {[m
+ 	var brac_dir = Folder.temp + "/" + ts;[m
+ 	var out_dir = new Folder(brac_dir);[m
+ 	out_dir.create();[m
+[31m-	var doc_name = ts + '-' + bracInfo.name;[m
+[32m+[m	[32mvar doc_name = bracInfo.name;[m
+ 	[m
+ 	var brac_xml = new XML();[m
+ 	brac_xml = XML('<brac><layers></layers></brac>');[m
+[36m@@ -287,6 +287,7 @@[m [mfunction createNewBrac(bracInfo) {[m
+ 	brac_xml_file.write(brac_xml);[m
+ 	brac_xml_file.close();[m
+ 	[m
+[32m+[m	[32m// Create and save the PSD file[m
+ 	var new_doc = app.documents.add([m
+ 		parseInt(bracInfo.width),[m
+ 		parseInt(bracInfo.height),[m
+[36m@@ -294,12 +295,22 @@[m [mfunction createNewBrac(bracInfo) {[m
+ 		doc_name,[m
+ 		NewDocumentMode.RGB,[m
+ 		Str2DocFill(bracInfo.background), 1);[m
+[32m+[m
+[32m+[m	[32m_saveoptions = new PhotoshopSaveOptions();[m
+[32m+[m	[32m_saveoptions.alphaChannels     = true;[m
+[32m+[m	[32m_saveoptions.annotations       = true;[m
+[32m+[m	[32m_saveoptions.embedColorProfile = true;[m
+[32m+[m	[32m_saveoptions.layers            = true;[m
+[32m+[m	[32m_saveoptions.spotColors        = true;[m
+[32m+[m
+[32m+[m	[32mvar psd_file = new File(brac_dir + "/" + doc_name + ".psd");[m
+[32m+[m	[32mnew_doc.saveAs(psd_file, _saveoptions, true, Extension.LOWERCASE);[m
+ 	[m
+[32m+[m	[32m// Set environment variables[m
+ 	var desc = new ActionDescriptor();[m
+ 	desc.putString(0, '');[m
+ 	desc.putString(1, brac_dir);[m
+[31m-	app.putCustomOptions(doc_name, desc, true);[m
+[31m-	[m
+[32m+[m	[32mapp.putCustomOptions(psd_file.fullName, desc, true);[m
+ 	resetEnv();[m
+ }[m
+ [m
+[1mdiff --git a/photoshop-script/bric-a-brac.assets/brac-open.jsx b/photoshop-script/bric-a-brac.assets/brac-open.jsx[m
+[1mindex fd63024..0cd146e 100644[m
+[1m--- a/photoshop-script/bric-a-brac.assets/brac-open.jsx[m
+[1m+++ b/photoshop-script/bric-a-brac.assets/brac-open.jsx[m
+[36m@@ -8,7 +8,8 @@[m
+ //[m
+ //==============================================================================[m
+ [m
+[31m-#target photoshop [m
+[32m+[m[32m#target photoshop[m
+[32m+[m[32m#include "common.jsx"[m
+ #include "7zip.jsx"[m
+ [m
+ //==============================================================================[m
+[36m@@ -81,12 +82,19 @@[m [mfunction BracOpen() {[m
+ 	var info = SevenZip.extract_v(brac, out_dir);[m
+ 	var doc_name = ts + '-' + brac.name.split('.')[0];[m
+ 	[m
+[32m+[m	[32mvar psd_file = new File(brac_dir + "/" + "brac.psd");[m
+[32m+[m	[32mif (!psd_file.exists) {[m
+[32m+[m		[32malert("Brac definition PSD file (brac.psd) not found!");[m
+[32m+[m		[32mreturn;[m
+[32m+[m	[32m}[m
+[32m+[m	[32mvar new_brac_doc = app.open(psd_file);[m
+[32m+[m[41m	[m
+ 	// brac initial brac file object[m
+ 	// brac_dir temporary extracted brac directory path string[m
+ 	var desc = new ActionDescriptor();[m
+ 	desc.putString(0, brac.fullName); // brac file name[m
+ 	desc.putString(1, brac_dir); // brac temp directory[m
+[31m-	app.putCustomOptions(doc_name, desc, true);[m
+[32m+[m	[32mapp.putCustomOptions(new_brac_doc.path, desc, true);[m
+ [m
+ 	var brac_xml_file = new File(brac_dir + "/" + "brac.xml");[m
+ 	if (!brac_xml_file.exists) {[m
+[36m@@ -99,6 +107,7 @@[m [mfunction BracOpen() {[m
+ [m
+ 	// Create the multi-layered image[m
+ 	//TODO: fix the add method parameters.[m
+[32m+[m	[32m/*[m
+ 	var resolution = brac_xml.@resolution.split(' ');[m
+ 	var dpi = parseInt(brac_xml.@dpi);[m
+ [m
+[36m@@ -108,6 +117,7 @@[m [mfunction BracOpen() {[m
+ 	var new_brac_doc = app.documents.add(doc_w_px, doc_h_px, dpi, doc_name[m
+ 		, NewDocumentMode.RGB[m
+ 		, DocumentFill.TRANSPARENT, 1);[m
+[32m+[m	[32m*/[m
+ 	[m
+ 	var first_bric = true;[m
+ 	[m
+[36m@@ -130,7 +140,7 @@[m [mfunction BracOpen() {[m
+ 		var lyr = brac_xml.layers.children()[ordered_lyrs[i][0]];[m
+ 		[m
+ 		if (lyr.name() == 'static') {[m
+[31m-		[m
+[32m+[m			[32m/*[m
+ 			var filepath = brac_dir + '/' + lyr.@name + '.' + lyr.@id + '.png';[m
+ 			[m
+ 			var f = new File(filepath);[m
+[36m@@ -152,10 +162,14 @@[m [mfunction BracOpen() {[m
+ 			static_img.translate(mv_x - parseInt(static_img.bounds[0]), mv_y - parseInt(static_img.bounds[1]));[m
+ 			new_brac_doc.activeLayer = static_img;[m
+ 			first_bric = false;[m
+[31m-			[m
+[32m+[m			[32m*/[m
+ 		} else if (lyr.name() == 'bric') {[m
+ 		[m
+ 			var bric = lyr;[m
+[32m+[m[41m			[m
+[32m+[m			[32mif (getLayerIndex(bric.@id, new_brac_doc) != -1)[m
+[32m+[m				[32mcontinue;[m
+[32m+[m[41m			[m
+ 			// extracting bric details[m
+ 			var bric_dir = brac_dir + "/bric." + bric.@id;[m
+ 			var bric_xml_file = new File(bric_dir + "/bric.xml");[m
+[1mdiff --git a/photoshop-script/bric-a-brac.assets/brac-save-base.jsx b/photoshop-script/bric-a-brac.assets/brac-save-base.jsx[m
+[1mindex f49dd0e..622517e 100644[m
+[1m--- a/photoshop-script/bric-a-brac.assets/brac-save-base.jsx[m
+[1m+++ b/photoshop-script/bric-a-brac.assets/brac-save-base.jsx[m
+[36m@@ -1 +1 @@[m
+[31m-﻿//==============================================================================// Copyright 2013.  University of Saskatchewan.  All rights reserved.// This script incorporates brac files editing operations into Adobe Photoshop.// Written by Faham Negini//==============================================================================//// brac-save.jsx////==============================================================================#target photoshop #include "7zip.jsx"//==============================================================================function saveAsPNG( filename, outpath, interlacedValue, transparencyValue) {	var id6 = charIDToTypeID( "Expr" );	var desc3 = new ActionDescriptor();	var id7 = charIDToTypeID( "Usng" );		var desc4 = new ActionDescriptor();		var id8 = charIDToTypeID( "Op  " );		var id9 = charIDToTypeID( "SWOp" );		var id10 = charIDToTypeID( "OpSa" );		desc4.putEnumerated( id8, id9, id10 );		var id11 = charIDToTypeID( "Fmt " );		var id12 = charIDToTypeID( "IRFm" );		var id13 = charIDToTypeID( "PN24" );		desc4.putEnumerated( id11, id12, id13 );		var id14 = charIDToTypeID( "Intr" );		desc4.putBoolean( id14, interlacedValue );		var id15 = charIDToTypeID( "Trns" );		desc4.putBoolean( id15, transparencyValue );		var id16 = charIDToTypeID( "Mtt " );		desc4.putBoolean( id16, true );		var id17 = charIDToTypeID( "MttR" );		desc4.putInteger( id17, 255 );		var id18 = charIDToTypeID( "MttG" );		desc4.putInteger( id18, 255 );		var id19 = charIDToTypeID( "MttB" );		desc4.putInteger( id19, 255 );		var id20 = charIDToTypeID( "SHTM" );		desc4.putBoolean( id20, false );		var id21 = charIDToTypeID( "SImg" );		desc4.putBoolean( id21, true );		var id22 = charIDToTypeID( "SSSO" );		desc4.putBoolean( id22, false );		var id23 = charIDToTypeID( "SSLt" );			var list1 = new ActionList();		desc4.putList( id23, list1 );		var id24 = charIDToTypeID( "DIDr" );		desc4.putBoolean( id24, false );		var id25 = charIDToTypeID( "In  " );		desc4.putPath( id25, new File( outpath + "/" + filename + ".png") );	var id26 = stringIDToTypeID( "SaveForWeb" );	desc3.putObject( id7, id26, desc4 );	executeAction( id6, desc3, DialogModes.NO );}//------------------------------------------------------------------------------function copy() {	var idcopy = charIDToTypeID( "copy" );	executeAction( idcopy, undefined, DialogModes.NO );}//------------------------------------------------------------------------------function px2cm(length, dpi) {	return length * 2.54 / dpi;}//------------------------------------------------------------------------------function setInvisibleAllArtLayers(obj) {	for( var i = 0; i < obj.artLayers.length; ++i) {		obj.artLayers[i].allLocked = false;		obj.artLayers[i].visible = false;	}	for( var i = 0; i < obj.layerSets.length; ++i) {		setInvisibleAllArtLayers(obj.layerSets[i]);	}}//------------------------------------------------------------------------------function getLayerIndex(id, doc) {	for (var i = 0; i < doc.layers.length; ++i) {		if (parseInt(doc.layers[i].name) == parseInt(id)) {			return i;		}	}		return -1;}//------------------------------------------------------------------------------function saveLayerAsPNG(doc, layer, outpath, filename) {	var area = {		'x1': layer.bounds[0], 'y1': layer.bounds[1],		'x2': layer.bounds[2], 'y2': layer.bounds[3]	}	var shapeRef = [		[area.x1, area.y1],		[area.x1, area.y2],		[area.x2, area.y2],		[area.x2, area.y1]	];	doc.selection.select(shapeRef);	doc.activeLayer = layer	copy();	doc.selection.select([[0, 0], [0, 0], [0, 0], [0, 0]]);		var newdoc = app.documents.add(		layer.bounds[2] - layer.bounds[0],		layer.bounds[3] - layer.bounds[1],		72, 'temp',		NewDocumentMode.RGB,		DocumentFill.TRANSPARENT,	);	newdoc.paste();	newdoc.trim(TrimType.TRANSPARENT);	saveAsPNG(filename, outpath, true, true);	newdoc.close( SaveOptions.DONOTSAVECHANGES );}//------------------------------------------------------------------------------function saveAs(temp_dir, target_filename) {	var SevenZip = get7zip();	if (!SevenZip)		return;	setEnv();	var cur_doc = app.activeDocument;	var brac_xml_file = new File(temp_dir + "/" + "brac.xml");	brac_xml_file.open('rw');	var brac_xml = new XML(brac_xml_file.read());	brac_xml_file.close();	var toremove = [];	var storedLayers = [];	for (var j = 0; j < brac_xml.layers.children().length(); ++j) {		try {			var lyr = brac_xml.layers.children()[j];			if (lyr.name() == 'static') {							var index = getLayerIndex(lyr.@id, cur_doc);				if (index < 0) { //layer is removed					toremove.push(j);				} else {					var ps_lyr      = cur_doc.layers[index];					lyr.@resolution = parseFloat(ps_lyr.bounds[2] - ps_lyr.bounds[0]) + ' ' + parseFloat(ps_lyr.bounds[3] - ps_lyr.bounds[1]);					lyr.@position   = parseFloat(ps_lyr.bounds[0]) + ' ' + parseFloat(ps_lyr.bounds[1]);					lyr.@alpha      = ps_lyr.opacity / 100.0;					lyr.@order      = cur_doc.layers.length - index;					saveLayerAsPNG(cur_doc, ps_lyr, temp_dir, lyr.@name + '.' + lyr.@id);					storedLayers.push(index);				}						} else if (lyr.name() == 'bric') {							var bric = lyr;				var id_str = bric.@id;				var index = getLayerIndex(id_str, cur_doc);								if (index < 0) { //bric is removed					toremove.push(j);				} else {					var bric_xml_file = new File(temp_dir + "/bric." + bric.@id + "/bric.xml");					if (!bric_xml_file.exists) {						alert("Bric XML file not found! \n\n" + bric_xml_file.fsName);						continue;					}					bric_xml_file.open("r");					var bric_xml = new XML(bric_xml_file.read());					bric_xml_file.close();					var layerset = cur_doc.layers[index];					var region   = bric_xml.@region.split(' ');					var reg_w    = parseInt(region[2]);					var reg_h    = parseInt(region[3]);					layer        = layerset.artLayers.getByName('snapshot');					var new_w    = layer.bounds[2] - layer.bounds[0];					var new_h    = layer.bounds[3] - layer.bounds[1];					var scl_x    = prcsRes(3, new_w / reg_w);					var scl_y    = prcsRes(3, new_h / reg_h);					bric.@alpha = layerset.opacity / 100.0;					bric.@order = cur_doc.layers.length - index;					bric.@scale = scl_x + ' ' + scl_y;					bric.@position = parseFloat(layer.bounds[0]) + ' ' + parseFloat(layer.bounds[1]);					//bric.@rotate = layer.;										var mask = null;					mask = layerset.artLayers.getByName('mask');					bric.@maskposition = parseFloat(mask.bounds[0]) + ' ' + parseFloat(mask.bounds[1]);					saveLayerAsPNG(cur_doc, mask, temp_dir + '/bric.' + id_str, 'mask');					storedLayers.push(index);				}			}		} catch(e) {			alert(e)		}	}	// cleaning removed layers and brics.	while (toremove.length > 0) {		id = toremove.pop()		lyr = brac_xml.layers.children()[id];		id_str = lyr.@id;		_name = lyr.@name;		type = lyr.name();		delete brac_xml.layers.children()[id];		if (type == 'static') {			var f = new File(temp_dir + '/' + _name + '.' + id_str + '.png');			if ('windows' == getOS())				Exec.system("DEL /F /Q " + f.fsName, 10000);			else if ('macos' == getOS())				Exec.system("rm -f " + f.fsName, 10000);		} else if (type == 'bric') {			var dir = new Folder(temp_dir + "/bric." + id_str);			if ('windows' == getOS())				Exec.system("RD /S /Q " + dir.fsName, 10000);			else if ('macos' == getOS())				Exec.system("rm -rf " + dir.fsName, 10000);		}	}	var max_id = -1;	for (var i = 0; i < brac_xml.layers.children().length(); ++i)		if (max_id < parseInt(brac_xml.layers.children()[i].@id))			max_id = brac_xml.layers.children()[i].@id;		// adding new layers	for (var i = 0; i < cur_doc.layers.length; ++i) {		var lyr_stored = false;		for (var j = 0; j < storedLayers.length; ++j)			if (storedLayers[j] == i) {				lyr_stored = true;				break;			}				if (!lyr_stored) {			var lyr = cur_doc.layers[i];			new_layer = XML('<static></static>');			new_layer.@name       = lyr.name.toLowerCase().split(' ').join('_');			new_layer.@id         = ++max_id;			new_layer.@order      = cur_doc.layers.length - i;			new_layer.@alpha      = lyr.opacity / 100.0;			new_layer.@resolution = parseFloat(lyr.bounds[2] - lyr.bounds[0]) + ' ' + parseFloat(lyr.bounds[3] - lyr.bounds[1]);			new_layer.@position   = parseFloat(lyr.bounds[0]) + ' ' + parseFloat(lyr.bounds[1]);			brac_xml.layers.appendChild(new_layer);			saveLayerAsPNG(cur_doc, lyr, temp_dir, new_layer.@name + '.' + new_layer.@id);			lyr.name = new_layer.@id + ' - ' + new_layer.@name;		}	}	brac_xml_file.open('w');	brac_xml_file.write(brac_xml);	brac_xml_file.close();		if (target_filename.exists)		target_filename.remove();	SevenZip.archive(target_filename, temp_dir.getFiles());	resetEnv();}//------------------------------------------------------------------------------//==============================================================================// EOF[m
+\ No newline at end of file[m
+[32m+[m[32m﻿//==============================================================================// Copyright 2013.  University of Saskatchewan.  All rights reserved.// This script incorporates brac files editing operations into Adobe Photoshop.// Written by Faham Negini//==============================================================================//// brac-save.jsx////==============================================================================#target photoshop#include "common.jsx"#include "7zip.jsx"//==============================================================================function saveAsPNG( filename, outpath, interlacedValue, transparencyValue) {	var id6 = charIDToTypeID( "Expr" );	var desc3 = new ActionDescriptor();	var id7 = charIDToTypeID( "Usng" );		var desc4 = new ActionDescriptor();		var id8 = charIDToTypeID( "Op  " );		var id9 = charIDToTypeID( "SWOp" );		var id10 = charIDToTypeID( "OpSa" );		desc4.putEnumerated( id8, id9, id10 );		var id11 = charIDToTypeID( "Fmt " );		var id12 = charIDToTypeID( "IRFm" );		var id13 = charIDToTypeID( "PN24" );		desc4.putEnumerated( id11, id12, id13 );		var id14 = charIDToTypeID( "Intr" );		desc4.putBoolean( id14, interlacedValue );		var id15 = charIDToTypeID( "Trns" );		desc4.putBoolean( id15, transparencyValue );		var id16 = charIDToTypeID( "Mtt " );		desc4.putBoolean( id16, true );		var id17 = charIDToTypeID( "MttR" );		desc4.putInteger( id17, 255 );		var id18 = charIDToTypeID( "MttG" );		desc4.putInteger( id18, 255 );		var id19 = charIDToTypeID( "MttB" );		desc4.putInteger( id19, 255 );		var id20 = charIDToTypeID( "SHTM" );		desc4.putBoolean( id20, false );		var id21 = charIDToTypeID( "SImg" );		desc4.putBoolean( id21, true );		var id22 = charIDToTypeID( "SSSO" );		desc4.putBoolean( id22, false );		var id23 = charIDToTypeID( "SSLt" );			var list1 = new ActionList();		desc4.putList( id23, list1 );		var id24 = charIDToTypeID( "DIDr" );		desc4.putBoolean( id24, false );		var id25 = charIDToTypeID( "In  " );		desc4.putPath( id25, new File( outpath + "/" + filename + ".png") );	var id26 = stringIDToTypeID( "SaveForWeb" );	desc3.putObject( id7, id26, desc4 );	executeAction( id6, desc3, DialogModes.NO );}//------------------------------------------------------------------------------function copy() {	var idcopy = charIDToTypeID( "copy" );	executeAction( idcopy, undefined, DialogModes.NO );}//------------------------------------------------------------------------------function px2cm(length, dpi) {	return length * 2.54 / dpi;}//------------------------------------------------------------------------------function saveLayerAsPNG(doc, layer, outpath, filename) {	var area = {		'x1': layer.bounds[0], 'y1': layer.bounds[1],		'x2': layer.bounds[2], 'y2': layer.bounds[3]	}	var shapeRef = [		[area.x1, area.y1],		[area.x1, area.y2],		[area.x2, area.y2],		[area.x2, area.y1]	];	doc.selection.select(shapeRef);	doc.activeLayer = layer	copy();	doc.selection.select([[0, 0], [0, 0], [0, 0], [0, 0]]);		var newdoc = app.documents.add(		layer.bounds[2] - layer.bounds[0],		layer.bounds[3] - layer.bounds[1],		72, 'temp',		NewDocumentMode.RGB,		DocumentFill.TRANSPARENT,	);	newdoc.paste();	newdoc.trim(TrimType.TRANSPARENT);	saveAsPNG(filename, outpath, true, true);	newdoc.close( SaveOptions.DONOTSAVECHANGES );}//------------------------------------------------------------------------------function saveAs(temp_dir, target_filename) {	var SevenZip = get7zip();	if (!SevenZip)		return;	setEnv();	var cur_doc = app.activeDocument;	// Saving the PSD file	cur_doc.save();	// Updating Brac XML files	var brac_xml_file = new File(temp_dir + "/" + "brac.xml");	brac_xml_file.open('rw');	var brac_xml = new XML(brac_xml_file.read());	brac_xml_file.close();	var toremove = [];	var storedLayers = [];	for (var j = 0; j < brac_xml.layers.children().length(); ++j) {		try {			var lyr = brac_xml.layers.children()[j];			if (lyr.name() == 'static') {				//*/				var index = getLayerIndex(lyr.@id, cur_doc);				storedLayers.push(index);				continue				/*/				var index = getLayerIndex(lyr.@id, cur_doc);				if (index < 0) { //layer is removed					toremove.push(j);				} else {					var ps_lyr      = cur_doc.layers[index];					lyr.@resolution = parseFloat(ps_lyr.bounds[2] - ps_lyr.bounds[0]) + ' ' + parseFloat(ps_lyr.bounds[3] - ps_lyr.bounds[1]);					lyr.@position   = parseFloat(ps_lyr.bounds[0]) + ' ' + parseFloat(ps_lyr.bounds[1]);					lyr.@alpha      = ps_lyr.opacity / 100.0;					lyr.@order      = cur_doc.layers.length - index;					saveLayerAsPNG(cur_doc, ps_lyr, temp_dir, lyr.@name + '.' + lyr.@id);					storedLayers.push(index);				}				//*/						} else if (lyr.name() == 'bric') {							var bric = lyr;				var id_str = bric.@id;				var index = getLayerIndex(id_str, cur_doc);								if (index < 0) { //bric is removed					toremove.push(j);				} else {					var bric_xml_file = new File(temp_dir + "/bric." + bric.@id + "/bric.xml");					if (!bric_xml_file.exists) {						alert("Bric XML file not found! \n\n" + bric_xml_file.fsName);						continue;					}					bric_xml_file.open("r");					var bric_xml = new XML(bric_xml_file.read());					bric_xml_file.close();					var layerset = cur_doc.layers[index];					var region   = bric_xml.@region.split(' ');					var reg_w    = parseInt(region[2]);					var reg_h    = parseInt(region[3]);					layer        = layerset.artLayers.getByName('snapshot');					var new_w    = layer.bounds[2] - layer.bounds[0];					var new_h    = layer.bounds[3] - layer.bounds[1];					var scl_x    = prcsRes(3, new_w / reg_w);					var scl_y    = prcsRes(3, new_h / reg_h);					bric.@alpha = layerset.opacity / 100.0;					bric.@order = cur_doc.layers.length - index;					bric.@scale = scl_x + ' ' + scl_y;					bric.@position = parseFloat(layer.bounds[0]) + ' ' + parseFloat(layer.bounds[1]);					//bric.@rotate = layer.;										var mask = null;					mask = layerset.artLayers.getByName('mask');					bric.@maskposition = parseFloat(mask.bounds[0]) + ' ' + parseFloat(mask.bounds[1]);					saveLayerAsPNG(cur_doc, mask, temp_dir + '/bric.' + id_str, 'mask');					storedLayers.push(index);				}			}		} catch(e) {			alert(e)		}	}	// cleaning removed layers and brics.	while (toremove.length > 0) {		id = toremove.pop()		lyr = brac_xml.layers.children()[id];		id_str = lyr.@id;		_name = lyr.@name;		type = lyr.name();		delete brac_xml.layers.children()[id];		if (type == 'static') {			//var f = new File(temp_dir + '/' + _name + '.' + id_str + '.png');			//if ('windows' == getOS())			//	Exec.system("DEL /F /Q " + f.fsName, 10000);			//else if ('macos' == getOS())			//	Exec.system("rm -f " + f.fsName, 10000);		} else if (type == 'bric') {			var dir = new Folder(temp_dir + "/bric." + id_str);			if ('windows' == getOS())				Exec.system("RD /S /Q " + dir.fsName, 10000);			else if ('macos' == getOS())				Exec.system("rm -rf " + dir.fsName, 10000);		}	}	// adding new layers	/*	var max_id = -1;	for (var i = 0; i < brac_xml.layers.children().length(); ++i)		if (max_id < parseInt(brac_xml.layers.children()[i].@id))			max_id = brac_xml.layers.children()[i].@id;		for (var i = 0; i < cur_doc.layers.length; ++i) {		var lyr_stored = false;		for (var j = 0; j < storedLayers.length; ++j)			if (storedLayers[j] == i) {				lyr_stored = true;				break;			}				if (!lyr_stored) {			var lyr = cur_doc.layers[i];			new_layer = XML('<static></static>');			new_layer.@name       = lyr.name.toLowerCase().split(' ').join('_');			new_layer.@id         = ++max_id;			new_layer.@order      = cur_doc.layers.length - i;			new_layer.@alpha      = lyr.opacity / 100.0;			new_layer.@resolution = parseFloat(lyr.bounds[2] - lyr.bounds[0]) + ' ' + parseFloat(lyr.bounds[3] - lyr.bounds[1]);			new_layer.@position   = parseFloat(lyr.bounds[0]) + ' ' + parseFloat(lyr.bounds[1]);			brac_xml.layers.appendChild(new_layer);			saveLayerAsPNG(cur_doc, lyr, temp_dir, new_layer.@name + '.' + new_layer.@id);			lyr.name = new_layer.@id + ' - ' + new_layer.@name;		}	}	*/	brac_xml_file.open('w');	brac_xml_file.write(brac_xml);	brac_xml_file.close();		if (target_filename.exists)		target_filename.remove();	SevenZip.archive(target_filename, temp_dir.getFiles());	resetEnv();}//------------------------------------------------------------------------------//==============================================================================// EOF[m[41m[m
+\ No newline at end of file[m
+[1mdiff --git a/photoshop-script/bric-a-brac.assets/common.jsx b/photoshop-script/bric-a-brac.assets/common.jsx[m
+[1mindex c6c9f79..45b6db1 100644[m
+[1m--- a/photoshop-script/bric-a-brac.assets/common.jsx[m
+[1m+++ b/photoshop-script/bric-a-brac.assets/common.jsx[m
+[36m@@ -8,7 +8,7 @@[m
+ //[m
+ //==============================================================================[m
+ [m
+[31m-#target photoshop [m
+[32m+[m[32m#target photoshop[m
+ [m
+ //==============================================================================[m
+ [m
+[36m@@ -97,6 +97,18 @@[m [mfunction unit2pixel(unit, dpi, length) {[m
+ 	}[m
+ }[m
+ [m
+[32m+[m[32m//------------------------------------------------------------------------------[m
+[32m+[m
+[32m+[m[32mfunction getLayerIndex(id, doc) {[m
+[32m+[m	[32mfor (var i = 0; i < doc.layers.length; ++i) {[m
+[32m+[m		[32mif (parseInt(doc.layers[i].name) == parseInt(id)) {[m
+[32m+[m			[32mreturn i;[m
+[32m+[m		[32m}[m
+[32m+[m	[32m}[m
+[32m+[m[41m	[m
+[32m+[m	[32mreturn -1;[m
+[32m+[m[32m}[m
+[32m+[m
+ //==============================================================================[m
+ [m
+ // EOF[m
+[1mdiff --git a/photoshop-script/bric-a-brac.assets/execute.jsx b/photoshop-script/bric-a-brac.assets/execute.jsx[m
+[1mindex f7776b0..9a354ec 100644[m
+[1m--- a/photoshop-script/bric-a-brac.assets/execute.jsx[m
+[1m+++ b/photoshop-script/bric-a-brac.assets/execute.jsx[m
+[36m@@ -125,6 +125,8 @@[m [mExec.prototype.executeBlock = function(argList, timeout) {[m
+ 		temp_script.writeln('#!/bin/bash');[m
+ 		temp_script.writeln(str);[m
+ 		temp_script.writeln("echo Done > \"" + semaphore.fsName + '\"');[m
+[32m+[m		[32mtemp_script.close();[m
+[32m+[m		[32mtemp_script.execute();[m
+ 	} else if ('windows' == getOS()) {[m
+ 		temp_script = new File(this.getScriptName());[m
+ 		semaphore = new File(temp_script.toString() + ".sem")[m
+[36m@@ -134,13 +136,21 @@[m [mExec.prototype.executeBlock = function(argList, timeout) {[m
+ 		temp_script.writeln(str);[m
+ 		temp_script.writeln("echo Done > \"" + semaphore.fsName + '\"');[m
+ 		temp_script.writeln(getRemoveCommand() + " \"" + temp_script.fsName + "\" >NUL");[m
+[32m+[m		[32mtemp_script.close();[m
+[32m+[m[41m		[m
+[32m+[m		[32m//using vbs to avoid command window poping up[m
+[32m+[m		[32mvbs_runner = new File(temp_script.fsName + '.vbs');[m
+[32m+[m		[32mvbs_runner.open("w");[m
+[32m+[m		[32mvbs_runner.writeln("Set WshShell = CreateObject(\"WScript.Shell\")");[m
+[32m+[m		[32mvbs_runner.writeln("WshShell.Run chr(34) & \"" + temp_script.fsName + "\" & Chr(34), 0");[m
+[32m+[m		[32mvbs_runner.writeln("Set WshShell = Nothing");[m
+[32m+[m		[32mvbs_runner.close();[m
+[32m+[m		[32mvbs_runner.execute();[m
+[32m+[m[41m		[m
+ 	} else {[m
+ 		alert ('OS is not supported');[m
+ 		return;[m
+ 	}[m
+[31m-	[m
+[31m-	temp_script.close();[m
+[31m-	temp_script.execute();[m
+ [m
+ 	try {[m
+ 		this.block(semaphore, timeout);[m

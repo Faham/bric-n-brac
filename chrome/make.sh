@@ -71,18 +71,18 @@ outfl.write(dtout)
 outfl.close()
 """
 
-rm $SCRIPTPATH/ext.crx ../distro/$OS/bracollage.crx
+rm ../distro/$OS/bracollage.crx
 
-# build crx
+MakeCRX='buildcrx.exe'
 if [ "${OS}" = 'mac' ]; then
-	chrome --pack-extension=`pwd`/ext/ --pack-extension-key=`pwd`/ext.pem
-elif [ "${OS}" = 'win' ]; then
-	'/c/Program Files (x86)/Google/Chrome/Application/chrome.exe' --pack-extension=`pwd`/ext/ --pack-extension-key=`pwd`/ext.pem
-else
-	echo 'os not supported'
+	MakeCRX='buildcrx.bin'
 fi
-
-cp $SCRIPTPATH/ext.crx ../distro/$OS/bracollage.crx
+cd ext/
+../../tools/external/7za.exe a -tzip ../ext.zip *
+cd ..
+$MakeCRX ext.zip ext.pem
+rm ext.zip
+mv $SCRIPTPATH/ext.crx ../distro/$OS/bracollage.crx
 
 #-------------------------------------------------------------------------------
 

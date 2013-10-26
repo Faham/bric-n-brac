@@ -48,7 +48,8 @@ function BracClose() {
 		return;
 	}
 	var cur_doc = app.activeDocument;
-	var desc = app.getCustomOptions(cur_doc.name);
+	debugger;
+	var desc = app.getCustomOptions(cur_doc.path);
 	var temp_dir = new Folder(desc.getString(1));
 
 	for(var w = 0; w < 20; ++w) {

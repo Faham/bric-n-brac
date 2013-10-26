@@ -23,7 +23,7 @@
     ], 
     "plugins": [
         {
-            "path": "bin/BracExtenssionProvider.plugin", 
+            "path": "bin/npBracExtenssionProvider.dll", 
             "public": true
         }
     ], 

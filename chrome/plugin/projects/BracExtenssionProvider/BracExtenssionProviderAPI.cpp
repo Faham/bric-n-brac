@@ -38,12 +38,43 @@ namespace jsonxx {
 FB::DOM::DocumentPtr document;
 BracExtenssionProviderAPI * brac_extenssion_provider_api = NULL;
 
+//------------------------------------------------------------------------------
+
+std::wstring s2ws(const std::string& s)
+{
+    int len;
+    int slength = (int)s.length() + 1;
+    len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0); 
+    wchar_t* buf = new wchar_t[len];
+    MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
+    std::wstring r(buf);
+    delete[] buf;
+    return r;
+}
+
 //==============================================================================
 
 FB::variant BracExtenssionProviderAPI::systemCall(const FB::variant& msg) {
 	std::string cmd = msg.convert_cast<std::string>();
 	m_syscall_commands.push_back(cmd);
+#if defined _WIN32
+	STARTUPINFO info = {sizeof(info)};
+	info.dwFlags = STARTF_USESHOWWINDOW;
+	info.wShowWindow = SW_HIDE;
+	PROCESS_INFORMATION processInfo;
+	std::wstring wcmd = s2ws("cmd.exe /c \"" + cmd + "\"");
+	LPWSTR lpwstr_cmd = &wcmd[0];
+	std::string res = "";
+	if (CreateProcess(NULL, lpwstr_cmd , NULL, NULL, TRUE, 0, NULL, NULL, &info, &processInfo))
+	{
+		res = "True";
+		::WaitForSingleObject(processInfo.hProcess, INFINITE);
+		CloseHandle(processInfo.hProcess);
+		CloseHandle(processInfo.hThread);
+	}
+#elif defined __APPLE__
 	std::string res = system_call(cmd);
+#endif
 	m_syscall_results.push_back(res);
 	return res;
 }

@@ -8,7 +8,8 @@
 //
 //==============================================================================
 
-#target photoshop 
+#target photoshop
+#include "common.jsx"
 #include "7zip.jsx"
 
 //==============================================================================
@@ -81,12 +82,19 @@ function BracOpen() {
 	var info = SevenZip.extract_v(brac, out_dir);
 	var doc_name = ts + '-' + brac.name.split('.')[0];
 	
+	var psd_file = new File(brac_dir + "/" + "brac.psd");
+	if (!psd_file.exists) {
+		alert("Brac definition PSD file (brac.psd) not found!");
+		return;
+	}
+	var new_brac_doc = app.open(psd_file);
+	
 	// brac initial brac file object
 	// brac_dir temporary extracted brac directory path string
 	var desc = new ActionDescriptor();
 	desc.putString(0, brac.fullName); // brac file name
 	desc.putString(1, brac_dir); // brac temp directory
-	app.putCustomOptions(doc_name, desc, true);
+	app.putCustomOptions(new_brac_doc.path, desc, true);
 
 	var brac_xml_file = new File(brac_dir + "/" + "brac.xml");
 	if (!brac_xml_file.exists) {
@@ -99,6 +107,7 @@ function BracOpen() {
 
 	// Create the multi-layered image
 	//TODO: fix the add method parameters.
+	/*
 	var resolution = brac_xml.@resolution.split(' ');
 	var dpi = parseInt(brac_xml.@dpi);
 
@@ -108,6 +117,7 @@ function BracOpen() {
 	var new_brac_doc = app.documents.add(doc_w_px, doc_h_px, dpi, doc_name
 		, NewDocumentMode.RGB
 		, DocumentFill.TRANSPARENT, 1);
+	*/
 	
 	var first_bric = true;
 	
@@ -130,7 +140,7 @@ function BracOpen() {
 		var lyr = brac_xml.layers.children()[ordered_lyrs[i][0]];
 		
 		if (lyr.name() == 'static') {
-		
+			/*
 			var filepath = brac_dir + '/' + lyr.@name + '.' + lyr.@id + '.png';
 			
 			var f = new File(filepath);
@@ -152,10 +162,14 @@ function BracOpen() {
 			static_img.translate(mv_x - parseInt(static_img.bounds[0]), mv_y - parseInt(static_img.bounds[1]));
 			new_brac_doc.activeLayer = static_img;
 			first_bric = false;
-			
+			*/
 		} else if (lyr.name() == 'bric') {
 		
 			var bric = lyr;
+			
+			if (getLayerIndex(bric.@id, new_brac_doc) != -1)
+				continue;
+			
 			// extracting bric details
 			var bric_dir = brac_dir + "/bric." + bric.@id;
 			var bric_xml_file = new File(bric_dir + "/bric.xml");

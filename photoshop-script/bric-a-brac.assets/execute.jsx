@@ -125,6 +125,8 @@ Exec.prototype.executeBlock = function(argList, timeout) {
 		temp_script.writeln('#!/bin/bash');
 		temp_script.writeln(str);
 		temp_script.writeln("echo Done > \"" + semaphore.fsName + '\"');
+		temp_script.close();
+		temp_script.execute();
 	} else if ('windows' == getOS()) {
 		temp_script = new File(this.getScriptName());
 		semaphore = new File(temp_script.toString() + ".sem")
@@ -134,13 +136,21 @@ Exec.prototype.executeBlock = function(argList, timeout) {
 		temp_script.writeln(str);
 		temp_script.writeln("echo Done > \"" + semaphore.fsName + '\"');
 		temp_script.writeln(getRemoveCommand() + " \"" + temp_script.fsName + "\" >NUL");
+		temp_script.close();
+		
+		//using vbs to avoid command window poping up
+		vbs_runner = new File(temp_script.fsName + '.vbs');
+		vbs_runner.open("w");
+		vbs_runner.writeln("Set WshShell = CreateObject(\"WScript.Shell\")");
+		vbs_runner.writeln("WshShell.Run chr(34) & \"" + temp_script.fsName + "\" & Chr(34), 0");
+		vbs_runner.writeln("Set WshShell = Nothing");
+		vbs_runner.close();
+		vbs_runner.execute();
+		
 	} else {
 		alert ('OS is not supported');
 		return;
 	}
-	
-	temp_script.close();
-	temp_script.execute();
 
 	try {
 		this.block(semaphore, timeout);
