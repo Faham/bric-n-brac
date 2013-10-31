@@ -268,6 +268,7 @@ function createNewBrac(bracInfo) {
 	
 	var ts = new Date().getTime();
 	var brac_dir = Folder.temp + "/" + ts;
+	//brac_dir = "/C/Users/Faham/AppData/Local/Temp/" + ts;
 	var out_dir = new Folder(brac_dir);
 	out_dir.create();
 	var doc_name = bracInfo.name;
@@ -303,14 +304,13 @@ function createNewBrac(bracInfo) {
 	_saveoptions.layers            = true;
 	_saveoptions.spotColors        = true;
 
-	var psd_file = new File(brac_dir + "/" + doc_name + ".psd");
-	new_doc.saveAs(psd_file, _saveoptions, true, Extension.LOWERCASE);
-	
+	var psd_file = new File(brac_dir + "/" + "brac.psd");
+	new_doc.saveAs(psd_file, _saveoptions, false, Extension.LOWERCASE);
 	// Set environment variables
 	var desc = new ActionDescriptor();
 	desc.putString(0, '');
 	desc.putString(1, brac_dir);
-	app.putCustomOptions(psd_file.fullName, desc, true);
+	app.putCustomOptions(new_doc.fullName, desc, true);
 	resetEnv();
 }
 

@@ -13,7 +13,7 @@
 //==============================================================================
 
 function folderDelete(topLevel){
-	var folders =[];   
+	var folders =[];
 	folders = findAllFolders(topLevel, folders);
 	folders.unshift(topLevel);
 	for(var a in folders){
@@ -48,8 +48,7 @@ function BracClose() {
 		return;
 	}
 	var cur_doc = app.activeDocument;
-	debugger;
-	var desc = app.getCustomOptions(cur_doc.path);
+	var desc = app.getCustomOptions(cur_doc.fullName);
 	var temp_dir = new Folder(desc.getString(1));
 
 	for(var w = 0; w < 20; ++w) {

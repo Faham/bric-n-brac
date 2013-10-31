@@ -143,6 +143,7 @@ Exec.prototype.executeBlock = function(argList, timeout) {
 		vbs_runner.open("w");
 		vbs_runner.writeln("Set WshShell = CreateObject(\"WScript.Shell\")");
 		vbs_runner.writeln("WshShell.Run chr(34) & \"" + temp_script.fsName + "\" & Chr(34), 0");
+		vbs_runner.writeln("Set oFso = CreateObject(\"Scripting.FileSystemObject\") : oFso.DeleteFile Wscript.ScriptFullName, True" );
 		vbs_runner.writeln("Set WshShell = Nothing");
 		vbs_runner.close();
 		vbs_runner.execute();

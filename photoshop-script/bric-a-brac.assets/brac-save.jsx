@@ -19,14 +19,15 @@ function BracSave() {
 		return;
 	}
 	var cur_doc = app.activeDocument;
-	var desc = app.getCustomOptions(cur_doc.name);
+	var desc = app.getCustomOptions(cur_doc.fullName);
 	var temp_dir = new Folder(desc.getString(1));
 	var target_filename = new File(desc.getString(0));
 	
 	if (!target_filename.exists)
 		target_filename = File.saveDialog("Save As", "*.brac");
-	
-	saveAs(temp_dir, target_filename)
+
+	if (target_filename)
+		saveAs(temp_dir, target_filename)
 };
 
 //==============================================================================

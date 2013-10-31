@@ -94,7 +94,7 @@ function BracOpen() {
 	var desc = new ActionDescriptor();
 	desc.putString(0, brac.fullName); // brac file name
 	desc.putString(1, brac_dir); // brac temp directory
-	app.putCustomOptions(new_brac_doc.path, desc, true);
+	app.putCustomOptions(new_brac_doc.fullName, desc, true);
 
 	var brac_xml_file = new File(brac_dir + "/" + "brac.xml");
 	if (!brac_xml_file.exists) {
