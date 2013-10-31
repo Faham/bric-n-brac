@@ -1,3 +1,6 @@
+- support for large files
+- add an option to specify brics as static
+- add a reload button for brac files in the photoshop panel
 done - static layer support both in brac and bric level
 - please add a feature in the Brac panel to allow us to Save As Template. There should be a checkbox to make that template the default template
 - a python script that can run on a server and update brac files, then upload the new content to a Dropbox folder, using the Dropbox API.

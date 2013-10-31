@@ -51,7 +51,6 @@ function addLayerMask() {
 //------------------------------------------------------------------------------
 
 function BracOpen() {
-
 	var SevenZip = get7zip();
 	if (!SevenZip)
 		return;
@@ -74,7 +73,7 @@ function BracOpen() {
 		//alert("Brac file " + f.fsName + " not found!");
 		return;
 	}
-
+	debugger;
 	var brac = f;
 	var ts = new Date().getTime();
 	var brac_dir = Folder.temp + "/" + ts;
@@ -94,7 +93,9 @@ function BracOpen() {
 	var desc = new ActionDescriptor();
 	desc.putString(0, brac.fullName); // brac file name
 	desc.putString(1, brac_dir); // brac temp directory
-	app.putCustomOptions(new_brac_doc.fullName, desc, true);
+	var arr = brac_dir.split('/');
+	var id = arr[arr.length - 1];
+	app.putCustomOptions(id, desc, true);
 
 	var brac_xml_file = new File(brac_dir + "/" + "brac.xml");
 	if (!brac_xml_file.exists) {
@@ -120,7 +121,9 @@ function BracOpen() {
 	*/
 	
 	var first_bric = true;
-	
+	if (new_brac_doc.layerSets.length > 0)
+		first_bric = false;
+    
 	// sorting by zindex
 	var ordered_lyrs = [];
 	for (var i = 0; i < brac_xml.layers.children().length(); ++i)
@@ -241,6 +244,7 @@ function BracOpen() {
 				var mmv_x              = parseFloat(maskposition[0]);
 				var mmv_y              = parseFloat(maskposition[1]);
 				
+				lyr_mask.resize(sc_w_n * 100.0, sc_h_n * 100.0); //relative to layer's initial size (bric)
 				lyr_mask.translate(mmv_x - parseInt(lyr_mask.bounds[0]), mmv_y - parseInt(lyr_mask.bounds[1]));
 				lyr_mask.rotate(rt_deg);
 

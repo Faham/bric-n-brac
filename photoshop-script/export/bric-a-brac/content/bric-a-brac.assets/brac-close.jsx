@@ -48,18 +48,17 @@ function BracClose() {
 		return;
 	}
 	var cur_doc = app.activeDocument;
-	var desc = app.getCustomOptions(cur_doc.fullName);
-	var temp_dir = new Folder(desc.getString(1));
+	var dir = "" + cur_doc.path;
+	var arr = dir.split('/');
+	var id = arr[arr.length - 1];
+	var temp_dir = new Folder(cur_doc.path);
 
-	for(var w = 0; w < 20; ++w) {
-		if(temp_dir.exists)
-			folderDelete(temp_dir);
-		else
-			break;
-	}
-
-	app.eraseCustomOptions(cur_doc.name);
+	app.eraseCustomOptions(id);
 	cur_doc.close(SaveOptions.DONOTSAVECHANGES);
+    
+	if(temp_dir.exists)
+		folderDelete(temp_dir);
+
 };
 
 //------------------------------------------------------------------------------

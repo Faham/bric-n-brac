@@ -19,8 +19,12 @@ function BracSave() {
 		return;
 	}
 	var cur_doc = app.activeDocument;
-	var desc = app.getCustomOptions(cur_doc.fullName);
-	var temp_dir = new Folder(desc.getString(1));
+	var dir = "" + cur_doc.path;
+	var arr = dir.split('/');
+	var id = arr[arr.length - 1];
+	var desc = app.getCustomOptions(id);
+	var temp_dir = new Folder(cur_doc.path);
+	debugger;
 	var target_filename = new File(desc.getString(0));
 	
 	if (!target_filename.exists)

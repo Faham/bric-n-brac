@@ -20,7 +20,7 @@ function BracSaveAs() {
 	}
 	var cur_doc = app.activeDocument;
 	var desc = app.getCustomOptions(cur_doc.fullName);
-	var temp_dir = new Folder(desc.getString(1));
+	var temp_dir = new Folder(cur_doc.path);
 	var target_filename = File.saveDialog("Save As", "*.brac");
 
 	if (target_filename)
