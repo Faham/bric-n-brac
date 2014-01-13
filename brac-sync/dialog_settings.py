@@ -25,7 +25,7 @@ class DialogSettings(QtGui.QDialog):
 	def __init__(self, brac_sync):
 		apply(QtGui.QMainWindow.__init__, (self,))
 		self.setFixedSize(775, 479)
-		uic.loadUi('dialog_settings.ui', self)
+		uic.loadUi('resources/dialog_settings.ui', self)
 
 		self.tvwSrc     = self.findChild(QtGui.QTreeView,    'tvwSrc')
 		self.twgDest    = self.findChild(QtGui.QTableWidget, 'twgDest')
@@ -67,7 +67,7 @@ class DialogSettings(QtGui.QDialog):
 				
 		self.twgDest.setRowCount(len(self.entries))
 		for i, e in enumerate(self.entries):
-			self.twgDest.setCellWidget(i, 0, ImageWidget('../resources/%s.png' % e['type'], self))
+			self.twgDest.setCellWidget(i, 0, ImageWidget('resources/%s.png' % e['type'], self))
 			self.twgDest.setItem(i, 1, QtGui.QTableWidgetItem(e['path']))
 
 			if e['type'] == 'dir':
@@ -129,7 +129,7 @@ class DialogSettings(QtGui.QDialog):
 
 		index = self.twgDest.rowCount()
 		self.twgDest.setRowCount(index + 1)
-		self.twgDest.setCellWidget(index, 0, ImageWidget('../resources/%s.png' % icon, self))
+		self.twgDest.setCellWidget(index, 0, ImageWidget('resources/%s.png' % icon, self))
 		self.twgDest.setItem(index, 1, QtGui.QTableWidgetItem(path))
 
 		if icon == 'dir':

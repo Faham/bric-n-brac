@@ -162,9 +162,9 @@ class BracSynchronizer(QtGui.QSystemTrayIcon):
 	def setStatus(self, status, notice = None):
 		#self.icon.setStatus(status)
 		if status == "off":
-			self.setIcon(QtGui.QIcon("../resources/brac-16x16.png"))
+			self.setIcon(QtGui.QIcon("resources/brac-16x16.png"))
 		elif status == "on":
-			self.setIcon(QtGui.QIcon("../resources/brac-syncing-16x16.png"))
+			self.setIcon(QtGui.QIcon("resources/brac-syncing-16x16.png"))
 		#if status == "on" and not self.popup.opened():
 		#	self.popup.show(notice)
 
@@ -371,7 +371,7 @@ def main():
 	app = QtGui.QApplication(sys.argv)
 
 	w = QtGui.QWidget()
-	trayIcon = BracSynchronizer(QtGui.QIcon("../resources/brac-16x16.png"), w)
+	trayIcon = BracSynchronizer(QtGui.QIcon("resources/brac-16x16.png"), w)
 
 	trayIcon.show()
 	sys.exit(app.exec_())

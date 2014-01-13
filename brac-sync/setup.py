@@ -3,6 +3,7 @@
 
 import platform
 import sys
+import glob
 env = platform.system().lower()
 
 #===============================================================================
@@ -64,8 +65,10 @@ elif env == 'windows':
 		'imageformats_win/qmng4.dll',
 		'imageformats_win/qsvg4.dll',
 		'imageformats_win/qtga4.dll',
-		'imageformats_win/qtiff4.dll',
-	])]
+		'imageformats_win/qtiff4.dll',]),
+		('resources', glob.glob('resources/*')),
+		('tools', glob.glob('tools/*')),
+	]
 	sys.argv.append('py2exe')
 
 	# system dlls to include in the exe package
@@ -100,7 +103,6 @@ elif env == 'windows':
 		license      = pkginfo_license,
 		author       = pkginfo_author,
 		author_email = pkginfo_author_email,
-		py_modules   = ['common', 'entryutils', 'webkitrenderer'],
 	)
 	
 #===============================================================================
