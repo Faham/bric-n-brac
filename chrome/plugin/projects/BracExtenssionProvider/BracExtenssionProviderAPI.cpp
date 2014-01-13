@@ -40,6 +40,7 @@ BracExtenssionProviderAPI * brac_extenssion_provider_api = NULL;
 
 //------------------------------------------------------------------------------
 
+#if defined _WIN32
 std::wstring s2ws(const std::string& s)
 {
     int len;
@@ -51,6 +52,7 @@ std::wstring s2ws(const std::string& s)
     delete[] buf;
     return r;
 }
+#endif
 
 //==============================================================================
 
@@ -174,7 +176,7 @@ FB::variant BracExtenssionProviderAPI::takeSnapShot(const FB::variant& msg) {
 		std::string filepath = escaped_dir + "/" + m_screenshot_filename;
 
 		command = "cd " + escaped_extension_path + "; "
-			+ "open -W bin/clg-snapshot.app --args "
+			+ "open -gW bin/clg-snapshot.app --args "
 			+ "'" + url + "' "      // target url
 			+ "'" + filepath + "' " // target filepath
 			+ width      + " "      // window width
@@ -489,7 +491,7 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 		command = "mv " + escaped_screenshot_dir + "/" + m_screenshot_filename + " " + escaped_bric_screenshot;
 		systemCall(command);
 
-		command = "cd " + escaped_extension_path + "; open -W bin/clg-crop.app --args "
+		command = "cd " + escaped_extension_path + "; open -gW bin/clg-crop.app --args "
 			+ " " + escaped_bric_screenshot + " "
 			+ bric_region[0] + " " + bric_region[1] + " " + bric_region[2] + " " + bric_region[3];
 		systemCall(command);
