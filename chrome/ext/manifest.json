@@ -1,0 +1,43 @@
+{
+    "background": {
+        "scripts": [
+            "js/background.js"
+        ]
+    }, 
+    "browser_action": {
+        "default_icon": "img/brac-16x16.png", 
+        "default_title": "Bric-a-Brac!"
+    }, 
+    "description": "Capture screenshots for bric files", 
+    "icons": {
+        "128": "img/brac-128x128.png", 
+        "16": "img/brac-16x16.png", 
+        "48": "img/brac-48x48.png"
+    }, 
+    "manifest_version": 2, 
+    "name": "Bric Screenshot", 
+    "permissions": [
+        "tabs", 
+        "*://*/*", 
+        "management"
+    ], 
+    "plugins": [
+        {
+            "path": "bin/npBracExtenssionProvider.dll", 
+            "public": true
+        }
+    ], 
+    "version": "1.0", 
+    "web_accessible_resources": [
+        "html/save-dialog.html", 
+        "html/toolbar.html", 
+        "html/screenshot.html", 
+        "img/url_snapshot.png", 
+        "img/rectangle.png", 
+        "img/lasso.png", 
+        "img/save.png", 
+        "img/clear.png", 
+        "img/cancel.png", 
+        "js/content.js"
+    ]
+}

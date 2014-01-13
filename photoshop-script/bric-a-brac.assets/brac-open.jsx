@@ -8,7 +8,8 @@
 //
 //==============================================================================
 
-#target photoshop 
+#target photoshop
+#include "common.jsx"
 #include "7zip.jsx"
 
 //==============================================================================
@@ -50,7 +51,6 @@ function addLayerMask() {
 //------------------------------------------------------------------------------
 
 function BracOpen() {
-
 	var SevenZip = get7zip();
 	if (!SevenZip)
 		return;
@@ -73,7 +73,7 @@ function BracOpen() {
 		//alert("Brac file " + f.fsName + " not found!");
 		return;
 	}
-
+	debugger;
 	var brac = f;
 	var ts = new Date().getTime();
 	var brac_dir = Folder.temp + "/" + ts;
@@ -81,12 +81,21 @@ function BracOpen() {
 	var info = SevenZip.extract_v(brac, out_dir);
 	var doc_name = ts + '-' + brac.name.split('.')[0];
 	
+	var psd_file = new File(brac_dir + "/" + "brac.psd");
+	if (!psd_file.exists) {
+		alert("Brac definition PSD file (brac.psd) not found!");
+		return;
+	}
+	var new_brac_doc = app.open(psd_file);
+	
 	// brac initial brac file object
 	// brac_dir temporary extracted brac directory path string
 	var desc = new ActionDescriptor();
 	desc.putString(0, brac.fullName); // brac file name
 	desc.putString(1, brac_dir); // brac temp directory
-	app.putCustomOptions(doc_name, desc, true);
+	var arr = brac_dir.split('/');
+	var id = arr[arr.length - 1];
+	app.putCustomOptions(id, desc, true);
 
 	var brac_xml_file = new File(brac_dir + "/" + "brac.xml");
 	if (!brac_xml_file.exists) {
@@ -99,6 +108,7 @@ function BracOpen() {
 
 	// Create the multi-layered image
 	//TODO: fix the add method parameters.
+	/*
 	var resolution = brac_xml.@resolution.split(' ');
 	var dpi = parseInt(brac_xml.@dpi);
 
@@ -108,9 +118,12 @@ function BracOpen() {
 	var new_brac_doc = app.documents.add(doc_w_px, doc_h_px, dpi, doc_name
 		, NewDocumentMode.RGB
 		, DocumentFill.TRANSPARENT, 1);
+	*/
 	
 	var first_bric = true;
-	
+	if (new_brac_doc.layerSets.length > 0)
+		first_bric = false;
+    
 	// sorting by zindex
 	var ordered_lyrs = [];
 	for (var i = 0; i < brac_xml.layers.children().length(); ++i)
@@ -130,7 +143,7 @@ function BracOpen() {
 		var lyr = brac_xml.layers.children()[ordered_lyrs[i][0]];
 		
 		if (lyr.name() == 'static') {
-		
+			/*
 			var filepath = brac_dir + '/' + lyr.@name + '.' + lyr.@id + '.png';
 			
 			var f = new File(filepath);
@@ -152,10 +165,14 @@ function BracOpen() {
 			static_img.translate(mv_x - parseInt(static_img.bounds[0]), mv_y - parseInt(static_img.bounds[1]));
 			new_brac_doc.activeLayer = static_img;
 			first_bric = false;
-			
+			*/
 		} else if (lyr.name() == 'bric') {
 		
 			var bric = lyr;
+			
+			if (getLayerIndex(bric.@id, new_brac_doc) != -1)
+				continue;
+			
 			// extracting bric details
 			var bric_dir = brac_dir + "/bric." + bric.@id;
 			var bric_xml_file = new File(bric_dir + "/bric.xml");
@@ -227,6 +244,7 @@ function BracOpen() {
 				var mmv_x              = parseFloat(maskposition[0]);
 				var mmv_y              = parseFloat(maskposition[1]);
 				
+				lyr_mask.resize(sc_w_n * 100.0, sc_h_n * 100.0); //relative to layer's initial size (bric)
 				lyr_mask.translate(mmv_x - parseInt(lyr_mask.bounds[0]), mmv_y - parseInt(lyr_mask.bounds[1]));
 				lyr_mask.rotate(rt_deg);
 

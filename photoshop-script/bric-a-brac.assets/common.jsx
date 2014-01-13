@@ -8,7 +8,7 @@
 //
 //==============================================================================
 
-#target photoshop 
+#target photoshop
 
 //==============================================================================
 
@@ -95,6 +95,18 @@ function unit2pixel(unit, dpi, length) {
 	} else if (unit == 3) { // Millimeters
 		return (length / 10) * dpi / 2.54;
 	}
+}
+
+//------------------------------------------------------------------------------
+
+function getLayerIndex(id, doc) {
+	for (var i = 0; i < doc.layers.length; ++i) {
+		if (parseInt(doc.layers[i].name) == parseInt(id)) {
+			return i;
+		}
+	}
+	
+	return -1;
 }
 
 //==============================================================================

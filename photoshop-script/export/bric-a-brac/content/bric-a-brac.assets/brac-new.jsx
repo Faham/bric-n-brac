@@ -268,9 +268,10 @@ function createNewBrac(bracInfo) {
 	
 	var ts = new Date().getTime();
 	var brac_dir = Folder.temp + "/" + ts;
+	//brac_dir = "/C/Users/Faham/AppData/Local/Temp/" + ts;
 	var out_dir = new Folder(brac_dir);
 	out_dir.create();
-	var doc_name = ts + '-' + bracInfo.name;
+	var doc_name = bracInfo.name;
 	
 	var brac_xml = new XML();
 	brac_xml = XML('<brac><layers></layers></brac>');
@@ -287,6 +288,7 @@ function createNewBrac(bracInfo) {
 	brac_xml_file.write(brac_xml);
 	brac_xml_file.close();
 	
+	// Create and save the PSD file
 	var new_doc = app.documents.add(
 		parseInt(bracInfo.width),
 		parseInt(bracInfo.height),
@@ -294,12 +296,21 @@ function createNewBrac(bracInfo) {
 		doc_name,
 		NewDocumentMode.RGB,
 		Str2DocFill(bracInfo.background), 1);
-	
+
+	_saveoptions = new PhotoshopSaveOptions();
+	_saveoptions.alphaChannels     = true;
+	_saveoptions.annotations       = true;
+	_saveoptions.embedColorProfile = true;
+	_saveoptions.layers            = true;
+	_saveoptions.spotColors        = true;
+
+	var psd_file = new File(brac_dir + "/" + "brac.psd");
+	new_doc.saveAs(psd_file, _saveoptions, false, Extension.LOWERCASE);
+	// Set environment variables
 	var desc = new ActionDescriptor();
 	desc.putString(0, '');
 	desc.putString(1, brac_dir);
-	app.putCustomOptions(doc_name, desc, true);
-	
+	app.putCustomOptions(new_doc.fullName, desc, true);
 	resetEnv();
 }
 

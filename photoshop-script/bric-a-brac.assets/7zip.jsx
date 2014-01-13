@@ -31,10 +31,7 @@ function get7zip() {
 //------------------------------------------------------------------------------
 
 	SevenZip.archive = function(zipFile, filelist) {
-		var args = ["a", "-tzip", '\"' + zipFile.fsName + '\"'];
-		for (var i = 0; i < filelist.length; i++) {
-			args.push('\"' + filelist[i].fsName + '\"');
-		}
+		var args = ["a", "-tzip", '\"' + zipFile.fsName + '\" \"' + filelist + '\"'];
 		this.executeBlock(args, 10000);
 	};
 
