@@ -57,6 +57,15 @@ if env == 'darwin':
 #-------------------------------------------------------------------------------
 
 elif env == 'windows':
+	data_files = [('imageformats', [
+		'imageformats_win/qgif4.dll',
+		'imageformats_win/qico4.dll',
+		'imageformats_win/qjpeg4.dll',
+		'imageformats_win/qmng4.dll',
+		'imageformats_win/qsvg4.dll',
+		'imageformats_win/qtga4.dll',
+		'imageformats_win/qtiff4.dll',
+	])]
 	sys.argv.append('py2exe')
 
 	# system dlls to include in the exe package
@@ -73,7 +82,7 @@ elif env == 'windows':
 	
 	py2exe_options = {
 		'optimize'    : optimize,
-		'bundle_files': 1,
+		'bundle_files': 3,
 		'compressed'  : True,
 		'includes'    : ['sip', 'PyQt4.QtNetwork'],
 	}

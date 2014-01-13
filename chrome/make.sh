@@ -49,7 +49,7 @@ cp -r ../distro/$OS/crop/clg-crop* ext/bin/
 
 # copy snapshot
 ../tools/snapshot/make.sh
-cp -r ../distro/$OS/snapshot/clg-snapshot* ext/bin/
+cp -r ../distro/$OS/snapshot/* ext/bin/
 
 #-------------------------------------------------------------------------------
 
