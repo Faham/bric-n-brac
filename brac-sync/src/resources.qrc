@@ -1,8 +1,0 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource>
-	<file>../resources/arr_down.png</file>
-	<file>../resources/arr_right.png</file>
-	<file>../resources/arr_up.png</file>
-	<file>../resources/remove.png</file>
-</qresource>
-</RCC>
