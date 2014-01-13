@@ -72,17 +72,19 @@ outfl.close()
 """
 
 rm ../distro/$OS/bracollage.crx
+cd ext/
 
 MakeCRX='buildcrx.exe'
+_7z='7za.exe'
 if [ "${OS}" = 'mac' ]; then
 	MakeCRX='buildcrx.bin'
+    _7z='7za'
 fi
-cd ext/
-../../tools/external/7za.exe a -tzip ../ext.zip *
+../../tools/external/$_7z a -tzip ../ext.zip *
 cd ..
-$MakeCRX ext.zip ext.pem
-rm ext.zip
-mv $SCRIPTPATH/ext.crx ../distro/$OS/bracollage.crx
+./$MakeCRX ext.zip ext.pem
+#rm ext.zip
+#mv $SCRIPTPATH/ext.crx ../distro/$OS/bracollage.crx
 
 #-------------------------------------------------------------------------------
 
