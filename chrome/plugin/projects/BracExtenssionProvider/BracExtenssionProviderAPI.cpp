@@ -187,7 +187,7 @@ FB::variant BracExtenssionProviderAPI::takeSnapShot(const FB::variant& msg) {
 
 		std::string filepath = escaped_dir + "/" + m_screenshot_filename;
 
-/*/
+//*/
 		command = "cd " + escaped_extension_path + "; "
 			+ "open -gW bin/clg-snapshot.app --args "
 			+ "'" + url + "' "      // target url
@@ -523,7 +523,7 @@ FB::variant BracExtenssionProviderAPI::saveToBracFile(const FB::variant& msg) {
 		command = "mv " + escaped_screenshot_dir + "/" + m_screenshot_filename + " " + escaped_bric_screenshot;
 		systemCall(command);
 
-/*/
+//*/
 		command = "cd " + escaped_extension_path + "; open -gW bin/clg-crop.app --args "
 			+ " " + escaped_bric_screenshot + " "
 			+ bric_region[0] + " " + bric_region[1] + " " + bric_region[2] + " " + bric_region[3];
