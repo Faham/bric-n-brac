@@ -1,5 +1,5 @@
 /* pyconfig.h.  Generated from pyconfig.h.in by configure.  */
-/* pyconfig.h.in.  Generated from configure.in by autoheader.  */
+/* pyconfig.h.in.  Generated from configure.ac by autoheader.  */
 
 
 #ifndef Py_PYCONFIG_H
@@ -55,6 +55,9 @@
 
 /* Define to 1 if you have the `alarm' function. */
 #define HAVE_ALARM 1
+
+/* Define to 1 if you have the <alloca.h> header file. */
+#define HAVE_ALLOCA_H 1
 
 /* Define this if your time.h defines altzone. */
 /* #undef HAVE_ALTZONE */
@@ -162,10 +165,10 @@
 /* Define to 1 if you have the device macros. */
 #define HAVE_DEVICE_MACROS 1
 
-/* Define if we have /dev/ptc. */
+/* Define to 1 if you have the /dev/ptc device file. */
 /* #undef HAVE_DEV_PTC */
 
-/* Define if we have /dev/ptmx. */
+/* Define to 1 if you have the /dev/ptmx device file. */
 #define HAVE_DEV_PTMX 1
 
 /* Define to 1 if you have the <direct.h> header file. */
@@ -371,6 +374,12 @@
 /* Define to 1 if you have the `initgroups' function. */
 #define HAVE_INITGROUPS 1
 
+/* Define if your compiler provides int32_t. */
+#define HAVE_INT32_T 1
+
+/* Define if your compiler provides int64_t. */
+#define HAVE_INT64_T 1
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
 
@@ -512,6 +521,9 @@
 /* Define if you have GNU PTH threads. */
 /* #undef HAVE_PTH */
 
+/* Define to 1 if you have the `pthread_atfork' function. */
+#define HAVE_PTHREAD_ATFORK 1
+
 /* Defined for Solaris 2.6 bug in pthread header. */
 /* #undef HAVE_PTHREAD_DESTRUCTOR */
 
@@ -519,7 +531,7 @@
 #define HAVE_PTHREAD_H 1
 
 /* Define to 1 if you have the `pthread_init' function. */
-/* #undef HAVE_PTHREAD_INIT */
+#define HAVE_PTHREAD_INIT 1
 
 /* Define to 1 if you have the `pthread_sigmask' function. */
 #define HAVE_PTHREAD_SIGMASK 1
@@ -847,6 +859,12 @@
 
 /* Define this if you have tcl and TCL_UTF_MAX==6 */
 /* #undef HAVE_UCS4_TCL */
+
+/* Define if your compiler provides uint32_t. */
+#define HAVE_UINT32_T 1
+
+/* Define if your compiler provides uint64_t. */
+#define HAVE_UINT64_T 1
 
 /* Define to 1 if the system has the type `uintptr_t'. */
 #define HAVE_UINTPTR_T 1

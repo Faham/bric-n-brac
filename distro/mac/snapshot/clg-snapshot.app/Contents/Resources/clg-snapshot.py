@@ -159,6 +159,7 @@ class WebCapture(QtGui.QWidget):
 #===============================================================================
 
 def main():
+	print 'test';
 	try:
 		app = QtGui.QApplication(sys.argv)
 
