@@ -27,10 +27,10 @@ class UserAgentWebPage(QWebPage):
 		#default populated useragent is:
 		#Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.34 (KHTML, like Gecko) Qt/4.8.4 Safari/534.34
 		
-		#return 'Mozilla/5.0 (X11; Linux x86_64; rv:7.0.1) Gecko/20100101 Firefox/7.0.1'
+		return 'Mozilla/5.0 (X11; Linux x86_64; rv:7.0.1) Gecko/20100101 Firefox/7.0.1'
 		#return 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.34 (KHTML, like Gecko) Qt/4.8.4 Chrome/534.34'
-		global _useragent
-		return _useragent
+		#global _useragent
+		#return _useragent
 
 #-------------------------------------------------------------------------------
 

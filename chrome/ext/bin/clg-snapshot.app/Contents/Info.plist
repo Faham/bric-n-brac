@@ -67,7 +67,11 @@
 		<false/>
 		<key>site_packages</key>
 		<false/>
+		<key>use_faulthandler</key>
+		<false/>
 		<key>use_pythonpath</key>
+		<false/>
+		<key>verbose</key>
 		<false/>
 	</dict>
 	<key>PyResourcePackages</key>
@@ -80,10 +84,10 @@
 	<key>PythonInfoDict</key>
 	<dict>
 		<key>PythonExecutable</key>
-		<string>/usr/local/Cellar/python/2.7.3/Frameworks/Python.framework/Versions/2.7/Resources/Python.app/Contents/MacOS/Python</string>
+		<string>/usr/local/opt/python/bin/python2.7</string>
 		<key>PythonLongVersion</key>
-		<string>2.7.3 (default, Apr  7 2013, 15:22:39) 
-[GCC 4.2.1 (Apple Inc. build 5666) (dot 3)]</string>
+		<string>2.7.6 (default, Apr  9 2014, 11:54:50) 
+[GCC 4.2.1 Compatible Apple LLVM 4.2 (clang-425.0.28)]</string>
 		<key>PythonShortVersion</key>
 		<string>2.7</string>
 		<key>py2app</key>
@@ -93,7 +97,7 @@
 			<key>template</key>
 			<string>app</string>
 			<key>version</key>
-			<string>0.7.2</string>
+			<string>0.8</string>
 		</dict>
 	</dict>
 </dict>
